@@ -1,0 +1,74 @@
+.rpg-art-portrait {
+  display: block;
+  position: relative;
+  flex: none;
+  overflow: hidden;
+}
+
+.rpg-art-portrait > img,
+.rpg-art-portrait > svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+.companion-grid .companion-art {
+  width: 100%;
+  height: 180px;
+  background: radial-gradient(ellipse at 50% 80%, #af966024, transparent 70%);
+  border-bottom: 1px solid #b2986426;
+}
+
+.companion-grid .companion-passive,
+.companion-grid .companion-skill {
+  margin: 0;
+  font-size: 14px;
+  line-height: 1.65;
+  color: #695737;
+}
+
+.companion-grid .companion-skill strong {
+  display: block;
+  margin-bottom: 3px;
+  font-size: 14px;
+}
+
+.companion-grid .companion-introduction {
+  margin: 3px 0 0;
+  font-size: 16px;
+  line-height: 1.7;
+}
+
+.role-profile {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid #b2986438;
+}
+
+.role-profile .role-art { width: 150px; height: 220px; }
+.role-profile h3 { margin: 0 0 8px; font-size: 24px; }
+.role-profile p { font-size: 16px; line-height: 1.7; margin: 0; }
+.hero-line .support-art { width: 42px; height: 62px; }
+.hero-support { display: flex; align-items: center; gap: 7px; color: #d0bd91; }
+.hero-support > span { font-size: 13px; line-height: 1.5; }
+.battle-support-effect { display: block; font-size: 13px; line-height: 1.6; color: #bbaa84; margin: 8px 0 0; }
+.battle-center:empty { display: none; }
+.battle-retry-rules { margin: 0 auto 16px; max-width: 650px; text-align: left; }
+.battle-retry-rules > summary { display: flex; align-items: center; gap: 8px; min-height: 44px; cursor: pointer; }
+.battle-retry-rules > summary > svg { margin-left: auto; }
+.battle-retry-rules p { font-size: 16px; }
+
+@media (max-width: 600px) {
+  .companion-grid .companion-art { height: 140px; }
+  .companion-grid .companion-passive,
+  .companion-grid .companion-skill,
+  .companion-grid .companion-skill strong { font-size: 14px; }
+  .role-profile { gap: 13px; }
+  .role-profile .role-art { width: 98px; height: 150px; }
+  .role-profile h3 { font-size: 20px; line-height: 1.5; }
+  .hero-support { display: none; }
+  .battle-support-effect { font-size: 13px; }
+}

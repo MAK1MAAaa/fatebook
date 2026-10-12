@@ -1,0 +1,12 @@
+services:
+  web:
+    image: ${FATEBOOK_IMAGE:-fatebook:2.0.0-amd64}
+    pull_policy: never
+    restart: unless-stopped
+    ports:
+      - "6657:6657"
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

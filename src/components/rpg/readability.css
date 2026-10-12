@@ -1,0 +1,203 @@
+/* Keep paper and forest surfaces independent, including dialogs rendered in a portal. */
+:root {
+  --paper-ink: #3f3528;
+  --paper-secondary: #66543a;
+  --paper-accent: #684b24;
+  --paper-success: #365839;
+  --paper-danger: #843d2d;
+  --forest-secondary: #c3c9b7;
+}
+
+:is(.parchment, .rpg-workshop, .card-detail-dialog) {
+  --ink: var(--paper-ink);
+  --muted: var(--paper-secondary);
+  --muted-foreground: 34 27% 31%;
+  --gold: var(--paper-accent);
+  --line: #a18a5c66;
+  color: var(--paper-ink);
+}
+
+:is(.parchment, .rpg-workshop, .card-detail-dialog) p {
+  color: var(--paper-ink);
+}
+
+:is(.parchment, .rpg-workshop, .card-detail-dialog) :is(
+  .muted, .text-muted-foreground, .panel-label, .fold-caption, .collection-caption,
+  .section-count, .quest-top, .quest-context, .quest-next > span,
+  .quest-notes > summary, .event-background > summary, .event-context,
+  .hub-empty, .map-caption, .depart-hint, .chapter-todo, .choice-caution,
+  .hub-fold > summary, .workshop-fold > summary,
+  .hub-fold > summary > span, .workshop-fold > summary > span,
+  .ending-locked small, .ending-option small,
+  .event-card > span, .event-card button small,
+  .event-complete p, .event-pick-list button,
+  .creation-summary > .eyebrow, .creation-summary dt,
+  .summary-note, .summary-foot, .summary-rules, .consent,
+  .creation-stat-preview > span, .story-toolbar, .story-chapter-eyebrow,
+  .story-footer, .choice-effects, .history-list article > span,
+  .history-list p, .ending-banner > .eyebrow, .ending-permadeath,
+  .rpg-ending-stats, .rpg-stat-grid small, .role-traits,
+  .rpg-journal small, .rpg-journal p, .rpg-journal > li > span,
+  .rpg-journal details > summary, .journal-entry-toggle span > span,
+  .journal-entry-detail .journal-date, .journal-battle-stats, .journal-empty,
+  .training-list article > div > span, .training-list article p,
+  .gear-grid p, .gear-grid small, .companion-grid p, .companion-grid small,
+  .copy-maintenance, .copy-maintenance p, .collection-where,
+  .rpg-collection article > small, .catalog-card-ownership,
+  .deck-builder-heading > span, .deck-row-upgrades,
+  .card-detail-unlock, .card-detail-effect-note, .card-maintenance-note,
+  .workshop-toolbar > strong > small, .copy-group-count
+) {
+  color: var(--paper-secondary);
+}
+
+:is(.parchment, .rpg-workshop, .card-detail-dialog) :is(.eyebrow, .text-button, .badge) {
+  color: var(--paper-accent);
+}
+
+:is(.parchment, .rpg-workshop, .card-detail-dialog) .button.subtle,
+:is(.parchment, .rpg-workshop, .card-detail-dialog) .button.ghost {
+  color: var(--paper-ink);
+  background: #e2d7ba;
+  border-color: #a28b604f;
+}
+
+:is(.parchment, .rpg-workshop, .card-detail-dialog) .button.primary {
+  background: #294636;
+  border-color: #294636;
+  color: #fff4d7;
+}
+
+:is(.parchment, .rpg-workshop, .card-detail-dialog) .button.primary:hover:not(:disabled) {
+  background: #365a45;
+}
+
+:is(.parchment, .rpg-workshop, .card-detail-dialog) .form-error {
+  color: var(--paper-danger);
+}
+
+:is(.parchment, .rpg-workshop, .card-detail-dialog) :is(input, select)::placeholder {
+  color: var(--paper-secondary);
+  opacity: 1;
+}
+
+/* The browser option menu must use the same light palette as its select control. */
+:is(.parchment, .rpg-workshop, .card-detail-dialog) select option {
+  background: #eee5cf;
+  color: var(--paper-ink);
+}
+
+:is(.parchment, .rpg-workshop, .card-detail-dialog) :is(
+  .workshop-view-nav button, .quest-list-tabs button, .journal-view-tabs button,
+  .deck-mobile-tabs button, .card-detail-variant-tabs button,
+  .card-catalog-tabs button, .card-filter-fold summary,
+  .rpg-preset-row button, .card-copy-toggles button, .card-copy-actions button,
+  .copy-maintenance-row button, .gear-grid button, .companion-grid button,
+  .catalog-card-status, .card-source-expand
+) {
+  color: var(--paper-ink);
+}
+
+:is(.parchment, .rpg-workshop, .card-detail-dialog) :is(
+  .workshop-view-nav button, .quest-list-tabs button, .journal-view-tabs button,
+  .deck-mobile-tabs button, .card-detail-variant-tabs button,
+  .card-copy-toggles button
+)[aria-pressed="true"] {
+  color: #fff4d7;
+  background: #425b39;
+  border-color: #425b39;
+}
+
+:is(.parchment, .rpg-workshop, .card-detail-dialog) button:disabled:not(.rpg-card) {
+  opacity: 1;
+  color: #625743;
+  background: #ddd3bd;
+  border-color: #a99b7e;
+  border-style: dashed;
+  box-shadow: none;
+}
+
+.rpg-card.card-face:disabled {
+  opacity: 1;
+  border-style: dashed;
+  box-shadow: none;
+}
+
+.rpg-card.card-face :is(.card-school, .card-flavor) {
+  color: var(--paper-secondary);
+}
+
+.rpg-card.card-face .card-energy,
+.deck-row-cost {
+  color: #0e1912;
+  font-weight: 700;
+}
+
+.quest-card.done,
+.companion-grid .locked {
+  opacity: 1;
+}
+
+.compact-quest.done .quest-top > span:last-child,
+.completed-event-list strong,
+.hub-event-done,
+.hub-fold .event-complete summary,
+.chapter-todo button,
+.quest-objective,
+.card-detail-copies strong > span {
+  color: var(--paper-success);
+}
+
+.rpg-region-art text {
+  fill: var(--paper-secondary);
+}
+
+.rpg-workshop [data-slot="dialog-close"],
+.card-detail-dialog [data-slot="dialog-close"] {
+  color: var(--paper-ink);
+  opacity: 1;
+}
+
+.save-pause-notice p {
+  color: #67412c;
+}
+
+/* Generic confirmation dialogs remain dark even when opened from paper panels. */
+[data-slot="dialog-content"]:not(.rpg-workshop):not(.card-detail-dialog) {
+  --muted-foreground: 75 14% 75%;
+  color: #e9e0c9;
+}
+
+.rpg-overview,
+.rpg-title-row p,
+.rpg-chapter-track span,
+.hand-heading,
+.enemy-under,
+.hero-under,
+.battle-center,
+.battle-support-effect,
+.selected-card-lore {
+  color: var(--forest-secondary);
+}
+
+.energy-gauge small {
+  opacity: 1;
+}
+
+.rpg-shell .enemy-unit:disabled,
+.enemy-unit.defeated {
+  opacity: 1;
+}
+
+.enemy-unit.defeated .rpg-portrait {
+  opacity: .4;
+  filter: grayscale(1);
+}
+
+.battle-actions button:disabled {
+  opacity: 1;
+  color: #bfc5b2;
+  background: #253029;
+  border-color: #71806a;
+  border-style: dashed;
+}

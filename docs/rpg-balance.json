@@ -1,0 +1,211 @@
+{
+  "contentVersion": "2.0.0",
+  "method": "自动化启发式出牌；不是人类游玩时间",
+  "tacticalSignatures": 144,
+  "metrics": [
+    {
+      "id": "witness-base",
+      "actions": 2872,
+      "victories": 144,
+      "turns": 906,
+      "cardsPlayed": 1225,
+      "chapters": [
+        {
+          "chapter": 1,
+          "battles": 12,
+          "turns": 65,
+          "cards": 150
+        },
+        {
+          "chapter": 2,
+          "battles": 22,
+          "turns": 110,
+          "cards": 238
+        },
+        {
+          "chapter": 3,
+          "battles": 22,
+          "turns": 108,
+          "cards": 157
+        },
+        {
+          "chapter": 4,
+          "battles": 22,
+          "turns": 140,
+          "cards": 189
+        },
+        {
+          "chapter": 5,
+          "battles": 22,
+          "turns": 146,
+          "cards": 162
+        },
+        {
+          "chapter": 6,
+          "battles": 22,
+          "turns": 163,
+          "cards": 159
+        },
+        {
+          "chapter": 7,
+          "battles": 22,
+          "turns": 174,
+          "cards": 170
+        }
+      ]
+    },
+    {
+      "id": "witness-politics",
+      "actions": 2541,
+      "victories": 116,
+      "turns": 776,
+      "cardsPlayed": 1132,
+      "chapters": [
+        {
+          "chapter": 1,
+          "battles": 8,
+          "turns": 50,
+          "cards": 117
+        },
+        {
+          "chapter": 2,
+          "battles": 18,
+          "turns": 109,
+          "cards": 220
+        },
+        {
+          "chapter": 3,
+          "battles": 18,
+          "turns": 82,
+          "cards": 151
+        },
+        {
+          "chapter": 4,
+          "battles": 18,
+          "turns": 120,
+          "cards": 180
+        },
+        {
+          "chapter": 5,
+          "battles": 18,
+          "turns": 129,
+          "cards": 161
+        },
+        {
+          "chapter": 6,
+          "battles": 18,
+          "turns": 149,
+          "cards": 168
+        },
+        {
+          "chapter": 7,
+          "battles": 18,
+          "turns": 137,
+          "cards": 135
+        }
+      ]
+    },
+    {
+      "id": "witness-teaching",
+      "actions": 2487,
+      "victories": 116,
+      "turns": 765,
+      "cardsPlayed": 1094,
+      "chapters": [
+        {
+          "chapter": 1,
+          "battles": 8,
+          "turns": 48,
+          "cards": 115
+        },
+        {
+          "chapter": 2,
+          "battles": 18,
+          "turns": 101,
+          "cards": 219
+        },
+        {
+          "chapter": 3,
+          "battles": 18,
+          "turns": 90,
+          "cards": 149
+        },
+        {
+          "chapter": 4,
+          "battles": 18,
+          "turns": 122,
+          "cards": 176
+        },
+        {
+          "chapter": 5,
+          "battles": 18,
+          "turns": 126,
+          "cards": 148
+        },
+        {
+          "chapter": 6,
+          "battles": 18,
+          "turns": 144,
+          "cards": 157
+        },
+        {
+          "chapter": 7,
+          "battles": 18,
+          "turns": 134,
+          "cards": 130
+        }
+      ]
+    },
+    {
+      "id": "witness-roxy",
+      "actions": 2457,
+      "victories": 116,
+      "turns": 757,
+      "cardsPlayed": 1069,
+      "chapters": [
+        {
+          "chapter": 1,
+          "battles": 8,
+          "turns": 48,
+          "cards": 108
+        },
+        {
+          "chapter": 2,
+          "battles": 18,
+          "turns": 97,
+          "cards": 205
+        },
+        {
+          "chapter": 3,
+          "battles": 18,
+          "turns": 89,
+          "cards": 142
+        },
+        {
+          "chapter": 4,
+          "battles": 18,
+          "turns": 123,
+          "cards": 168
+        },
+        {
+          "chapter": 5,
+          "battles": 18,
+          "turns": 124,
+          "cards": 148
+        },
+        {
+          "chapter": 6,
+          "battles": 18,
+          "turns": 141,
+          "cards": 165
+        },
+        {
+          "chapter": 7,
+          "battles": 18,
+          "turns": 135,
+          "cards": 133
+        }
+      ]
+    }
+  ]
+}

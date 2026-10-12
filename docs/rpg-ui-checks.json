@@ -1,0 +1,80 @@
+{
+  "date": "2026-10-08",
+  "mode": "浏览器视口模拟，不等同于实体手机验收",
+  "layouts": [
+    {
+      "briefFont": "16px",
+      "buttonHeights": [
+        46,
+        46,
+        48
+      ],
+      "enemyCount": 3,
+      "field": 321,
+      "page": 345,
+      "viewport": 360
+    },
+    {
+      "briefFont": "16px",
+      "buttonHeights": [
+        46,
+        46,
+        48
+      ],
+      "enemyCount": 3,
+      "field": 351,
+      "page": 375,
+      "viewport": 390
+    },
+    {
+      "briefFont": "16px",
+      "buttonHeights": [
+        48,
+        48,
+        48
+      ],
+      "enemyCount": 3,
+      "field": 705,
+      "page": 753,
+      "viewport": 768
+    },
+    {
+      "briefFont": "16px",
+      "buttonHeights": [
+        48,
+        48,
+        48
+      ],
+      "enemyCount": 3,
+      "field": 1356,
+      "page": 1425,
+      "viewport": 1440
+    }
+  ],
+  "flow": {
+    "character": "卡牌验证旅人",
+    "actions": [
+      "创建",
+      "人生事件",
+      "接任务",
+      "点牌后点敌人",
+      "刷新精确续接",
+      "普通战败",
+      "调整牌组",
+      "免费重试",
+      "首胜领取",
+      "导师学习"
+    ],
+    "firstWin": {
+      "turns": 4,
+      "cards": 8
+    },
+    "intentionalFailures": 1
+  },
+  "threeEnemies": {
+    "forecast": 76,
+    "actualDamage": 76,
+    "companionCooldownAfterUse": 3
+  },
+  "humanDurationCalibration": false
+}

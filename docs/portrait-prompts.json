@@ -1,0 +1,478 @@
+{
+  "createdAt": "2026-10-10",
+  "generation": "Built-in image_gen",
+  "runtimeGeneration": false,
+  "style": "原创暖色动漫立绘",
+  "assetCount": 67,
+  "assets": [
+    {
+      "key": "roxy",
+      "full": "public/art/portraits/roxy.webp",
+      "thumb": "public/art/portraits/roxy-thumb.webp",
+      "sourceImage": "exec-05f795b3-70e4-4af6-af94-ce67def956ae.png",
+      "prompt": "Create one production-ready original standing character illustration for a Chinese fantasy card RPG inspired by Mushoku Tensei. Subject: Roxy Migurdia, a long-lived ADULT Migurd mage with youthful adult appearance, blue hair in two neat braids, blue eyes, oversized dark witch hat with ivory trim, modest cream-and-indigo traveling mage robe, brown boots, and a wooden staff with a blue stone. Fully clothed, poised calm mentor expression, no sexualized styling. Style: premium hand-drawn fantasy anime JRPG concept art, thin warm ink outlines, clear cel shading with subtle painterly textures, muted moss green, parchment ivory and antique-gold accents, consistent soft upper-left lighting. Full body from hat to boots, three-quarter stance facing slightly left, hands and equipment clearly drawn, centered isolated subject, generous margin, portrait 2:3 composition. Transparent background, no scenery, no frame, no text, no logo, no watermark. This is original fan illustration, not a copied anime screenshot."
+    },
+    {
+      "key": "rudeus",
+      "full": "public/art/portraits/rudeus.webp",
+      "thumb": "public/art/portraits/rudeus-thumb.webp",
+      "sourceImage": "exec-921c63af-acc1-4b3f-a60d-26613db52458.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: Rudeus Greyrat, a young adult male mage with chestnut brown hair, green eyes, gentle alert expression, layered cream traveling coat, moss cape, belt pouches, wooden staff with blue orb. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "eris",
+      "full": "public/art/portraits/eris.webp",
+      "thumb": "public/art/portraits/eris-thumb.webp",
+      "sourceImage": "exec-322bef4b-fc9e-4468-ac35-f398dec861a2.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: Eris Boreas Greyrat, young adult swordswoman with long vivid red hair and red eyes, determined expression, practical cream shirt with dark fitted leather armored coat and trousers, long sword held lowered, red scarf. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "sylphie",
+      "full": "public/art/portraits/sylphie.webp",
+      "thumb": "public/art/portraits/sylphie-thumb.webp",
+      "sourceImage": "exec-e2d7956f-a0a0-4240-802f-9ff11df7f282.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: Sylphiette after the displacement disaster, a youthful elven mage with short white hair, clear red eyes, pointed ears, modest navy and ivory long-sleeved mage tunic, trousers, slender staff, graceful reassuring expression. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "ruijerd",
+      "full": "public/art/portraits/ruijerd.webp",
+      "thumb": "public/art/portraits/ruijerd-thumb.webp",
+      "sourceImage": "exec-be6b2cb6-d490-4845-a16c-95b9f12d4aec.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: Ruijerd Superdia, a tall lean muscular adult guardian, short green hair, red oval gem centered on forehead, weathered calm face, practical leather shoulder armor over fully covered traveling clothes, tall three-pronged spear. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "ghislaine",
+      "full": "public/art/portraits/ghislaine.webp",
+      "thumb": "public/art/portraits/ghislaine-thumb.webp",
+      "sourceImage": "exec-e35cd45b-8abf-49d1-9cda-b07125ebf75c.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: Ghislaine Dedoldia, a powerful adult beastfolk swordswoman, deep brown skin, short silver-gray hair, tiger ears and striped tail, one-eye patch, entirely covered functional leather armor and sturdy trousers, massive sheathed sword, dignified composed face. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "zanoba",
+      "full": "public/art/portraits/zanoba.webp",
+      "thumb": "public/art/portraits/zanoba-thumb.webp",
+      "sourceImage": "exec-3d73f1b8-d035-4d4a-bdc3-04055f63109f.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: Zanoba Shirone, a very tall slender adult noble researcher with brown hair and glasses, long cream aristocratic tunic, bronze brooch, leather gloves, a small carved wood figurine in hand, attentive scholarly face. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "cliff",
+      "full": "public/art/portraits/cliff.webp",
+      "thumb": "public/art/portraits/cliff-thumb.webp",
+      "sourceImage": "exec-e7dcdb62-6d6b-444e-ad9b-434a3132e977.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: Cliff Grimoire, a young adult scholarly healer, neat brown hair, glasses, modest ivory and dark-green clerical robes, holding a leather book and a small staff, confident kind expression. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "elinalise",
+      "full": "public/art/portraits/elinalise.webp",
+      "thumb": "public/art/portraits/elinalise-thumb.webp",
+      "sourceImage": "exec-0d95e64b-b9ee-4d48-bdbc-5e7a0c3a6a2a.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: Elinalise Dragonroad, an adult elven adventurer with long curled golden-blond hair and pointed ears, full practical ivory and forest-green plated traveling armor, trousers and boots, slim rapier and small round shield, poised friendly face. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "orsted",
+      "full": "public/art/portraits/orsted.webp",
+      "thumb": "public/art/portraits/orsted-thumb.webp",
+      "sourceImage": "exec-375eadf6-9535-4c09-bbec-ef3b375b6806.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: Orsted the Dragon God, an imposing tall adult man with long silver-white hair, intense yellow eyes, stern calm expression, high-collared white long coat with dark-gold embroidered seams, black gloves and trousers, arms relaxed, powerful dignified presence. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "rudeus-child",
+      "full": "public/art/portraits/rudeus-child.webp",
+      "thumb": "public/art/portraits/rudeus-child-thumb.webp",
+      "sourceImage": "exec-b4aad9f0-c8ac-40ba-9653-1fee26df4743.png",
+      "prompt": "An original children's adventure storybook character illustration: a primary-school child with short chestnut-brown hair and green eyes, wearing a loose cream cotton tunic, brown long trousers and boots, holding a small wooden walking staff, cheerful studious face. Clear child proportions. Entire standing figure visible, generous surrounding space, isolated against a transparent background. Warm hand-painted anime fantasy illustration, neat ink lines and simple cel shading, restrained moss-green, ivory and antique-gold palette. A single character only. No letters, logos, frame, or scenery."
+    },
+    {
+      "key": "eris-child",
+      "full": "public/art/portraits/eris-child.webp",
+      "thumb": "public/art/portraits/eris-child-thumb.webp",
+      "sourceImage": "exec-609c70b3-691e-44df-8661-ed60d63ece4d.png",
+      "prompt": "An original children's adventure storybook character illustration: a primary-school child with long red hair and red eyes, wearing a cream long-sleeved cotton tunic, navy long trousers and boots, holding a simple wooden practice sword down at the side, determined cheerful face. Clear child proportions. Entire standing figure visible, generous surrounding space, isolated against a transparent background. Warm hand-painted anime fantasy illustration, neat ink lines and simple cel shading, restrained moss-green, ivory and antique-gold palette. A single character only. No letters, logos, frame, or scenery."
+    },
+    {
+      "key": "sylphie-child",
+      "full": "public/art/portraits/sylphie-child.webp",
+      "thumb": "public/art/portraits/sylphie-child-thumb.webp",
+      "sourceImage": "exec-b8c8009a-fd9e-414a-bb27-afe0e1fb7afc.png",
+      "prompt": "An original children's adventure storybook character illustration: a young elf school pupil with short green hair, red eyes and pointed ears, wearing a baggy cream long-sleeved tunic, moss-green trousers and boots, holding a small wooden wand, gentle shy face. Clear child proportions. Entire standing figure visible, generous surrounding space, isolated against a transparent background. Warm hand-painted anime fantasy illustration, neat ink lines and simple cel shading, restrained moss-green, ivory and antique-gold palette. A single character only. No letters, logos, frame, or scenery."
+    },
+    {
+      "key": "roxy-child",
+      "full": "public/art/portraits/roxy-child.webp",
+      "thumb": "public/art/portraits/roxy-child-thumb.webp",
+      "sourceImage": "exec-42c8cf02-5ddc-42a7-9155-7e8c0c04060a.png",
+      "prompt": "An original children's adventure storybook character illustration: a young blue-haired village school pupil with two braids and blue eyes, wearing a blue long-sleeved village tunic, linen trousers and brown boots, carrying a woven satchel and small wooden wand, thoughtful curious face. Clear child proportions. Entire standing figure visible, generous surrounding space, isolated against a transparent background. Warm hand-painted anime fantasy illustration, neat ink lines and simple cel shading, restrained moss-green, ivory and antique-gold palette. A single character only. No letters, logos, frame, or scenery."
+    },
+    {
+      "key": "custom-human",
+      "full": "public/art/portraits/custom-human.webp",
+      "thumb": "public/art/portraits/custom-human-thumb.webp",
+      "sourceImage": "exec-c9e9ab9a-5028-45d0-a196-63004cb78489.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: an androgynous young adult human traveler with dark brown medium hair, alert brown eyes, fully clothed cream tunic, moss hooded cloak, leather belt, hiking boots, a short sheathed sword and travel notebook. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "custom-human-child",
+      "full": "public/art/portraits/custom-human-child.webp",
+      "thumb": "public/art/portraits/custom-human-child-thumb.webp",
+      "sourceImage": "exec-a5a5cc19-1121-459c-a91a-274fe3e1e98a.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: an androgynous eight-year-old human village child with brown hair and brown eyes, child proportions, fully clothed cream tunic, moss vest, loose trousers, boots, wooden toy sword and small satchel. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "custom-elf",
+      "full": "public/art/portraits/custom-elf.webp",
+      "thumb": "public/art/portraits/custom-elf-thumb.webp",
+      "sourceImage": "exec-d0ac63e5-5b0d-44be-84b7-31c23be0c07c.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: an androgynous young adult long-eared elf traveler with light ash-blond hair, green eyes, distinctly pointed ears, fully clothed sage-green long tunic, leather boots, a small bow and travel notebook. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "custom-elf-child",
+      "full": "public/art/portraits/custom-elf-child.webp",
+      "thumb": "public/art/portraits/custom-elf-child-thumb.webp",
+      "sourceImage": "exec-4b5bc895-6b5d-47bd-a785-a57489bc7e4a.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: an androgynous eight-year-old elf child with ash-blond hair, green eyes, pointed ears, child proportions, fully clothed simple sage tunic and trousers, little wooden wand and satchel. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "custom-beast",
+      "full": "public/art/portraits/custom-beast.webp",
+      "thumb": "public/art/portraits/custom-beast-thumb.webp",
+      "sourceImage": "exec-9e73530c-7ab1-49ce-89af-a0cb83b16501.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: an androgynous young adult beastfolk traveler with dark chestnut hair, amber eyes, visible lynx ears and tail, fully clothed moss-and-ochre travel tunic, trousers, bracers, boots, short practice spear. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "custom-beast-child",
+      "full": "public/art/portraits/custom-beast-child.webp",
+      "thumb": "public/art/portraits/custom-beast-child-thumb.webp",
+      "sourceImage": "exec-6567108f-7515-485a-aa59-f57c059e8aa7.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: an androgynous eight-year-old beastfolk child with brown hair, amber eyes, rounded lynx ears and small tail, child proportions, fully clothed ochre tunic and loose trousers, wooden toy spear and satchel. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "custom-migurd",
+      "full": "public/art/portraits/custom-migurd.webp",
+      "thumb": "public/art/portraits/custom-migurd-thumb.webp",
+      "sourceImage": "exec-af74eb53-b644-4535-ba05-d4759bec84ed.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: an androgynous ADULT long-lived Migurd traveler with youthful adult appearance, blue medium hair, blue eyes, small stature, fully clothed navy-and-ivory village mage robe, leather boots, staff and blue woven satchel. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "custom-migurd-child",
+      "full": "public/art/portraits/custom-migurd-child.webp",
+      "thumb": "public/art/portraits/custom-migurd-child-thumb.webp",
+      "sourceImage": "exec-01b521ca-9eed-4c21-bc92-2dbff34ed8a9.png",
+      "prompt": "An original children's fantasy storybook standing character illustration: a small blue-haired village school pupil with short blue hair and blue eyes, wearing a roomy navy long-sleeved cotton tunic with ivory cuffs, linen long trousers and brown boots, carrying a round woven satchel and simple wooden practice wand. Clear child proportions and a curious calm expression. One entire standing character on an actually transparent background, generous margins. Hand-painted anime fantasy art, neat warm ink outlines, clear cel shading, muted moss-green, ivory and antique-gold tones, soft light. No writing, no logo, no frame, no scenery."
+    },
+    {
+      "key": "enemy-1",
+      "full": "public/art/portraits/enemy-1.webp",
+      "thumb": "public/art/portraits/enemy-1-thumb.webp",
+      "sourceImage": "exec-94852e0f-7d55-461c-b061-b4fd82353131.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: a teenage practice partner with tousled brown hair, fully clothed padded ochre tunic, loose trousers, simple wooden training sword, relaxed ready stance. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "enemy-2",
+      "full": "public/art/portraits/enemy-2.webp",
+      "thumb": "public/art/portraits/enemy-2-thumb.webp",
+      "sourceImage": "exec-f905bd5c-ebe7-46a9-880a-09dc37c6cde0.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: a middle-aged wooden-sword instructor with tied dark hair and trimmed beard, fully clothed weathered green training coat, two-handed wooden practice sword, patient imposing stance. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "enemy-3",
+      "full": "public/art/portraits/enemy-3.webp",
+      "thumb": "public/art/portraits/enemy-3-thumb.webp",
+      "sourceImage": "exec-f3c0d21d-1708-4e8d-b63c-b25f392812c4.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: a small squat animated stone golem made of rough gray boulders, moss-covered joints, tiny blue glowing eyes, heavy rounded fists, unmistakable stone creature. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "enemy-4",
+      "full": "public/art/portraits/enemy-4.webp",
+      "thumb": "public/art/portraits/enemy-4-thumb.webp",
+      "sourceImage": "exec-1969a938-3e3c-414a-9826-e296e13a4d0d.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: an agile teenage apprentice with black short hair, fully clothed light sage training outfit, two wooden practice batons, quick low balanced stance. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "enemy-5",
+      "full": "public/art/portraits/enemy-5.webp",
+      "thumb": "public/art/portraits/enemy-5-thumb.webp",
+      "sourceImage": "exec-4093b1e5-a203-4ff7-9fe3-a72f50716ad0.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: a young fully clothed apprentice fire mage with auburn hair, modest warm gray robe and red gloves, wooden staff with a tiny orange flame above its tip. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "enemy-6",
+      "full": "public/art/portraits/enemy-6.webp",
+      "thumb": "public/art/portraits/enemy-6-thumb.webp",
+      "sourceImage": "exec-115abb53-2ab3-456a-bede-9ac84e8522c5.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: a sturdy adult shield guard in full moss-green and brass medieval armor, broad rectangular wooden shield, short sword, resolute defensive stance. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "enemy-7",
+      "full": "public/art/portraits/enemy-7.webp",
+      "thumb": "public/art/portraits/enemy-7-thumb.webp",
+      "sourceImage": "exec-812f14b3-1db5-4e21-8151-b8add82eb199.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: a formidable forest boar-like fantasy beast with dark mossy fur, branching wooden tusks, four heavy legs, amber eyes, animal anatomy, no humanoid clothing. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "enemy-8",
+      "full": "public/art/portraits/enemy-8.webp",
+      "thumb": "public/art/portraits/enemy-8-thumb.webp",
+      "sourceImage": "exec-8ed52af5-175a-4bfb-9b50-d18821a28cba.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: a low broad swamp reptile monster with deep teal scales, mossy plated back, thick curled tail, webbed claws and wary yellow eyes, animal anatomy. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "enemy-9",
+      "full": "public/art/portraits/enemy-9.webp",
+      "thumb": "public/art/portraits/enemy-9-thumb.webp",
+      "sourceImage": "exec-4254ecc2-93e3-4af5-aba4-5c61bd69dd65.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: an adult road bandit with a dark cloth hood, patched brown coat, belt and trousers, curved worn sword, cautious sidelong stance. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "enemy-10",
+      "full": "public/art/portraits/enemy-10.webp",
+      "thumb": "public/art/portraits/enemy-10-thumb.webp",
+      "sourceImage": "exec-aab85ff4-3b8e-4804-a41a-89202151d0c3.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: an adult female archer with tied chestnut hair, fully clothed modest forest-green padded leather outfit, quiver and long wooden bow, attentive poised stance. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "enemy-11",
+      "full": "public/art/portraits/enemy-11.webp",
+      "thumb": "public/art/portraits/enemy-11-thumb.webp",
+      "sourceImage": "exec-1288f265-8368-411b-96b2-e9d2b5cc4231.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: a lean wild hunting dog with sandy brown fur, darker dorsal mane, four legs, sharp amber eyes, alert lunging stance, animal anatomy. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "enemy-12",
+      "full": "public/art/portraits/enemy-12.webp",
+      "thumb": "public/art/portraits/enemy-12-thumb.webp",
+      "sourceImage": "exec-f476c52c-5904-4c95-a880-13f4ff0e77f2.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: a massive rocky-shelled quadruped monster with gray layered stone armor, glowing ochre cracks, sturdy claws and low armored head. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "enemy-13",
+      "full": "public/art/portraits/enemy-13.webp",
+      "thumb": "public/art/portraits/enemy-13-thumb.webp",
+      "sourceImage": "exec-c3974045-b273-4e25-830a-5cd0c5192c80.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: a long coiled desert sand serpent with bronze scales, narrow blue eyes, dark crest, prominent curved fangs, strong S-shaped silhouette, no background. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "enemy-14",
+      "full": "public/art/portraits/enemy-14.webp",
+      "thumb": "public/art/portraits/enemy-14-thumb.webp",
+      "sourceImage": "exec-39ac070a-2c2f-4d4e-a481-103cd1f05f03.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: a dangerous fantasy fire-winged reptilian monster with copper red scales, folded broad ember-feathered wings, two legs and clawed wing joints, no background flames. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "enemy-15",
+      "full": "public/art/portraits/enemy-15.webp",
+      "thumb": "public/art/portraits/enemy-15-thumb.webp",
+      "sourceImage": "exec-163c2a9a-6ec9-4cb9-8852-691101ad5761.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: a bulky adult warehouse enforcer with shaven head, scarred face, fully clothed faded ochre padded work coat and heavy trousers, thick wooden cudgel, grounded stance. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "enemy-16",
+      "full": "public/art/portraits/enemy-16.webp",
+      "thumb": "public/art/portraits/enemy-16-thumb.webp",
+      "sourceImage": "exec-f91f5fe4-9563-40c2-a56a-aafb5c9f2cb6.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: an adult beastfolk sparring fighter with fox ears and tail, ochre hair, fully clothed sage training jacket, forearm guards, two wooden practice swords, lively stance. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "enemy-17",
+      "full": "public/art/portraits/enemy-17.webp",
+      "thumb": "public/art/portraits/enemy-17-thumb.webp",
+      "sourceImage": "exec-f6b5ee01-2c3a-4611-8afc-c23904a9d367.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: a fully clothed adult water-magic sparring mage with dark blue hair and navy flowing robe, tall silver-blue staff carrying a small ice crystal, cool composed expression. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "enemy-18",
+      "full": "public/art/portraits/enemy-18.webp",
+      "thumb": "public/art/portraits/enemy-18-thumb.webp",
+      "sourceImage": "exec-b5a263b0-7db1-4e20-88dd-df1dfc303309.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: an adult traveling sword sparring fighter with tied black hair, fully clothed cream training robe and dark trousers, long wooden sword lowered, formal disciplined stance. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "enemy-19",
+      "full": "public/art/portraits/enemy-19.webp",
+      "thumb": "public/art/portraits/enemy-19-thumb.webp",
+      "sourceImage": "exec-32cc4192-e761-4d65-97f7-564b703716c6.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: a heavy labyrinth guardian in full ancient green-bronze plate armor, closed helmet, broad engraved tower shield, ceremonial blade, no identifiable human face. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "enemy-20",
+      "full": "public/art/portraits/enemy-20.webp",
+      "thumb": "public/art/portraits/enemy-20-thumb.webp",
+      "sourceImage": "exec-eec71a7f-293e-4ce2-89c1-221eff9c4118.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: a standalone cluster of regenerating fantasy tentacles with teal organic stems, soft glowing green rune nodes, coiling forms around a sturdy central bulb, no gore. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "enemy-21",
+      "full": "public/art/portraits/enemy-21.webp",
+      "thumb": "public/art/portraits/enemy-21-thumb.webp",
+      "sourceImage": "exec-a5484821-1763-4b11-a5f6-5595173e9381.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: a mysterious floating humanoid magic echo made of translucent indigo mist, angular runic shards and luminous blue core, distinct arms and long trailing robe shape. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "enemy-22",
+      "full": "public/art/portraits/enemy-22.webp",
+      "thumb": "public/art/portraits/enemy-22-thumb.webp",
+      "sourceImage": "exec-4ea0366d-828e-4766-9da1-7aadec8dd129.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: an intricate trap automaton with jointed brass limbs, hidden spring blades, carved wooden chest and blue glowing core, mechanical silhouette, no blood. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "enemy-23",
+      "full": "public/art/portraits/enemy-23.webp",
+      "thumb": "public/art/portraits/enemy-23-thumb.webp",
+      "sourceImage": "exec-81dd3527-ac4a-4d0f-bee9-332894203cbe.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: an adult diplomatic meeting guard with orderly dark hair, full blue-green ceremonial armor, compact round shield and straight sword, upright courteous stance. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "enemy-24",
+      "full": "public/art/portraits/enemy-24.webp",
+      "thumb": "public/art/portraits/enemy-24-thumb.webp",
+      "sourceImage": "exec-c8ea6b03-4b23-4f88-b44c-4636c88aed6f.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: an adult masked assassin in full dark charcoal hooded travel armor, only eyes visible, two short daggers pointing downward, quiet crouched poised stance. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "enemy-25",
+      "full": "public/art/portraits/enemy-25.webp",
+      "thumb": "public/art/portraits/enemy-25-thumb.webp",
+      "sourceImage": "exec-69491b81-56da-4772-b7de-0cf38290d10e.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: an adult messenger robber with short rust-red hair, full patched ochre traveling coat and trousers, hooked short sword, stolen rolled scroll tied at belt, quick stance. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "enemy-26",
+      "full": "public/art/portraits/enemy-26.webp",
+      "thumb": "public/art/portraits/enemy-26-thumb.webp",
+      "sourceImage": "exec-e09734d4-978c-4382-8e5a-4bce05d44664.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: a fully clothed adult ritual attendant in long ivory and indigo hooded robe, bronze rune mask, blue crystal focus and scroll, solemn balanced stance. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "enemy-27",
+      "full": "public/art/portraits/enemy-27.webp",
+      "thumb": "public/art/portraits/enemy-27-thumb.webp",
+      "sourceImage": "exec-c0820929-0d41-4c4f-a062-b9974fa65d08.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: a rugged adult northern mercenary with blond tied hair and short beard, full thick moss cloak over chainmail, broad axe and worn round shield, hardy stance. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "enemy-28",
+      "full": "public/art/portraits/enemy-28.webp",
+      "thumb": "public/art/portraits/enemy-28-thumb.webp",
+      "sourceImage": "exec-7ff671b7-ac06-4d45-84b3-087899806b8e.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: a carved obsidian curse-rune golem with vivid purple runic lines, blocky forearms, glowing violet eye slits and a stone staff, squat mechanical silhouette. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "enemy-29",
+      "full": "public/art/portraits/enemy-29.webp",
+      "thumb": "public/art/portraits/enemy-29-thumb.webp",
+      "sourceImage": "exec-48b6cd41-38ec-4895-b686-ed54ad90200c.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: an adult alliance trial officer in polished olive-bronze full armor, gold-accented tabard, a training sword and small standard pennant, authoritative calm face. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "enemy-30",
+      "full": "public/art/portraits/enemy-30.webp",
+      "thumb": "public/art/portraits/enemy-30-thumb.webp",
+      "sourceImage": "exec-19b1b402-f1e7-424d-9580-76c29499d3c0.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: a disciplined adult kingdom soldier in full green-gray plate armor and closed helmet, long spear and angled rectangular shield, rigid marching stance. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "enemy-31",
+      "full": "public/art/portraits/enemy-31.webp",
+      "thumb": "public/art/portraits/enemy-31-thumb.webp",
+      "sourceImage": "exec-b0cf23dd-4a7f-4ac0-87ae-bb4b0fc25228.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: an adult desperate raider with tangled brown hair, full torn russet coat over leather armor, large curved sword and wrapped forearms, ferocious determined stance. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "enemy-32",
+      "full": "public/art/portraits/enemy-32.webp",
+      "thumb": "public/art/portraits/enemy-32-thumb.webp",
+      "sourceImage": "exec-348b5617-0260-400f-b616-5a4b31ecc3c8.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: a monumental battlefield colossus made of bronze and granite, enormous squared shoulders, glowing blue geometric heart, heavy armored limbs, full visible creature. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "boss-1",
+      "full": "public/art/portraits/boss-1.webp",
+      "thumb": "public/art/portraits/boss-1-thumb.webp",
+      "sourceImage": "exec-d873ed01-9735-418d-8a38-68706324cbdc.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: a serene elderly basic-skills examiner with gray tied hair and short beard, fully clothed cream-and-green swordmaster robe, long wooden practice sword, calm wise stance. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "boss-2",
+      "full": "public/art/portraits/boss-2.webp",
+      "thumb": "public/art/portraits/boss-2-thumb.webp",
+      "sourceImage": "exec-ee717f68-ed40-45ff-820a-58d2f6c7b0e8.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: an adult female guard examiner for a nonlethal childhood protection exercise, chestnut braid, fully clothed padded moss-green armor, wooden tower shield and wooden practice sword, reassuring firm expression. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "boss-3",
+      "full": "public/art/portraits/boss-3.webp",
+      "thumb": "public/art/portraits/boss-3-thumb.webp",
+      "sourceImage": "exec-1997fd06-7162-4f48-b75f-38a2b983a51c.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: an imposing adult guard captain with dark beard, full bronze plate armor and olive cape, broad shield and sword, commanding defensive stance. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "boss-4",
+      "full": "public/art/portraits/boss-4.webp",
+      "thumb": "public/art/portraits/boss-4-thumb.webp",
+      "sourceImage": "exec-6cfd9d72-e58b-4422-b5e4-52f1c657664a.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: a respected adult mage mentor examining apprenticeship, gray-black tied hair, full ivory and navy teaching robes, carved tall staff and lesson notebook, thoughtful face. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "boss-5",
+      "full": "public/art/portraits/boss-5.webp",
+      "thumb": "public/art/portraits/boss-5-thumb.webp",
+      "sourceImage": "exec-3651736b-bcdf-4e55-b017-c52cdfe0d5a0.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: a dangerous adult sand-road ambush leader with cloth-wrapped face, full brown-and-copper desert robes and armor, curved sword and worn short cape, watchful poised stance. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "boss-7",
+      "full": "public/art/portraits/boss-7.webp",
+      "thumb": "public/art/portraits/boss-7-thumb.webp",
+      "sourceImage": "exec-02d649d9-f578-4d87-b3d0-30fccfef9a1c.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: a massive regenerating labyrinth guardian creature, three distinct reptilian heads, gray stone-scaled body, teal luminous runes, broad clawed quadrupedal stance, no gore. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "boss-8",
+      "full": "public/art/portraits/boss-8.webp",
+      "thumb": "public/art/portraits/boss-8-thumb.webp",
+      "sourceImage": "exec-09ac5cb3-f2f2-4138-b8fe-e7bff16aa70e.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: an adult female sword-sanctuary examiner with long dark hair, full cream training coat and white cape, long steel practice blade pointed down, dignified intense expression. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "boss-9",
+      "full": "public/art/portraits/boss-9.webp",
+      "thumb": "public/art/portraits/boss-9-thumb.webp",
+      "sourceImage": "exec-7a3d5299-59ff-4098-907b-6e8b485089a0.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: an adult evidence pursuer in full dark teal hooded armor and half mask, two short blades and a sealed scroll case, tense stealthy stance. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "boss-10",
+      "full": "public/art/portraits/boss-10.webp",
+      "thumb": "public/art/portraits/boss-10-thumb.webp",
+      "sourceImage": "exec-a981ebbf-5129-4844-8cfd-efa741df60a3.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: a sinister adult conspiracy executor mage in full deep purple-and-ivory long robe, bronze face mask and angular rune staff, controlled dramatic stance. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "boss-11",
+      "full": "public/art/portraits/boss-11.webp",
+      "thumb": "public/art/portraits/boss-11-thumb.webp",
+      "sourceImage": "exec-ade48640-8adc-4fdf-b28a-acd6c13c17db.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: an adult court assassination commander with black hair, full ornate charcoal and antique-gold cloak armor, elegant slim sword and concealed dagger, stern calculating face. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "boss-12",
+      "full": "public/art/portraits/boss-12.webp",
+      "thumb": "public/art/portraits/boss-12-thumb.webp",
+      "sourceImage": "exec-c4bea606-baa3-4067-9736-b3225f406138.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: an adult alliance drill commander in full ivory and bronze heavy armor, green cape, tall banner pole and longsword, resolute ceremonial stance. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "boss-13",
+      "full": "public/art/portraits/boss-13.webp",
+      "thumb": "public/art/portraits/boss-13-thumb.webp",
+      "sourceImage": "exec-b21d4c85-e6e9-42b3-880c-75462f5c79a1.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: an isolated floating final-battle ritual core: an elaborate geometric bronze crystal mechanism surrounded by concentric indigo rune rings, floating stone segments, green-blue luminous center, no background. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    },
+    {
+      "key": "boss-14",
+      "full": "public/art/portraits/boss-14.webp",
+      "thumb": "public/art/portraits/boss-14-thumb.webp",
+      "sourceImage": "exec-26718a15-5643-4e34-9e91-d0a6a5fa846a.png",
+      "prompt": "Create one production-ready original standing illustration for a Chinese fantasy card RPG. Subject: a young adult successor trial fighter with brown hair, full modest cream-and-moss padded training outfit, a wooden sword in one hand and travel notebook at belt, confident hopeful stance. Cohesive hand-drawn fantasy anime JRPG concept art: clean warm ink outlines, precise cel shading with subtle painted texture, muted moss green, parchment ivory and antique-gold accents, soft upper-left light, expressive clearly readable silhouette. Fully clothed age-appropriate modest design for humanoids; monsters show their natural anatomy. Entire subject head to feet visible with generous margin, centered portrait 2:3 composition, facing slightly left in three-quarter standing stance, equipment and hands well drawn. Actually transparent background, no opaque gradient or scenery, no frame, no text, no watermark. Original illustration, not copied screenshots. Only ONE subject, no sheet or multiple panels."
+    }
+  ]
+}

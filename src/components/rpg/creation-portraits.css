@@ -1,0 +1,10 @@
+.illustrated-actors { grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 12px; }
+.illustrated-actors .actor-card { min-height: 0; padding: 10px 8px 14px; gap: 10px; overflow: hidden; }
+.illustrated-actors .actor-card strong { font-size: 16px; }
+.illustrated-actors .creation-actor-art { width: 100%; height: 165px; background: radial-gradient(ellipse at 50% 80%, #b5a16a20, transparent 70%); }
+.illustrated-actors .selected-dot { top: 12px; right: 12px; }
+@media (max-width: 700px) {
+  .illustrated-actors { display: grid; grid-auto-flow: column; grid-auto-columns: 132px; grid-template-columns: none; overflow-x: auto; overscroll-behavior-inline: contain; scroll-snap-type: x proximity; padding: 2px 2px 12px; }
+  .illustrated-actors .actor-card { scroll-snap-align: start; min-height: 0; }
+  .illustrated-actors .creation-actor-art { height: 138px; }
+}
