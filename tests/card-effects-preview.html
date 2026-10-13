@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width,initial-scale=1.0" />
+    <title>命运之书 · 出牌特效验收沙盒</title>
+    <style>
+      .card-effects-preview .preview-notice { padding: 14px 18px; border: 1px solid var(--accent-gold); border-radius: 10px; color: var(--text-secondary); background: var(--surface-panel); font-size: 16px; }
+      .card-effects-preview .preview-notice strong { display: block; color: var(--accent-gold); margin-bottom: 4px; }
+      .card-effects-preview .preview-controls { display: grid; grid-template-columns: minmax(240px, 2fr) repeat(3, minmax(130px, 1fr)); gap: 14px; margin: 22px 0; }
+      .card-effects-preview .preview-controls label { display: flex; flex-direction: column; gap: 8px; color: var(--text-secondary); font-size: 16px; }
+      .card-effects-preview .preview-options { display: flex; flex-wrap: wrap; gap: 12px 24px; margin: 16px 0; }
+      .card-effects-preview .preview-options label { display: flex; align-items: center; min-height: 44px; gap: 9px; font-size: 16px; }
+      .card-effects-preview .preview-options input { width: 20px; height: 20px; }
+      .card-effects-preview .preview-buttons { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; margin-bottom: 20px; }
+      .card-effects-preview .preview-buttons .button.primary { min-width: 220px; }
+      .card-effects-preview .enemy-unit, .card-effects-preview .hero-portrait-wrap { position: relative; isolation: isolate; }
+      .card-effects-preview .preview-cast-panel { display: grid; grid-template-columns: 282px minmax(0, 1fr); gap: 24px; margin-top: 22px; padding: 20px; align-items: start; }
+      .card-effects-preview .preview-cast-panel .card-face { width: 100%; }
+      .card-effects-preview .preview-cast-info { min-width: 0; }
+      .card-effects-preview .preview-cast-info h2 { margin-bottom: 12px; }
+      .card-effects-preview .preview-cast-info p { font-size: 16px; color: var(--text-secondary); }
+      .card-effects-preview .preview-receipt { display: flex; flex-wrap: wrap; gap: 8px; margin: 14px 0; }
+      .card-effects-preview .preview-receipt span { border: 1px solid var(--border-subtle); border-radius: 6px; padding: 8px 10px; color: var(--accent-gold); font-size: 16px; }
+      .card-effects-preview .preview-cast-info summary { display: flex; align-items: center; gap: 12px; }
+      .card-effects-preview .preview-cast-info pre { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 13px; max-height: 360px; overflow-y: auto; padding: 14px; background: var(--surface-app); border-radius: 8px; }
+      .card-effects-preview .preview-hand { margin: 18px 0 0; }
+      .card-effects-preview .preview-hand .rpg-hand { padding-top: 16px; }
+      .card-effects-preview .preview-audit { margin-top: 20px; padding: 20px; }
+      .card-effects-preview .preview-audit p { margin: 12px 0 0; font-size: 16px; }
+      .card-effects-preview[data-reduced-motion="true"] *, .card-effects-preview[data-reduced-motion="true"] *::before, .card-effects-preview[data-reduced-motion="true"] *::after { animation: none !important; transition: none !important; }
+      .card-effects-preview[data-reduced-motion="true"] :is(.card-cast-announcement, .cast-feedback) { opacity: 1; transform: none; }
+      .card-effects-preview[data-reduced-motion="true"] .card-cast-circle { opacity: .22; }
+      .card-effects-preview[data-reduced-motion="true"] :is(.card-cast-wide-wave, .cast-ember, .cast-ambush-shadow) { display: none; }
+      .card-effects-preview[data-reduced-motion="true"] .unit-cast-event > .cast-school-sigil { width: 100%; filter: none; opacity: .6; }
+      .card-effects-preview[data-reduced-motion="true"] .cast-upgraded .cast-school-sigil { filter: none; }
+      .card-effects-preview[data-preview-frozen="true"] :is(.card-cast-stage, .unit-card-effects, .card-cast-message-slot) *, .card-effects-preview[data-preview-frozen="true"] :is(.card-cast-stage, .unit-card-effects, .card-cast-message-slot) *::before, .card-effects-preview[data-preview-frozen="true"] :is(.card-cast-stage, .unit-card-effects, .card-cast-message-slot) *::after { animation-play-state: paused !important; animation-delay: -300ms !important; }
+      @media (max-width: 767px) {
+        .card-effects-preview .preview-controls { grid-template-columns: minmax(0, 1fr); }
+        .card-effects-preview .preview-cast-panel { grid-template-columns: minmax(0, 1fr); padding: 16px; }
+        .card-effects-preview .preview-cast-panel .card-face { max-width: 320px; margin-inline: auto; }
+        .card-effects-preview .preview-buttons .button { flex: 1; min-width: 130px; }
+        .card-effects-preview .preview-buttons .button.primary { flex-basis: 100%; }
+      }
+    </style>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/tests/card-effects-preview.tsx"></script>
+  </body>
+</html>

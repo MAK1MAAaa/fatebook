@@ -4,6 +4,8 @@ import RpgProvider from '../src/components/rpg/RpgProvider';
 import { createCharacter } from '../src/game/characters';
 import { createRpg, resolveAction } from '../src/rpg/engine';
 import { CARD_BY_ID } from '../src/rpg/cards';
+import { cardFor } from '../src/rpg/rulesets';
+import { CARD_PLAY_DURATION_MS, MAX_CARD_PLAY_CUES } from '../src/rpg/card-play-effects';
 import { loadRpgEnvelope, listRpgSaves, persistRpg, STORAGE_KEY } from '../src/rpg/storage';
 import type { RpgStore } from '../src/rpg/context';
 import type { GameAction } from '../src/rpg/types';
@@ -152,6 +154,7 @@ beforeEach(() => {
 
 afterEach(() => {
   runtime.effects.forEach((effect) => effect.cleanup?.());
+  vi.useRealTimers();
   vi.unstubAllGlobals();
 });
 
@@ -165,6 +168,72 @@ function ready() {
   return state;
 }
 const saved = () => listRpgSaves(loadRpgEnvelope())[0].state!;
+
+describe('出牌特效只跟随成功保存', () => {
+  it('等待锁期间没有特效，成功后只出现一次且按时清理', async () => {
+    vi.useFakeTimers();
+    const state = ready(), uid = state.battle!.hand[0], release = delayNextLock();
+    const action = render().dispatch(state, { type: 'playCard', uid, target: 'enemy-0' });
+    expect(render().cardPlays).toEqual([]);
+    release(); expect(await action).toBe(true);
+    const cue = render().cardPlays![0];
+    expect(cue.cardId).toBe(state.collection.find(card => card.uid === uid)!.cardId);
+    expect(render().cardPlays).toHaveLength(1); expect(saved().battle!.played).toBe(1);
+    expect(JSON.parse(storage.getItem(STORAGE_KEY)!).saves[state.id].cardPlays).toBeUndefined();
+    vi.advanceTimersByTime(CARD_PLAY_DURATION_MS);
+    expect(render().cardPlays).toEqual([]); expect(saved().battle!.played).toBe(1);
+  });
+
+  it('写入失败不播放，重试成功再播放且不重新出牌', async () => {
+    vi.useFakeTimers();
+    const state = ready(), uid = state.battle!.hand[0]; storage.failWrites = true;
+    expect(await render().dispatch(state, { type: 'playCard', uid, target: 'enemy-0' })).toBe(false);
+    expect(render().cardPlays).toEqual([]); expect(saved().battle!.played).toBe(0);
+    storage.failWrites = false; await render().retry();
+    const cueId = render().cardPlays![0].id;
+    await render().retry();
+    expect(render().cardPlays!.map(cue => cue.id)).toEqual([cueId]);
+    expect(saved().battle!.played).toBe(1);
+  });
+
+  it('非法出牌与其他标签的更新不制造施放反馈', async () => {
+    const state = ready();
+    expect(await render().dispatch(state, { type: 'playCard', uid: 'not-in-hand', target: 'enemy-0' })).toBe(false);
+    expect(render().cardPlays).toEqual([]);
+    const action: GameAction = { type: 'playCard', uid: state.battle!.hand[0], target: 'enemy-0' };
+    persistRpg(resolveAction(state, action, state.revision), action, state.revision);
+    (listeners.get('storage') as EventListener)({ key: STORAGE_KEY } as StorageEvent);
+    expect(render().cardPlays).toEqual([]); expect(saved().battle!.played).toBe(1);
+  });
+
+  it('重新挂载不重播已存战斗日志，并清理未完成特效计时器', async () => {
+    vi.useFakeTimers();
+    const state = ready(); await render().dispatch(state, { type: 'playCard', uid: state.battle!.hand[0], target: 'enemy-0' });
+    expect(render().cardPlays).toHaveLength(1);
+    runtime.effects.forEach(effect => effect.cleanup?.());
+    expect(vi.getTimerCount()).toBe(0);
+    runtime.slots = []; runtime.effects.clear();
+    expect(render().cardPlays).toEqual([]); expect(saved().battle!.played).toBe(1);
+  });
+
+  it('减少动画偏好使用短反馈，快速连续出牌队列有上限', async () => {
+    vi.useFakeTimers();
+    Object.assign(window, { matchMedia: () => ({ matches: true }) });
+    let state = ready();
+    for (let count = 0; count < MAX_CARD_PLAY_CUES + 1; count++) {
+      let uid = state.battle!.hand.filter(uid => cardFor(state, state.collection.find(card => card.uid === uid)!.cardId).cost <= state.battle!.energy)
+        .sort((left, right) => Number(!!cardFor(state, state.collection.find(card => card.uid === left)!.cardId).effect.damage) - Number(!!cardFor(state, state.collection.find(card => card.uid === right)!.cardId).effect.damage))[0];
+      if (!uid) {
+        expect(await render().dispatch(state, { type: 'endTurn' })).toBe(true); state = saved();
+        uid = state.battle!.hand.find(uid => cardFor(state, state.collection.find(card => card.uid === uid)!.cardId).cost <= state.battle!.energy)!;
+      }
+      expect(await render().dispatch(state, { type: 'playCard', uid, target: 'enemy-0' })).toBe(true); state = saved();
+    }
+    expect(render().cardPlays).toHaveLength(MAX_CARD_PLAY_CUES);
+    expect(render().cardPlays!.every(cue => cue.durationMs === 240)).toBe(true);
+    vi.advanceTimersByTime(240); expect(render().cardPlays).toEqual([]);
+  });
+});
 
 describe('2.0异步写入与多标签冲突', () => {
   it('HTTP 浏览器没有 randomUUID 时，洛琪希开局可保存并在重新挂载后续玩', async () => {

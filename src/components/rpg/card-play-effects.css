@@ -1,0 +1,135 @@
+/* Local SVG effects sit over portraits and never intercept battle controls. */
+.battle-target-art { position: relative; display: block; width: 100%; flex: none; }
+.hero-portrait-wrap { position: relative; }
+.rpg-shell .enemy-unit.receiving-card-effect,
+.rpg-shell .enemy-unit.receiving-card-effect:disabled { opacity: 1; }
+.rpg-shell .enemy-unit.defeated.receiving-card-effect .rpg-portrait { opacity: .35; filter: grayscale(.8); }
+.battle-effect-result { display: flex; justify-content: center; align-items: center; gap: 10px; min-height: 64px; margin: 16px 0; padding: 16px; border: 1px solid var(--border-subtle); border-radius: var(--radius-panel); background: var(--surface-panel); color: var(--accent-gold); font-size: 16px; line-height: 1.6; }
+.battle-effect-result > svg { flex: none; }
+.card-cast-stage, .card-cast-announcements, .unit-card-effects { position: absolute; inset: 0; pointer-events: none; user-select: none; isolation: isolate; }
+.card-cast-stage { z-index: 6; overflow: hidden; }
+.card-cast-message-slot { position: relative; min-height: 56px; margin: 4px 0 8px; overflow: hidden; pointer-events: none; }
+.card-cast-announcements { z-index: 6; }
+.card-cast-message-slot .card-cast-announcement { top: 50%; min-height: 48px; padding-block: 3px; }
+.unit-card-effects { z-index: 8; overflow: visible; }
+.card-cast-stage *, .card-cast-announcements *, .unit-card-effects * { pointer-events: none; }
+.card-cast-event, .card-cast-announcement-event, .unit-cast-event { position: absolute; inset: 0; pointer-events: none; color: var(--cast-color); animation: cast-event-envelope var(--cast-duration, 1100ms) ease-out both; }
+.card-cast-circle { position: absolute; width: min(54%, 280px); height: auto; left: 50%; top: 45%; translate: -50% -50%; opacity: .35; stroke-width: 1.1; animation: cast-circle-open var(--cast-duration, 1100ms) ease-out both; }
+.card-cast-announcement { position: absolute; top: 48%; left: 50%; translate: -50% -50%; display: grid; align-content: center; gap: 2px; min-height: 51px; max-width: calc(100% - 32px); padding: 8px 52px 8px 18px; border: 1px solid color-mix(in srgb, var(--cast-color) 65%, transparent); border-radius: 10px; background: #101a16ef; color: #f1e9d6; box-shadow: 0 4px 18px #0005; animation: cast-announcement-reveal var(--cast-duration, 1100ms) ease-out both; }
+.card-cast-announcement > span { font-size: 11px; line-height: 1.4; letter-spacing: 1px; color: var(--cast-color); white-space: nowrap; }
+.card-cast-announcement > strong { font-family: var(--font-display); font-size: 20px; line-height: 1.4; overflow-wrap: anywhere; }
+.cast-school-sigil { color: var(--cast-color); overflow: visible; }
+.unit-cast-event > .cast-school-sigil { position: absolute; left: 50%; top: 50%; translate: -50% -50%; width: 100%; height: 100%; max-height: 180px; filter: drop-shadow(0 0 5px color-mix(in srgb, var(--cast-color) 40%, transparent)); animation: cast-sigil-reveal var(--cast-duration, 1100ms) ease-out both; }
+.cast-announcement-sigil { position: absolute; right: 9px; top: 50%; translate: 0 -50%; width: 34px; height: 34px; stroke-width: 3; opacity: .8; }
+.cast-core-fill { fill: color-mix(in srgb, currentColor 22%, transparent); }
+.card-cast-wide-wave { position: absolute; left: 50%; top: 40%; translate: -50% -50%; width: min(80%, 660px); height: 40%; border: 1px solid var(--cast-color); border-radius: 50%; opacity: .3; animation: cast-wide-wave var(--cast-duration, 1100ms) ease-out both; }
+.cast-wave-second { animation-delay: 60ms; border-style: dashed; }
+.cast-fire-orb { fill: #ed9f5d55; stroke: #ffd093; stroke-width: 2.5; transform-origin: 60px 66px; animation: cast-fire-projectile var(--cast-duration, 1100ms) ease-out both; }
+.cast-fire-trail { stroke: #e99b65; stroke-width: 3; stroke-dasharray: 70; animation: cast-water-flow var(--cast-duration, 1100ms) ease-out both; }
+.cast-fire-flame { transform-origin: 60px 99px; animation: cast-flame-rise var(--cast-duration, 1100ms) ease-out both; }
+.cast-fire-heart { fill: #f3bc6f66; stroke: #f3bc6f; animation: cast-flame-heart var(--cast-duration, 1100ms) ease-out both; }
+.cast-ember { fill: #efae70; stroke: none; animation: cast-ember-rise var(--cast-duration, 1100ms) ease-out both; }
+.cast-ember:nth-last-child(even) { animation-delay: 80ms; }
+.cast-water-ring { transform-origin: center; animation: cast-water-unfold var(--cast-duration, 1100ms) ease-out both; }
+.cast-water-ring-inner { animation-delay: 70ms; }
+.cast-water-wave { stroke-width: 3; stroke-dasharray: 170; animation: cast-water-flow var(--cast-duration, 1100ms) ease-out both; }
+.cast-ice { transform-origin: 60px 80px; animation: cast-ice-form var(--cast-duration, 1100ms) ease-out both; }
+.cast-earth-pillar { transform-origin: 60px 100px; stroke-width: 2.5; animation: cast-stone-rise var(--cast-duration, 1100ms) ease-out both; }
+.cast-earth-shard { transform-origin: 60px 100px; animation: cast-stone-split var(--cast-duration, 1100ms) ease-out both; }
+.cast-earth-crack { stroke-width: 3; stroke-dasharray: 90; animation: cast-line-write var(--cast-duration, 1100ms) ease-out both; }
+.cast-wind-line { transform-origin: 60px 60px; stroke-width: 2.5; stroke-dasharray: 80 10 10 10; animation: cast-wind-turn var(--cast-duration, 1100ms) ease-out both; }
+.cast-wind-line-inner { animation-direction: reverse; opacity: .65; }
+.cast-cut { stroke: #fff0d9; stroke-width: 2.3; fill: color-mix(in srgb, currentColor 55%, transparent); stroke-dasharray: 250; animation: cast-blade-strike var(--cast-duration, 1100ms) ease-out both; }
+.cast-cut-second { animation-delay: 70ms; stroke-width: 1.8; }
+.cast-cut-third { animation-delay: 120ms; stroke-width: 1.3; }
+.cast-counter-cut { stroke-width: 3; stroke-dasharray: 240; animation: cast-counter-sweep var(--cast-duration, 1100ms) ease-out both; }
+.cast-ambush-line { animation: cast-ambush-track var(--cast-duration, 1100ms) ease-out both; }
+.cast-ambush-shadow { fill: color-mix(in srgb, currentColor 10%, transparent); stroke-width: 1; opacity: .45; animation: cast-ambush-track var(--cast-duration, 1100ms) ease-out both; }
+.cast-heal-cross { transform-origin: 60px 60px; animation: cast-heal-bloom var(--cast-duration, 1100ms) ease-out both; }
+.cast-school-fire > .cast-school-sigil { color: #e69264; }
+.cast-school-water > .cast-school-sigil, .cast-school-waterSword > .cast-school-sigil { color: #9bcce2; }
+.cast-school-healing > .cast-school-sigil, .cast-actor-sylphie > .cast-school-sigil { color: #b5dca5; }
+.cast-actor-roxy > .cast-school-sigil { color: #b0d5ed; }
+.cast-actor-eris > .cast-school-sigil { color: #efaa83; }
+.cast-upgraded .card-cast-announcement { border-color: #e5c68e; box-shadow: 0 0 0 1px #e5c68e30, 0 4px 18px #0005; }
+.cast-upgraded .cast-school-sigil { stroke-width: 2.7; filter: drop-shadow(0 0 8px color-mix(in srgb, var(--cast-color) 65%, transparent)); }
+.cast-upgraded .card-cast-circle { stroke-width: 1.7; opacity: .55; }
+.cast-defeating > .cast-school-sigil { animation-name: cast-defeating-sigil; }
+.cast-mechanism-orbit { position: absolute; right: -5px; top: 6px; display: grid; grid-template-columns: repeat(2, 23px); gap: 5px; }
+.cast-mechanism-seal { display: grid; place-items: center; width: 23px; height: 23px; border: 1px solid currentColor; border-radius: 50%; background: #101a16d9; color: var(--mechanism-color, var(--cast-color)); animation: cast-seal-appear var(--cast-duration, 1100ms) ease-out both; }
+.cast-mechanism-seal > svg { width: 16px; height: 16px; }
+.mechanism-damage { --mechanism-color: #ffcaad; }
+.mechanism-absorbed, .mechanism-block { --mechanism-color: #acd4ed; }
+.mechanism-heal { --mechanism-color: #b7e3a1; }
+.mechanism-cleanse { --mechanism-color: #ecedbb; }
+.mechanism-draw { --mechanism-color: #e0c3ee; }
+.mechanism-energy { --mechanism-color: #f4d889; }
+.mechanism-burn { --mechanism-color: #f6ad72; }
+.mechanism-weak { --mechanism-color: #d8bcdd; }
+.mechanism-vulnerable { --mechanism-color: #ffc2b8; }
+.cast-hero-auras { position: absolute; inset: -9%; }
+.cast-hero-aura { position: absolute; inset: 0; color: var(--mechanism-color); border: 2px solid currentColor; border-radius: 40% 40% 50% 50%; background: radial-gradient(ellipse, transparent 45%, color-mix(in srgb, currentColor 12%, transparent) 70%, transparent 76%); animation: cast-aura-open var(--cast-duration, 1100ms) ease-out both; }
+.cast-hero-aura.mechanism-heal { inset: -7%; border-radius: 50%; border-style: dotted; }
+.cast-hero-aura.mechanism-cleanse { inset: -15%; border-radius: 50%; border-style: dashed; }
+.cast-feedback-list { position: absolute; left: 50%; top: 10%; translate: calc(-50% + var(--cast-order, 0) * 3px) calc(var(--cast-order, 0) * 4px); width: max-content; max-width: 220px; display: flex; flex-direction: column; align-items: center; gap: 4px; }
+.unit-effects-enemy .cast-feedback-list { max-width: calc(100% - 8px); }
+.cast-feedback { display: flex; align-items: center; gap: 4px; max-width: 100%; border: 1px solid color-mix(in srgb, var(--mechanism-color) 45%, transparent); padding: 3px 7px; border-radius: 5px; background: #101a16eb; color: var(--mechanism-color); box-shadow: 0 2px 6px #0005; text-align: center; font-size: 13px; line-height: 1.4; animation: cast-feedback-settle var(--cast-duration, 1100ms) ease-out both; animation-delay: calc(var(--feedback-index, 0) * 20ms); }
+.cast-feedback > svg { width: 15px; height: 15px; flex: none; }
+.cast-feedback > strong { font-weight: 600; overflow-wrap: anywhere; }
+.cast-feedback.cast-unchanged { color: #ddd8cb; border-style: dashed; font-size: 12px; }
+.cast-mechanism-seal.cast-unchanged { border-style: dashed; opacity: .75; }
+.unit-effects-hero .cast-feedback-list { top: 6px; left: 50%; translate: calc(-50% + var(--cast-order, 0) * 2px) calc(var(--cast-order, 0) * 4px); max-width: 110px; align-items: center; }
+.unit-effects-hero .cast-mechanism-orbit { left: -9px; right: auto; top: 4px; grid-template-columns: 23px; }
+@keyframes cast-event-envelope { 0% { opacity: 0; } 10%, 80% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes cast-circle-open { 0% { transform: scale(.65); opacity: 0; } 20% { transform: scale(1); opacity: .45; } 80% { transform: scale(1.08); opacity: .3; } 100% { transform: scale(1.16); opacity: 0; } }
+@keyframes cast-announcement-reveal { 0% { opacity: 0; transform: translateY(8px) scale(.96); } 13%, 62% { opacity: 1; transform: none; } 90%, 100% { opacity: 0; transform: translateY(-6px); } }
+@keyframes cast-sigil-reveal { 0% { opacity: 0; transform: scale(.55); } 15% { opacity: .95; transform: scale(1.05); } 35%, 65% { opacity: .85; transform: scale(1); } 100% { opacity: 0; transform: scale(1.15); } }
+@keyframes cast-wide-wave { 0% { opacity: 0; transform: scale(.4); } 15% { opacity: .3; } 60% { opacity: .12; } 100% { opacity: 0; transform: scale(1.2); } }
+@keyframes cast-fire-projectile { 0% { transform: translate(-20px, 8px) scale(.45); opacity: 0; } 18% { transform: none; opacity: 1; } 45% { transform: scale(1.14); opacity: .7; } 100% { transform: scale(1.3); opacity: 0; } }
+@keyframes cast-flame-rise { 0% { transform: scale(.55,.3); } 15% { transform: scale(1,1.07); } 40% { transform: scale(.96,1); } 70% { transform: scale(1.04,.98); } 100% { transform: scale(.96,1.1); } }
+@keyframes cast-flame-heart { 0% { opacity: 0; } 20%, 60% { opacity: .9; } 100% { opacity: 0; } }
+@keyframes cast-ember-rise { 0% { opacity: 0; transform: translateY(12px); } 25% { opacity: .9; } 100% { opacity: 0; transform: translateY(-16px); } }
+@keyframes cast-water-unfold { 0% { transform: scale(.45); opacity: .2; } 35% { transform: scale(1); opacity: .95; } 100% { transform: scale(1.14); opacity: 0; } }
+@keyframes cast-water-flow { 0% { stroke-dashoffset: 170; opacity: .2; } 30% { stroke-dashoffset: 0; opacity: 1; } 100% { stroke-dashoffset: -55; opacity: .1; } }
+@keyframes cast-ice-form { 0% { transform: scaleY(.3) translateY(12px); opacity: 0; } 22%, 65% { transform: none; opacity: .9; } 100% { transform: translateY(-5px); opacity: 0; } }
+@keyframes cast-stone-rise { 0% { transform: scaleY(.2) translateY(16px); } 20% { transform: scaleY(1.06); } 45%, 100% { transform: none; } }
+@keyframes cast-stone-split { 0% { transform: scale(.6) translateY(12px); opacity: 0; } 25%, 65% { transform: none; opacity: .85; } 100% { transform: translateY(-7px); opacity: 0; } }
+@keyframes cast-line-write { 0% { stroke-dashoffset: 90; } 35%, 100% { stroke-dashoffset: 0; } }
+@keyframes cast-wind-turn { 0% { transform: rotate(-55deg) scale(.6); stroke-dashoffset: 50; } 35% { transform: rotate(35deg) scale(1); } 100% { transform: rotate(160deg) scale(1.08); stroke-dashoffset: -100; } }
+@keyframes cast-blade-strike { 0%, 4% { stroke-dashoffset: 250; opacity: 0; transform: translate(-8px,8px); } 18%, 54% { stroke-dashoffset: 0; opacity: 1; transform: none; } 100% { stroke-dashoffset: -100; opacity: 0; transform: translate(5px,-5px); } }
+@keyframes cast-counter-sweep { 0% { stroke-dashoffset: 240; } 25%, 60% { stroke-dashoffset: 0; opacity: 1; } 100% { stroke-dashoffset: -65; opacity: 0; } }
+@keyframes cast-ambush-track { 0% { transform: translateX(-18px); opacity: 0; } 20%, 55% { transform: none; opacity: .65; } 100% { transform: translateX(12px); opacity: 0; } }
+@keyframes cast-heal-bloom { 0% { transform: scale(.4); opacity: .2; } 20%, 65% { transform: none; opacity: .8; } 100% { transform: scale(1.12); opacity: 0; } }
+@keyframes cast-defeating-sigil { 0% { opacity: 0; transform: scale(.55); } 15%, 45% { opacity: 1; transform: scale(1); } 100% { opacity: 0; transform: scale(1.2); } }
+@keyframes cast-aura-open { 0% { transform: scale(.8); opacity: 0; } 20%, 65% { transform: none; opacity: .7; } 100% { transform: scale(1.12); opacity: 0; } }
+@keyframes cast-seal-appear { 0%, 7% { transform: scale(.5); opacity: 0; } 20%, 75% { transform: none; opacity: .9; } 100% { opacity: 0; } }
+@keyframes cast-feedback-settle { 0% { opacity: 0; transform: translateY(5px); } 15%, 65% { opacity: 1; transform: none; } 100% { opacity: 0; transform: none; } }
+@keyframes cast-static-feedback { 0%, 99% { opacity: 1; } 100% { opacity: 0; } }
+@media (max-width: 767px) {
+  .card-cast-message-slot { min-height: 56px; margin-block: 2px 6px; }
+  .card-cast-announcement { min-height: 42px; padding: 6px 38px 6px 12px; }
+  .card-cast-announcement > strong { font-size: 16px; }
+  .card-cast-announcement > span { font-size: 10px; }
+  .cast-announcement-sigil { width: 26px; height: 26px; right: 6px; }
+  .unit-cast-event > .cast-school-sigil { width: 100%; max-height: 150px; }
+  .cast-feedback { font-size: 12px; padding: 2px 5px; gap: 3px; }
+  .cast-feedback > svg { width: 13px; height: 13px; }
+  .cast-feedback-list { max-width: 155px; gap: 3px; }
+  .cast-mechanism-orbit { right: -3px; grid-template-columns: repeat(2, 19px); gap: 3px; }
+  .cast-mechanism-seal { width: 19px; height: 19px; }
+  .cast-mechanism-seal > svg { width: 13px; height: 13px; }
+  .unit-effects-hero .cast-mechanism-orbit { left: -5px; grid-template-columns: 19px; }
+  .unit-effects-hero .cast-feedback-list { top: 0; max-width: min(90px, calc(100% + 12px)); }
+  .unit-effects-hero .cast-feedback { font-size: 11px; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .card-cast-stage *, .card-cast-announcements *, .unit-card-effects * { animation: none; }
+  .card-cast-event, .card-cast-announcement-event, .unit-cast-event { animation: cast-static-feedback 220ms steps(1, end) both; animation-duration: 220ms !important; }
+  .card-cast-announcement { opacity: 1; }
+  .card-cast-circle { opacity: .22; }
+  .card-cast-wide-wave { display: none; }
+  .unit-cast-event > .cast-school-sigil { animation: none; width: 100%; filter: none; opacity: .6; }
+  .cast-upgraded .cast-school-sigil { filter: none; }
+  .cast-feedback { opacity: 1; }
+  .cast-ember, .cast-ambush-shadow { display: none; }
+}
