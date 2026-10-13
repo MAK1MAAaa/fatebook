@@ -5,19 +5,26 @@ import { cardSources, cardUnlockReason, sortedCopies } from "../../rpg/catalog";
 import { cardEffect, effectText } from "../../rpg/combat";
 import { useRpg } from "../../rpg/context";
 import { canLearnCard } from "../../rpg/engine";
-import type { CardDefinition, RpgState } from "../../rpg/types";
+import { cardFor } from "../../rpg/rulesets";
+import type { CardDefinition, OwnedCard, RpgState } from "../../rpg/types";
 import CardTile from "./CardTile";
 import SavePauseNotice from "./SavePauseNotice";
 
 export default function CardDetail({ card, state, draft, onToggleCopy, onClose, readOnly = false }: { card: CardDefinition; state: RpgState; draft?: string[]; onToggleCopy?: (uid: string) => void; onClose: () => void; readOnly?: boolean }) {
+  card = cardFor(state, card.id);
   const { dispatch, saving, pending } = useRpg();
   const [variant, setVariant] = useState<"normal" | "upgraded">("normal");
   const [expandedSources, setExpandedSources] = useState(false);
+  const [removal, setRemoval] = useState<OwnedCard | null>(null);
   const busy = saving || !!pending, copies = sortedCopies(state.collection.filter(copy => copy.cardId === card.id)), price = 25 + state.chapter * 5;
   const selectedDeck = draft ?? state.deck;
-  const conciseSources = cardSources(card), fullSources = cardSources(card, true);
+  const conciseSources = cardSources(card, false, state), fullSources = cardSources(card, true, state);
   const hasMoreSources = conciseSources.some((source, index) => source !== fullSources[index]);
   const normal = { uid: "preview-normal", cardId: card.id, upgraded: false }, upgraded = { ...normal, uid: "preview-upgraded", upgraded: true };
+  async function confirmRemoval() {
+    if (busy || !removal) return;
+    if (await dispatch(state, { type: "removeCard", uid: removal.uid })) setRemoval(null);
+  }
   return <Dialog open onOpenChange={open => { if (!open && !busy) onClose(); }}><DialogContent className="card-detail-dialog"><DialogTitle>{card.name}</DialogTitle><DialogDescription className="card-detail-unlock">{cardUnlockReason(state, card)} · 拥有{copies.length}张 · 已编入{copies.filter(copy => selectedDeck.includes(copy.uid)).length}张</DialogDescription><SavePauseNotice />
     <div className="card-detail-content"><section className="card-detail-variants" aria-label="普通版和强化版对照"><nav className="card-detail-variant-tabs" aria-label="查看卡牌版本"><button aria-pressed={variant === "normal"} onClick={() => setVariant("normal")}>普通版</button><button aria-pressed={variant === "upgraded"} onClick={() => setVariant("upgraded")}>强化版</button></nav><div className={`card-detail-variant ${variant === "normal" ? "variant-active" : ""}`}><h3>普通版</h3><CardTile card={card} owned={normal} state={state} compact /></div><div className={`card-detail-variant ${variant === "upgraded" ? "variant-active" : ""}`}><h3>强化版</h3><CardTile card={card} owned={upgraded} state={state} compact /></div></section>
       <section className="card-detail-information"><p>{card.text}</p><p className="card-detail-effect-note">以上为当前角色、装备与同伴加成后的牌效。</p>
@@ -25,6 +32,7 @@ export default function CardDetail({ card, state, draft, onToggleCopy, onClose, 
         <details className="card-detail-fold"><summary>获取途径<ChevronDown size={16} /></summary><ul>{(expandedSources ? fullSources : conciseSources).map(source => <li key={source}>{source}</li>)}</ul>{hasMoreSources && <button className="card-source-expand" aria-expanded={expandedSources} onClick={() => setExpandedSources(current => !current)}>{expandedSources ? "收起完整来源" : "查看完整来源"}</button>}</details>
       </section>
     </div>
-    {copies.length > 0 && !readOnly && <section className="card-detail-copies"><h3>管理副本</h3>{copies.map((copy, index) => { const included = selectedDeck.includes(copy.uid), removable = !included && !state.deck.includes(copy.uid), capped = selectedDeck.length >= 25 || copies.filter(item => selectedDeck.includes(item.uid)).length >= 3; return <article key={copy.uid}><div><strong>{copy.upgraded ? "强化" : "普通"}副本 {index + 1}{included && <span>已编入</span>}</strong><p>{effectText(cardEffect(state, copy))}</p></div><div className="card-copy-actions">{onToggleCopy && <button disabled={busy || (!included && (capped || !canLearnCard(state, card)))} aria-pressed={included} onClick={() => onToggleCopy(copy.uid)}>{included ? <Check size={15} /> : <Plus size={15} />}{included ? "取下" : "编入"}</button>}<button disabled={busy || copy.upgraded || state.money < price} onClick={() => void dispatch(state, { type: "upgradeCard", uid: copy.uid })}><ArrowUp size={15} />{copy.upgraded ? "已强化" : `强化 ${price}`}</button><button disabled={busy || !removable} title={!removable ? "先从草稿及已保存牌组取下，再保存牌组" : "永久移除这张收藏卡牌"} aria-label={`永久移除${card.name}${copy.upgraded ? "强化" : "普通"}副本${index + 1}`} onClick={() => void dispatch(state, { type: "removeCard", uid: copy.uid })}><Trash2 size={15} />移除</button></div></article>; })}<p className="card-maintenance-note">移除收藏前，先将该副本取下并保存牌组。</p></section>}
+    {copies.length > 0 && !readOnly && <section className="card-detail-copies"><h3>管理副本</h3>{copies.map((copy, index) => { const included = selectedDeck.includes(copy.uid), removable = !included && !state.deck.includes(copy.uid), capped = selectedDeck.length >= 25 || copies.filter(item => selectedDeck.includes(item.uid)).length >= 3; return <article key={copy.uid}><div><strong>{copy.upgraded ? "强化" : "普通"}副本 {index + 1}{included && <span>已编入</span>}</strong><p>{effectText(cardEffect(state, copy))}</p></div><div className="card-copy-actions">{onToggleCopy && <button disabled={busy || (!included && (capped || !canLearnCard(state, card)))} aria-pressed={included} onClick={() => onToggleCopy(copy.uid)}>{included ? <Check size={15} /> : <Plus size={15} />}{included ? "取下" : "编入"}</button>}<button disabled={busy || copy.upgraded || state.money < price} onClick={() => void dispatch(state, { type: "upgradeCard", uid: copy.uid })}><ArrowUp size={15} />{copy.upgraded ? "已强化" : `强化 ${price}`}</button><button disabled={busy || !removable} title={!removable ? "先从草稿及已保存牌组取下，再保存牌组" : "永久移除这张收藏卡牌"} aria-label={`永久移除${card.name}${copy.upgraded ? "强化" : "普通"}副本${index + 1}`} onClick={() => setRemoval(copy)}><Trash2 size={15} />移除</button></div></article>; })}<p className="card-maintenance-note">移除收藏前，先将该副本取下并保存牌组。强化会立即保存，放弃组牌草稿不会撤销强化。</p></section>}
+    {removal && copies.some(copy => copy.uid === removal.uid) && <Dialog open onOpenChange={open => { if (!open && !busy) setRemoval(null); }}><DialogContent className="workshop-confirm-dialog"><DialogTitle>永久移除收藏副本？</DialogTitle><DialogDescription>将移除「{card.name}」{removal.upgraded ? "强化" : "普通"}副本 {copies.findIndex(copy => copy.uid === removal.uid) + 1}。此操作保存后不能撤销，不返还购买或强化旅费。</DialogDescription><SavePauseNotice /><p className="removal-copy-effect">{effectText(cardEffect(state, removal))}</p><div className="workshop-confirm-actions"><button className="button subtle" disabled={busy} onClick={() => setRemoval(null)}>保留副本</button><button className="button danger" disabled={busy || selectedDeck.includes(removal.uid) || state.deck.includes(removal.uid)} onClick={() => void confirmRemoval()}>确认永久移除</button></div></DialogContent></Dialog>}
   </DialogContent></Dialog>;
 }

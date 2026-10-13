@@ -1,12 +1,5 @@
 /* Keep paper and forest surfaces independent, including dialogs rendered in a portal. */
-:root {
-  --paper-ink: #3f3528;
-  --paper-secondary: #66543a;
-  --paper-accent: #684b24;
-  --paper-success: #365839;
-  --paper-danger: #843d2d;
-  --forest-secondary: #c3c9b7;
-}
+
 
 :is(.parchment, .rpg-workshop, .card-detail-dialog) {
   --ink: var(--paper-ink);

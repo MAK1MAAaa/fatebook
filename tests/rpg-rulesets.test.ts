@@ -123,9 +123,16 @@ describe('规则切换与存档格式事务', () => {
     expect(written.schemaVersion).toBe(SCHEMA_VERSION); expect(written.revision).toBe(9);
     expect(written.saves.bad).toEqual(other); expect(written.saves[keep.id]).toEqual(keep);
     expect(written.unlocked).toEqual(initial.unlocked); expect(written.metadata).toEqual(initial.metadata);
-    // The previously shipped schema-2 compatibility gate rejects schema-3.
-    const legacyClientCompatible = written.schemaVersion === 2 && written.contentVersion === CONTENT_VERSION;
-    expect(legacyClientCompatible).toBe(false);
+    // Replay the pre-2.1 persist gate against the freshly written container.
+    // Legacy clients always reload before checking compatibility or writing.
+    const legacyPersist = () => {
+      const oldEnvelope = JSON.parse(storage.getItem(STORAGE_KEY)!);
+      if (oldEnvelope.schemaVersion !== 2 || oldEnvelope.contentVersion !== CONTENT_VERSION) throw new Error('存档版本不兼容，禁止写入。');
+      storage.setItem(STORAGE_KEY, JSON.stringify({ ...oldEnvelope, saves: { ...oldEnvelope.saves, [legacy.id]: legacy } }));
+    };
+    const afterUpdate = storage.getItem(STORAGE_KEY);
+    expect(legacyPersist).toThrow('禁止写入');
+    expect(storage.getItem(STORAGE_KEY)).toBe(afterUpdate);
     expect(() => persistRpg(next, action, 0, storage)).toThrow('动作已结算');
   });
 

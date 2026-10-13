@@ -1,5 +1,5 @@
 import { ArrowUp, Flame, Heart, Layers, Mountain, Shield, Sparkles, Swords, Waves, Wind, Zap } from "lucide-react";
-import { CARD_BY_ID } from "../../rpg/cards";
+import { cardFor } from "../../rpg/rulesets";
 import { cardEffect, effectText } from "../../rpg/combat";
 import { cardSchoolLabel } from "../../rpg/catalog";
 import type { CardDefinition, CardEffect, OwnedCard, RpgState } from "../../rpg/types";
@@ -32,6 +32,7 @@ function EffectLines({ effect }: { effect: CardEffect }) {
 }
 
 export default function CardTile({ card, owned, state, selected, disabled, onClick, compact = false }: { card: CardDefinition; owned?: OwnedCard; state?: RpgState; selected?: boolean; disabled?: boolean; onClick?: () => void; compact?: boolean }) {
+  card = cardFor(state, card.id);
   const effect = state ? cardEffect(state, owned ?? { uid: "preview", cardId: card.id, upgraded: false }) : card.effect;
   const keywords = [card.retain && "保留", card.exhaust && "消耗", effect.all && "全体"].filter(Boolean);
   const content = <>
@@ -47,5 +48,5 @@ export default function CardTile({ card, owned, state, selected, disabled, onCli
 
 export function OwnedCardTile({ uid, state, ...props }: { uid: string; state: RpgState; selected?: boolean; disabled?: boolean; onClick?: () => void }) {
   const owned = state.collection.find(copy => copy.uid === uid);
-  return owned ? <CardTile card={CARD_BY_ID[owned.cardId]} owned={owned} state={state} {...props} /> : null;
+  return owned ? <CardTile card={cardFor(state, owned.cardId)} owned={owned} state={state} {...props} /> : null;
 }

@@ -8,14 +8,15 @@ import { characterPortraitKey } from "../rpg/portraits";
 
 export default function Home() {
   const { envelope } = useRpg();
-  const latest = listRpgSaves(envelope).filter(row => row.state?.status === "active").sort((a, b) => b.state!.updatedAt.localeCompare(a.state!.updatedAt))[0]?.state;
+  const latest = listRpgSaves(envelope).find(row => row.state?.status === "active")?.state;
+  const resumeStatus = latest?.scene === "reward" ? "等待领取战果" : latest?.battle?.result === "lost" ? "战败，可免费重试" : latest?.battle ? `第 ${latest.battle.turn} 回合` : "地区探索";
   return <main className="home-page page-shell">
     <section className="hero">
       <div className="hero-content">
         <span className="eyebrow">无职转生 · 原创 IF 人生</span>
         <h1>这一生，<br />由你<span>出牌。</span></h1>
         <p className="hero-description">组起牌组，迎战对手。<br />在剑与魔法之间，找到自己的归处。</p>
-        {latest && <div className="continue-summary"><span>上次的旅途</span><strong>{latest.character.name}</strong><p>第 {latest.chapter} 章 · {CHAPTER_INFO[latest.chapter - 1].title}{latest.battle ? ` · 第 ${latest.battle.turn} 回合` : ""}</p></div>}
+        {latest && <div className="continue-summary"><span>上次的旅途</span><strong>{latest.character.name}</strong><p>第 {latest.chapter} 章 · {CHAPTER_INFO[latest.chapter - 1].title} · {resumeStatus}</p></div>}
         <div className="hero-actions">
           {latest ? <><Link to={`/story/${latest.id}`} className="button primary">继续旅途<ArrowRight size={18} /></Link><Link to="/create" className="button subtle"><Feather size={17} />新的人生</Link></> : <><Link to="/create" className="button primary"><Feather size={18} />开启新的人生<ArrowRight size={18} /></Link><Link to="/world" className="button subtle"><BookOpen size={17} />世界手册</Link></>}
         </div>

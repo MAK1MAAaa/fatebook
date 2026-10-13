@@ -1,0 +1,2265 @@
+{
+  "formatVersion": 1,
+  "experiment": "fatebook-2.1-paired-v1",
+  "contentVersion": "2.0.0",
+  "policyVersion": "2026-10-12.v1",
+  "contract": {
+    "shared": [
+      "state creation",
+      "seed and draw order",
+      "legal actions",
+      "combat",
+      "progression",
+      "shops",
+      "rewards",
+      "termination"
+    ],
+    "replaced": [
+      "rendering",
+      "audio",
+      "wall-clock waits",
+      "human input"
+    ],
+    "pairing": "ID excludes policy, ruleset and scope",
+    "retry": "Stop at first defeat; identical-deck retries are deterministic",
+    "trace": "Optional scored candidates + state before/after + RNG"
+  },
+  "sourceHashes": {
+    "scripts/rpg-balance.ts": "7214861f32c165275023d33c5d0955543f69eddbb009bbf37625c77e7bc4138b",
+    "src/rpg/rulesets.ts": "72b748af4f134fff759372e0699ad608d2b66bed19d29a4d69076885498000fa",
+    "src/game/characters.ts": "c6cca032e6a288d2951eb9b2f556e10c199b5f00e42d0fded6f26c8b8efb0baa",
+    "src/rpg/content.ts": "38f13d2fe2ec535e05d61947d22e56501f4ab02d44917c06ddff459925dd95c8",
+    "src/content/index.ts": "547cdd4977fbdc9ceb7a673105604ee56234a11e3477d02dfc9ef7d4a17aefc7",
+    "src/rpg/cards.ts": "422fb37754d0c90e991110e62160351cc663e70c3fc786dcde866cc21fc8be07",
+    "src/rpg/engine.ts": "6fb24889d7b31e2d26c685c9f8c320a47c2cf5e7d047fd0022469b5f0821e2c9",
+    "src/rpg/combat.ts": "62be6b3cc94211291a30039d4f9543f6c860bc4f86cb09c18fbf7e91c89275c1",
+    "src/content/endings.ts": "e1dfc1e185f663af135a39fece83f44782c541bb7ef7af96fa865cc75ec4e6e5",
+    "src/game/types.ts": "e3c7bdb502f94801edf7ff6f4ca3649ef202593edcb4c391b495974dd541b55c",
+    "src/content/early.ts": "dfc0e3d270ac03680b463dd9305f3a3119b51819ae1be492f27e42384b74def1",
+    "src/content/late.ts": "83917989c9a656eba6eb10404156e0c1dc65e809007c756cc4da8c85de1ffbae",
+    "src/game/engine.ts": "697005cee7f244b328931575c54bac0c0f070ca720d41eed81d044f27dc9d55a",
+    "src/rpg/enemies.ts": "bb422b56594816d0664faa1926ffd60cb5e8ba477139a02976d1e6e425f3765c",
+    "src/game/flag-labels.ts": "602c0210cd7b4c46d8c681d41c96cc02ab80f93636019e588861abb3c5f267e0"
+  },
+  "configuration": {
+    "characters": {
+      "custom": {
+        "actor": "custom",
+        "name": "旅人",
+        "race": "human",
+        "origin": "village",
+        "birthYear": 407,
+        "stats": {
+          "vitality": 3,
+          "mana": 3,
+          "strength": 3,
+          "agility": 3,
+          "insight": 3,
+          "charisma": 3
+        },
+        "budget": 0,
+        "traits": [
+          "原创 IF 人物"
+        ]
+      },
+      "rudeus": {
+        "actor": "rudeus",
+        "name": "鲁迪乌斯·格雷拉特",
+        "race": "human",
+        "origin": "village",
+        "birthYear": 407,
+        "stats": {
+          "vitality": 2,
+          "mana": 8,
+          "strength": 2,
+          "agility": 3,
+          "insight": 5,
+          "charisma": 3
+        },
+        "budget": 0,
+        "traits": [
+          "异世界转生者",
+          "保罗与塞妮丝之子",
+          "拉普拉斯因子"
+        ]
+      },
+      "eris": {
+        "actor": "eris",
+        "name": "艾莉丝·伯雷亚斯·格雷拉特",
+        "race": "human",
+        "origin": "noble",
+        "birthYear": 405,
+        "stats": {
+          "vitality": 6,
+          "mana": 1,
+          "strength": 7,
+          "agility": 5,
+          "insight": 2,
+          "charisma": 2
+        },
+        "budget": 0,
+        "traits": [
+          "伯雷亚斯家族",
+          "剑术资质"
+        ]
+      },
+      "sylphie": {
+        "actor": "sylphie",
+        "name": "希露菲",
+        "race": "elf",
+        "origin": "village",
+        "birthYear": 407,
+        "stats": {
+          "vitality": 3,
+          "mana": 5,
+          "strength": 2,
+          "agility": 5,
+          "insight": 4,
+          "charisma": 4
+        },
+        "budget": 0,
+        "traits": [
+          "混血血统",
+          "拉普拉斯因子",
+          "绿发的童年"
+        ]
+      },
+      "roxy": {
+        "actor": "roxy",
+        "name": "洛琪希·米格路迪亚",
+        "race": "migurd",
+        "origin": "demon",
+        "birthYear": 373,
+        "stats": {
+          "vitality": 3,
+          "mana": 6,
+          "strength": 2,
+          "agility": 3,
+          "insight": 6,
+          "charisma": 3
+        },
+        "budget": 0,
+        "traits": [
+          "无法使用米格路德族念话",
+          "长寿魔族"
+        ]
+      },
+      "random-fixed": {
+        "actor": "custom",
+        "name": "莉亚",
+        "race": "beast",
+        "origin": "forest",
+        "birthYear": 407,
+        "stats": {
+          "vitality": 3,
+          "mana": 3,
+          "strength": 3,
+          "agility": 3,
+          "insight": 3,
+          "charisma": 3
+        },
+        "budget": 0,
+        "traits": [
+          "原创 IF 人物",
+          "兽族血统"
+        ],
+        "randomized": true
+      }
+    },
+    "styles": [
+      "balanced",
+      "attack",
+      "guard",
+      "magic"
+    ],
+    "campaignSeeds": [
+      "paired-01",
+      "paired-02",
+      "paired-03",
+      "paired-04"
+    ],
+    "earlySeeds": [
+      "paired-01",
+      "paired-02",
+      "paired-03",
+      "paired-04",
+      "paired-05",
+      "paired-06",
+      "paired-07",
+      "paired-08"
+    ],
+    "policies": [
+      "entry",
+      "heuristic"
+    ],
+    "rulesets": [
+      "2.0.0",
+      "2.1.0"
+    ],
+    "maximumTurn": 100,
+    "maximumActionsPerTurn": 80
+  },
+  "totalRuns": 8,
+  "groups": [
+    {
+      "scope": "chapter-one",
+      "policy": "entry",
+      "ruleset": "2.0.0",
+      "samples": 2,
+      "wins": 2,
+      "winRate": 1,
+      "wilson95": [
+        0.34237195288961925,
+        1
+      ],
+      "errors": 0,
+      "battleSamples": 16,
+      "meanTurns": 5.5,
+      "p50Turns": 5,
+      "p90Turns": 7,
+      "maxTurns": 9,
+      "meanDamageTaken": 12.1875,
+      "meanCardsPlayed": 13.125,
+      "meanMoney": 167,
+      "p10Money": 167,
+      "moneyMinimum": 1,
+      "totalSpending": {
+        "buyEquipment": 204,
+        "train": 48,
+        "buyCard": 0,
+        "upgradeCard": 120,
+        "event": 0
+      },
+      "rewardCards": 16,
+      "rewardsEnteredDeck": 4,
+      "rewardsPlayed": 0,
+      "chapters": [
+        {
+          "chapter": 1,
+          "attempts": 16,
+          "losses": 0,
+          "meanTurns": 5.5,
+          "p90Turns": 7,
+          "meanDamageTaken": 12.1875,
+          "maxDamageTaken": 30
+        },
+        {
+          "chapter": 2,
+          "attempts": 0,
+          "losses": 0,
+          "meanTurns": 0,
+          "p90Turns": 0,
+          "meanDamageTaken": 0,
+          "maxDamageTaken": 0
+        },
+        {
+          "chapter": 3,
+          "attempts": 0,
+          "losses": 0,
+          "meanTurns": 0,
+          "p90Turns": 0,
+          "meanDamageTaken": 0,
+          "maxDamageTaken": 0
+        },
+        {
+          "chapter": 4,
+          "attempts": 0,
+          "losses": 0,
+          "meanTurns": 0,
+          "p90Turns": 0,
+          "meanDamageTaken": 0,
+          "maxDamageTaken": 0
+        },
+        {
+          "chapter": 5,
+          "attempts": 0,
+          "losses": 0,
+          "meanTurns": 0,
+          "p90Turns": 0,
+          "meanDamageTaken": 0,
+          "maxDamageTaken": 0
+        },
+        {
+          "chapter": 6,
+          "attempts": 0,
+          "losses": 0,
+          "meanTurns": 0,
+          "p90Turns": 0,
+          "meanDamageTaken": 0,
+          "maxDamageTaken": 0
+        },
+        {
+          "chapter": 7,
+          "attempts": 0,
+          "losses": 0,
+          "meanTurns": 0,
+          "p90Turns": 0,
+          "meanDamageTaken": 0,
+          "maxDamageTaken": 0
+        }
+      ],
+      "failures": [],
+      "styles": [
+        {
+          "style": "balanced",
+          "samples": 2,
+          "wins": 2,
+          "winRate": 1,
+          "wilson95": [
+            0.34237195288961925,
+            1
+          ],
+          "errors": 0,
+          "battleSamples": 16,
+          "meanTurns": 5.5,
+          "p50Turns": 5,
+          "p90Turns": 7,
+          "maxTurns": 9,
+          "meanDamageTaken": 12.1875,
+          "meanCardsPlayed": 13.125,
+          "meanMoney": 167,
+          "p10Money": 167,
+          "moneyMinimum": 1,
+          "totalSpending": {
+            "buyEquipment": 204,
+            "train": 48,
+            "buyCard": 0,
+            "upgradeCard": 120,
+            "event": 0
+          },
+          "rewardCards": 16,
+          "rewardsEnteredDeck": 4,
+          "rewardsPlayed": 0,
+          "chapters": [
+            {
+              "chapter": 1,
+              "attempts": 16,
+              "losses": 0,
+              "meanTurns": 5.5,
+              "p90Turns": 7,
+              "meanDamageTaken": 12.1875,
+              "maxDamageTaken": 30
+            },
+            {
+              "chapter": 2,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 3,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 4,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 5,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 6,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 7,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            }
+          ],
+          "failures": []
+        },
+        {
+          "style": "attack",
+          "samples": 0,
+          "wins": 0,
+          "winRate": 0,
+          "wilson95": [
+            0,
+            0
+          ],
+          "errors": 0,
+          "battleSamples": 0,
+          "meanTurns": 0,
+          "p50Turns": 0,
+          "p90Turns": 0,
+          "maxTurns": 0,
+          "meanDamageTaken": 0,
+          "meanCardsPlayed": 0,
+          "meanMoney": 0,
+          "p10Money": 0,
+          "moneyMinimum": 0,
+          "totalSpending": {
+            "buyEquipment": 0,
+            "train": 0,
+            "buyCard": 0,
+            "upgradeCard": 0,
+            "event": 0
+          },
+          "rewardCards": 0,
+          "rewardsEnteredDeck": 0,
+          "rewardsPlayed": 0,
+          "chapters": [
+            {
+              "chapter": 1,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 2,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 3,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 4,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 5,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 6,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 7,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            }
+          ],
+          "failures": []
+        },
+        {
+          "style": "guard",
+          "samples": 0,
+          "wins": 0,
+          "winRate": 0,
+          "wilson95": [
+            0,
+            0
+          ],
+          "errors": 0,
+          "battleSamples": 0,
+          "meanTurns": 0,
+          "p50Turns": 0,
+          "p90Turns": 0,
+          "maxTurns": 0,
+          "meanDamageTaken": 0,
+          "meanCardsPlayed": 0,
+          "meanMoney": 0,
+          "p10Money": 0,
+          "moneyMinimum": 0,
+          "totalSpending": {
+            "buyEquipment": 0,
+            "train": 0,
+            "buyCard": 0,
+            "upgradeCard": 0,
+            "event": 0
+          },
+          "rewardCards": 0,
+          "rewardsEnteredDeck": 0,
+          "rewardsPlayed": 0,
+          "chapters": [
+            {
+              "chapter": 1,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 2,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 3,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 4,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 5,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 6,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 7,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            }
+          ],
+          "failures": []
+        },
+        {
+          "style": "magic",
+          "samples": 0,
+          "wins": 0,
+          "winRate": 0,
+          "wilson95": [
+            0,
+            0
+          ],
+          "errors": 0,
+          "battleSamples": 0,
+          "meanTurns": 0,
+          "p50Turns": 0,
+          "p90Turns": 0,
+          "maxTurns": 0,
+          "meanDamageTaken": 0,
+          "meanCardsPlayed": 0,
+          "meanMoney": 0,
+          "p10Money": 0,
+          "moneyMinimum": 0,
+          "totalSpending": {
+            "buyEquipment": 0,
+            "train": 0,
+            "buyCard": 0,
+            "upgradeCard": 0,
+            "event": 0
+          },
+          "rewardCards": 0,
+          "rewardsEnteredDeck": 0,
+          "rewardsPlayed": 0,
+          "chapters": [
+            {
+              "chapter": 1,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 2,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 3,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 4,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 5,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 6,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 7,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            }
+          ],
+          "failures": []
+        }
+      ]
+    },
+    {
+      "scope": "chapter-one",
+      "policy": "entry",
+      "ruleset": "2.1.0",
+      "samples": 2,
+      "wins": 2,
+      "winRate": 1,
+      "wilson95": [
+        0.34237195288961925,
+        1
+      ],
+      "errors": 0,
+      "battleSamples": 16,
+      "meanTurns": 4.625,
+      "p50Turns": 5,
+      "p90Turns": 6,
+      "maxTurns": 6,
+      "meanDamageTaken": 18.4375,
+      "meanCardsPlayed": 10.6875,
+      "meanMoney": 167,
+      "p10Money": 167,
+      "moneyMinimum": 1,
+      "totalSpending": {
+        "buyEquipment": 204,
+        "train": 48,
+        "buyCard": 0,
+        "upgradeCard": 120,
+        "event": 0
+      },
+      "rewardCards": 16,
+      "rewardsEnteredDeck": 10,
+      "rewardsPlayed": 10,
+      "chapters": [
+        {
+          "chapter": 1,
+          "attempts": 16,
+          "losses": 0,
+          "meanTurns": 4.625,
+          "p90Turns": 6,
+          "meanDamageTaken": 18.4375,
+          "maxDamageTaken": 42
+        },
+        {
+          "chapter": 2,
+          "attempts": 0,
+          "losses": 0,
+          "meanTurns": 0,
+          "p90Turns": 0,
+          "meanDamageTaken": 0,
+          "maxDamageTaken": 0
+        },
+        {
+          "chapter": 3,
+          "attempts": 0,
+          "losses": 0,
+          "meanTurns": 0,
+          "p90Turns": 0,
+          "meanDamageTaken": 0,
+          "maxDamageTaken": 0
+        },
+        {
+          "chapter": 4,
+          "attempts": 0,
+          "losses": 0,
+          "meanTurns": 0,
+          "p90Turns": 0,
+          "meanDamageTaken": 0,
+          "maxDamageTaken": 0
+        },
+        {
+          "chapter": 5,
+          "attempts": 0,
+          "losses": 0,
+          "meanTurns": 0,
+          "p90Turns": 0,
+          "meanDamageTaken": 0,
+          "maxDamageTaken": 0
+        },
+        {
+          "chapter": 6,
+          "attempts": 0,
+          "losses": 0,
+          "meanTurns": 0,
+          "p90Turns": 0,
+          "meanDamageTaken": 0,
+          "maxDamageTaken": 0
+        },
+        {
+          "chapter": 7,
+          "attempts": 0,
+          "losses": 0,
+          "meanTurns": 0,
+          "p90Turns": 0,
+          "meanDamageTaken": 0,
+          "maxDamageTaken": 0
+        }
+      ],
+      "failures": [],
+      "styles": [
+        {
+          "style": "balanced",
+          "samples": 2,
+          "wins": 2,
+          "winRate": 1,
+          "wilson95": [
+            0.34237195288961925,
+            1
+          ],
+          "errors": 0,
+          "battleSamples": 16,
+          "meanTurns": 4.625,
+          "p50Turns": 5,
+          "p90Turns": 6,
+          "maxTurns": 6,
+          "meanDamageTaken": 18.4375,
+          "meanCardsPlayed": 10.6875,
+          "meanMoney": 167,
+          "p10Money": 167,
+          "moneyMinimum": 1,
+          "totalSpending": {
+            "buyEquipment": 204,
+            "train": 48,
+            "buyCard": 0,
+            "upgradeCard": 120,
+            "event": 0
+          },
+          "rewardCards": 16,
+          "rewardsEnteredDeck": 10,
+          "rewardsPlayed": 10,
+          "chapters": [
+            {
+              "chapter": 1,
+              "attempts": 16,
+              "losses": 0,
+              "meanTurns": 4.625,
+              "p90Turns": 6,
+              "meanDamageTaken": 18.4375,
+              "maxDamageTaken": 42
+            },
+            {
+              "chapter": 2,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 3,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 4,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 5,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 6,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 7,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            }
+          ],
+          "failures": []
+        },
+        {
+          "style": "attack",
+          "samples": 0,
+          "wins": 0,
+          "winRate": 0,
+          "wilson95": [
+            0,
+            0
+          ],
+          "errors": 0,
+          "battleSamples": 0,
+          "meanTurns": 0,
+          "p50Turns": 0,
+          "p90Turns": 0,
+          "maxTurns": 0,
+          "meanDamageTaken": 0,
+          "meanCardsPlayed": 0,
+          "meanMoney": 0,
+          "p10Money": 0,
+          "moneyMinimum": 0,
+          "totalSpending": {
+            "buyEquipment": 0,
+            "train": 0,
+            "buyCard": 0,
+            "upgradeCard": 0,
+            "event": 0
+          },
+          "rewardCards": 0,
+          "rewardsEnteredDeck": 0,
+          "rewardsPlayed": 0,
+          "chapters": [
+            {
+              "chapter": 1,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 2,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 3,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 4,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 5,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 6,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 7,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            }
+          ],
+          "failures": []
+        },
+        {
+          "style": "guard",
+          "samples": 0,
+          "wins": 0,
+          "winRate": 0,
+          "wilson95": [
+            0,
+            0
+          ],
+          "errors": 0,
+          "battleSamples": 0,
+          "meanTurns": 0,
+          "p50Turns": 0,
+          "p90Turns": 0,
+          "maxTurns": 0,
+          "meanDamageTaken": 0,
+          "meanCardsPlayed": 0,
+          "meanMoney": 0,
+          "p10Money": 0,
+          "moneyMinimum": 0,
+          "totalSpending": {
+            "buyEquipment": 0,
+            "train": 0,
+            "buyCard": 0,
+            "upgradeCard": 0,
+            "event": 0
+          },
+          "rewardCards": 0,
+          "rewardsEnteredDeck": 0,
+          "rewardsPlayed": 0,
+          "chapters": [
+            {
+              "chapter": 1,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 2,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 3,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 4,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 5,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 6,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 7,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            }
+          ],
+          "failures": []
+        },
+        {
+          "style": "magic",
+          "samples": 0,
+          "wins": 0,
+          "winRate": 0,
+          "wilson95": [
+            0,
+            0
+          ],
+          "errors": 0,
+          "battleSamples": 0,
+          "meanTurns": 0,
+          "p50Turns": 0,
+          "p90Turns": 0,
+          "maxTurns": 0,
+          "meanDamageTaken": 0,
+          "meanCardsPlayed": 0,
+          "meanMoney": 0,
+          "p10Money": 0,
+          "moneyMinimum": 0,
+          "totalSpending": {
+            "buyEquipment": 0,
+            "train": 0,
+            "buyCard": 0,
+            "upgradeCard": 0,
+            "event": 0
+          },
+          "rewardCards": 0,
+          "rewardsEnteredDeck": 0,
+          "rewardsPlayed": 0,
+          "chapters": [
+            {
+              "chapter": 1,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 2,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 3,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 4,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 5,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 6,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 7,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            }
+          ],
+          "failures": []
+        }
+      ]
+    },
+    {
+      "scope": "chapter-one",
+      "policy": "heuristic",
+      "ruleset": "2.0.0",
+      "samples": 2,
+      "wins": 2,
+      "winRate": 1,
+      "wilson95": [
+        0.34237195288961925,
+        1
+      ],
+      "errors": 0,
+      "battleSamples": 16,
+      "meanTurns": 5.1875,
+      "p50Turns": 5,
+      "p90Turns": 6,
+      "maxTurns": 8,
+      "meanDamageTaken": 6.8125,
+      "meanCardsPlayed": 13,
+      "meanMoney": 115,
+      "p10Money": 115,
+      "moneyMinimum": 1,
+      "totalSpending": {
+        "buyEquipment": 204,
+        "train": 72,
+        "buyCard": 200,
+        "upgradeCard": 0,
+        "event": 0
+      },
+      "rewardCards": 16,
+      "rewardsEnteredDeck": 8,
+      "rewardsPlayed": 5,
+      "chapters": [
+        {
+          "chapter": 1,
+          "attempts": 16,
+          "losses": 0,
+          "meanTurns": 5.1875,
+          "p90Turns": 6,
+          "meanDamageTaken": 6.8125,
+          "maxDamageTaken": 39
+        },
+        {
+          "chapter": 2,
+          "attempts": 0,
+          "losses": 0,
+          "meanTurns": 0,
+          "p90Turns": 0,
+          "meanDamageTaken": 0,
+          "maxDamageTaken": 0
+        },
+        {
+          "chapter": 3,
+          "attempts": 0,
+          "losses": 0,
+          "meanTurns": 0,
+          "p90Turns": 0,
+          "meanDamageTaken": 0,
+          "maxDamageTaken": 0
+        },
+        {
+          "chapter": 4,
+          "attempts": 0,
+          "losses": 0,
+          "meanTurns": 0,
+          "p90Turns": 0,
+          "meanDamageTaken": 0,
+          "maxDamageTaken": 0
+        },
+        {
+          "chapter": 5,
+          "attempts": 0,
+          "losses": 0,
+          "meanTurns": 0,
+          "p90Turns": 0,
+          "meanDamageTaken": 0,
+          "maxDamageTaken": 0
+        },
+        {
+          "chapter": 6,
+          "attempts": 0,
+          "losses": 0,
+          "meanTurns": 0,
+          "p90Turns": 0,
+          "meanDamageTaken": 0,
+          "maxDamageTaken": 0
+        },
+        {
+          "chapter": 7,
+          "attempts": 0,
+          "losses": 0,
+          "meanTurns": 0,
+          "p90Turns": 0,
+          "meanDamageTaken": 0,
+          "maxDamageTaken": 0
+        }
+      ],
+      "failures": [],
+      "styles": [
+        {
+          "style": "balanced",
+          "samples": 2,
+          "wins": 2,
+          "winRate": 1,
+          "wilson95": [
+            0.34237195288961925,
+            1
+          ],
+          "errors": 0,
+          "battleSamples": 16,
+          "meanTurns": 5.1875,
+          "p50Turns": 5,
+          "p90Turns": 6,
+          "maxTurns": 8,
+          "meanDamageTaken": 6.8125,
+          "meanCardsPlayed": 13,
+          "meanMoney": 115,
+          "p10Money": 115,
+          "moneyMinimum": 1,
+          "totalSpending": {
+            "buyEquipment": 204,
+            "train": 72,
+            "buyCard": 200,
+            "upgradeCard": 0,
+            "event": 0
+          },
+          "rewardCards": 16,
+          "rewardsEnteredDeck": 8,
+          "rewardsPlayed": 5,
+          "chapters": [
+            {
+              "chapter": 1,
+              "attempts": 16,
+              "losses": 0,
+              "meanTurns": 5.1875,
+              "p90Turns": 6,
+              "meanDamageTaken": 6.8125,
+              "maxDamageTaken": 39
+            },
+            {
+              "chapter": 2,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 3,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 4,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 5,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 6,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 7,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            }
+          ],
+          "failures": []
+        },
+        {
+          "style": "attack",
+          "samples": 0,
+          "wins": 0,
+          "winRate": 0,
+          "wilson95": [
+            0,
+            0
+          ],
+          "errors": 0,
+          "battleSamples": 0,
+          "meanTurns": 0,
+          "p50Turns": 0,
+          "p90Turns": 0,
+          "maxTurns": 0,
+          "meanDamageTaken": 0,
+          "meanCardsPlayed": 0,
+          "meanMoney": 0,
+          "p10Money": 0,
+          "moneyMinimum": 0,
+          "totalSpending": {
+            "buyEquipment": 0,
+            "train": 0,
+            "buyCard": 0,
+            "upgradeCard": 0,
+            "event": 0
+          },
+          "rewardCards": 0,
+          "rewardsEnteredDeck": 0,
+          "rewardsPlayed": 0,
+          "chapters": [
+            {
+              "chapter": 1,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 2,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 3,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 4,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 5,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 6,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 7,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            }
+          ],
+          "failures": []
+        },
+        {
+          "style": "guard",
+          "samples": 0,
+          "wins": 0,
+          "winRate": 0,
+          "wilson95": [
+            0,
+            0
+          ],
+          "errors": 0,
+          "battleSamples": 0,
+          "meanTurns": 0,
+          "p50Turns": 0,
+          "p90Turns": 0,
+          "maxTurns": 0,
+          "meanDamageTaken": 0,
+          "meanCardsPlayed": 0,
+          "meanMoney": 0,
+          "p10Money": 0,
+          "moneyMinimum": 0,
+          "totalSpending": {
+            "buyEquipment": 0,
+            "train": 0,
+            "buyCard": 0,
+            "upgradeCard": 0,
+            "event": 0
+          },
+          "rewardCards": 0,
+          "rewardsEnteredDeck": 0,
+          "rewardsPlayed": 0,
+          "chapters": [
+            {
+              "chapter": 1,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 2,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 3,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 4,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 5,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 6,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 7,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            }
+          ],
+          "failures": []
+        },
+        {
+          "style": "magic",
+          "samples": 0,
+          "wins": 0,
+          "winRate": 0,
+          "wilson95": [
+            0,
+            0
+          ],
+          "errors": 0,
+          "battleSamples": 0,
+          "meanTurns": 0,
+          "p50Turns": 0,
+          "p90Turns": 0,
+          "maxTurns": 0,
+          "meanDamageTaken": 0,
+          "meanCardsPlayed": 0,
+          "meanMoney": 0,
+          "p10Money": 0,
+          "moneyMinimum": 0,
+          "totalSpending": {
+            "buyEquipment": 0,
+            "train": 0,
+            "buyCard": 0,
+            "upgradeCard": 0,
+            "event": 0
+          },
+          "rewardCards": 0,
+          "rewardsEnteredDeck": 0,
+          "rewardsPlayed": 0,
+          "chapters": [
+            {
+              "chapter": 1,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 2,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 3,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 4,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 5,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 6,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 7,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            }
+          ],
+          "failures": []
+        }
+      ]
+    },
+    {
+      "scope": "chapter-one",
+      "policy": "heuristic",
+      "ruleset": "2.1.0",
+      "samples": 2,
+      "wins": 2,
+      "winRate": 1,
+      "wilson95": [
+        0.34237195288961925,
+        1
+      ],
+      "errors": 0,
+      "battleSamples": 16,
+      "meanTurns": 4.6875,
+      "p50Turns": 4,
+      "p90Turns": 6,
+      "maxTurns": 7,
+      "meanDamageTaken": 8.625,
+      "meanCardsPlayed": 11.9375,
+      "meanMoney": 115,
+      "p10Money": 115,
+      "moneyMinimum": 1,
+      "totalSpending": {
+        "buyEquipment": 204,
+        "train": 72,
+        "buyCard": 200,
+        "upgradeCard": 0,
+        "event": 0
+      },
+      "rewardCards": 16,
+      "rewardsEnteredDeck": 8,
+      "rewardsPlayed": 8,
+      "chapters": [
+        {
+          "chapter": 1,
+          "attempts": 16,
+          "losses": 0,
+          "meanTurns": 4.6875,
+          "p90Turns": 6,
+          "meanDamageTaken": 8.625,
+          "maxDamageTaken": 33
+        },
+        {
+          "chapter": 2,
+          "attempts": 0,
+          "losses": 0,
+          "meanTurns": 0,
+          "p90Turns": 0,
+          "meanDamageTaken": 0,
+          "maxDamageTaken": 0
+        },
+        {
+          "chapter": 3,
+          "attempts": 0,
+          "losses": 0,
+          "meanTurns": 0,
+          "p90Turns": 0,
+          "meanDamageTaken": 0,
+          "maxDamageTaken": 0
+        },
+        {
+          "chapter": 4,
+          "attempts": 0,
+          "losses": 0,
+          "meanTurns": 0,
+          "p90Turns": 0,
+          "meanDamageTaken": 0,
+          "maxDamageTaken": 0
+        },
+        {
+          "chapter": 5,
+          "attempts": 0,
+          "losses": 0,
+          "meanTurns": 0,
+          "p90Turns": 0,
+          "meanDamageTaken": 0,
+          "maxDamageTaken": 0
+        },
+        {
+          "chapter": 6,
+          "attempts": 0,
+          "losses": 0,
+          "meanTurns": 0,
+          "p90Turns": 0,
+          "meanDamageTaken": 0,
+          "maxDamageTaken": 0
+        },
+        {
+          "chapter": 7,
+          "attempts": 0,
+          "losses": 0,
+          "meanTurns": 0,
+          "p90Turns": 0,
+          "meanDamageTaken": 0,
+          "maxDamageTaken": 0
+        }
+      ],
+      "failures": [],
+      "styles": [
+        {
+          "style": "balanced",
+          "samples": 2,
+          "wins": 2,
+          "winRate": 1,
+          "wilson95": [
+            0.34237195288961925,
+            1
+          ],
+          "errors": 0,
+          "battleSamples": 16,
+          "meanTurns": 4.6875,
+          "p50Turns": 4,
+          "p90Turns": 6,
+          "maxTurns": 7,
+          "meanDamageTaken": 8.625,
+          "meanCardsPlayed": 11.9375,
+          "meanMoney": 115,
+          "p10Money": 115,
+          "moneyMinimum": 1,
+          "totalSpending": {
+            "buyEquipment": 204,
+            "train": 72,
+            "buyCard": 200,
+            "upgradeCard": 0,
+            "event": 0
+          },
+          "rewardCards": 16,
+          "rewardsEnteredDeck": 8,
+          "rewardsPlayed": 8,
+          "chapters": [
+            {
+              "chapter": 1,
+              "attempts": 16,
+              "losses": 0,
+              "meanTurns": 4.6875,
+              "p90Turns": 6,
+              "meanDamageTaken": 8.625,
+              "maxDamageTaken": 33
+            },
+            {
+              "chapter": 2,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 3,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 4,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 5,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 6,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 7,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            }
+          ],
+          "failures": []
+        },
+        {
+          "style": "attack",
+          "samples": 0,
+          "wins": 0,
+          "winRate": 0,
+          "wilson95": [
+            0,
+            0
+          ],
+          "errors": 0,
+          "battleSamples": 0,
+          "meanTurns": 0,
+          "p50Turns": 0,
+          "p90Turns": 0,
+          "maxTurns": 0,
+          "meanDamageTaken": 0,
+          "meanCardsPlayed": 0,
+          "meanMoney": 0,
+          "p10Money": 0,
+          "moneyMinimum": 0,
+          "totalSpending": {
+            "buyEquipment": 0,
+            "train": 0,
+            "buyCard": 0,
+            "upgradeCard": 0,
+            "event": 0
+          },
+          "rewardCards": 0,
+          "rewardsEnteredDeck": 0,
+          "rewardsPlayed": 0,
+          "chapters": [
+            {
+              "chapter": 1,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 2,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 3,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 4,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 5,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 6,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 7,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            }
+          ],
+          "failures": []
+        },
+        {
+          "style": "guard",
+          "samples": 0,
+          "wins": 0,
+          "winRate": 0,
+          "wilson95": [
+            0,
+            0
+          ],
+          "errors": 0,
+          "battleSamples": 0,
+          "meanTurns": 0,
+          "p50Turns": 0,
+          "p90Turns": 0,
+          "maxTurns": 0,
+          "meanDamageTaken": 0,
+          "meanCardsPlayed": 0,
+          "meanMoney": 0,
+          "p10Money": 0,
+          "moneyMinimum": 0,
+          "totalSpending": {
+            "buyEquipment": 0,
+            "train": 0,
+            "buyCard": 0,
+            "upgradeCard": 0,
+            "event": 0
+          },
+          "rewardCards": 0,
+          "rewardsEnteredDeck": 0,
+          "rewardsPlayed": 0,
+          "chapters": [
+            {
+              "chapter": 1,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 2,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 3,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 4,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 5,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 6,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 7,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            }
+          ],
+          "failures": []
+        },
+        {
+          "style": "magic",
+          "samples": 0,
+          "wins": 0,
+          "winRate": 0,
+          "wilson95": [
+            0,
+            0
+          ],
+          "errors": 0,
+          "battleSamples": 0,
+          "meanTurns": 0,
+          "p50Turns": 0,
+          "p90Turns": 0,
+          "maxTurns": 0,
+          "meanDamageTaken": 0,
+          "meanCardsPlayed": 0,
+          "meanMoney": 0,
+          "p10Money": 0,
+          "moneyMinimum": 0,
+          "totalSpending": {
+            "buyEquipment": 0,
+            "train": 0,
+            "buyCard": 0,
+            "upgradeCard": 0,
+            "event": 0
+          },
+          "rewardCards": 0,
+          "rewardsEnteredDeck": 0,
+          "rewardsPlayed": 0,
+          "chapters": [
+            {
+              "chapter": 1,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 2,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 3,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 4,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 5,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 6,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            },
+            {
+              "chapter": 7,
+              "attempts": 0,
+              "losses": 0,
+              "meanTurns": 0,
+              "p90Turns": 0,
+              "meanDamageTaken": 0,
+              "maxDamageTaken": 0
+            }
+          ],
+          "failures": []
+        }
+      ]
+    }
+  ],
+  "pairs": [
+    {
+      "policy": "entry",
+      "scope": "chapter-one",
+      "samples": 2,
+      "improved": 0,
+      "regressed": 0,
+      "commonBattles": 16,
+      "meanTurnDifference": -0.875,
+      "meanDamageDifference": 6.25,
+      "meanMoneyDifference": 0,
+      "rows": [
+        {
+          "character": "custom",
+          "style": "balanced",
+          "seed": "paired-01",
+          "oldOutcome": "won",
+          "newOutcome": "won",
+          "oldFailure": null,
+          "newFailure": null,
+          "commonBattles": 8,
+          "turnDifference": -0.75,
+          "damageDifference": 5.375,
+          "cardsDifference": -2.25,
+          "moneyDifference": 0
+        },
+        {
+          "character": "custom",
+          "style": "balanced",
+          "seed": "paired-02",
+          "oldOutcome": "won",
+          "newOutcome": "won",
+          "oldFailure": null,
+          "newFailure": null,
+          "commonBattles": 8,
+          "turnDifference": -1,
+          "damageDifference": 7.125,
+          "cardsDifference": -2.625,
+          "moneyDifference": 0
+        }
+      ]
+    },
+    {
+      "policy": "heuristic",
+      "scope": "chapter-one",
+      "samples": 2,
+      "improved": 0,
+      "regressed": 0,
+      "commonBattles": 16,
+      "meanTurnDifference": -0.5,
+      "meanDamageDifference": 1.8125,
+      "meanMoneyDifference": 0,
+      "rows": [
+        {
+          "character": "custom",
+          "style": "balanced",
+          "seed": "paired-01",
+          "oldOutcome": "won",
+          "newOutcome": "won",
+          "oldFailure": null,
+          "newFailure": null,
+          "commonBattles": 8,
+          "turnDifference": -0.5,
+          "damageDifference": -0.25,
+          "cardsDifference": -0.375,
+          "moneyDifference": 0
+        },
+        {
+          "character": "custom",
+          "style": "balanced",
+          "seed": "paired-02",
+          "oldOutcome": "won",
+          "newOutcome": "won",
+          "oldFailure": null,
+          "newFailure": null,
+          "commonBattles": 8,
+          "turnDifference": -0.5,
+          "damageDifference": 3.875,
+          "cardsDifference": -1.75,
+          "moneyDifference": 0
+        }
+      ]
+    }
+  ],
+  "findings": [
+    "新版配对样本实际进入 0 / 7 章；失败记录必须结合其遭遇目标阅读，通关样本的均值不代表所有人生完成全部内容。",
+    "构筑自由度与主线可达性由多个政策测量；自动化失败只证明该政策在该配置失败，不证明游戏不可通关。",
+    "所有章节战斗重建满生命及应急包；损血是该场受到的累计伤害，可以超过最大生命。旅费收入、装备、学习、购牌与强化分别记录，不能用最后余额替代经济流。",
+    "七件饰品在两套规则均无额外效果；政策避免重复购买等效饰品，因此这里主要测量首次可负担性，不能据此推断真人会否误购。",
+    "每回合 80 次动作、每战 100 回合是模拟保险上限；触发会标明 timeout，不将其归为已证明的无限循环。",
+    "奖励用途按领取的实体 UID 跟踪是否进入预设以及后续是否实际打出；最后一场奖励没有后续出场机会，天然压低使用率。"
+  ],
+  "reproducibility": {
+    "repeatedSpecification": {
+      "character": "custom",
+      "style": "balanced",
+      "seed": "paired-01",
+      "policy": "entry",
+      "ruleset": "2.0.0",
+      "scope": "chapter-one"
+    },
+    "traceHash": "472ff9e4e4c8c02510d9f8eb3a58c0b6c2abc3334965b4b27ef110bb9e11b27e",
+    "exactResultMatch": true
+  }
+}

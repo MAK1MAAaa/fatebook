@@ -93,6 +93,7 @@ async function fileHash(file) {
 
 async function packageArchitecture(
   architecture,
+  appVersion,
   contentVersion,
   createdAt,
   releaseId,
@@ -100,10 +101,10 @@ async function packageArchitecture(
 ) {
   const platform = `linux/${architecture}`;
   const tags = [
-    `fatebook:${contentVersion}-${releaseId}-${architecture}`,
-    `fatebook:${contentVersion}-${architecture}`,
+    `fatebook:${appVersion}-${releaseId}-${architecture}`,
+    `fatebook:${appVersion}-${architecture}`,
   ];
-  const name = `fatebook-docker-${contentVersion}-${releaseId}-${architecture}.tar.gz`;
+  const name = `fatebook-docker-${appVersion}-${releaseId}-${architecture}.tar.gz`;
   const archive = path.join(releaseRoot, name);
   const partialArchive = `${archive}.partial`;
   const checksumFile = `${archive}.sha256`;
@@ -137,6 +138,7 @@ async function packageArchitecture(
     const metadata = {
       releaseId,
       createdAt,
+      appVersion,
       contentVersion,
       platform,
       imageTags: tags,
@@ -182,19 +184,22 @@ async function main() {
   for (const file of ["dist/index.html", "deploy/Dockerfile", "deploy/nginx.conf"])
     if (!(await lstat(path.join(root, file))).isFile())
       throw new Error(`缺少普通文件 ${file}，请先完成前端构建。`);
-  const source = await readFile(path.join(root, "src/rpg/content.ts"), "utf8");
-  const contentVersion = source.match(/CONTENT_VERSION\s*=\s*["']([^"']+)["']/)?.[1];
+  const source = await readFile(path.join(root, "src/rpg/rulesets.ts"), "utf8");
+  const appVersion = source.match(/APP_VERSION\s*=\s*["']([^"']+)["']/)?.[1];
   if (
-    !contentVersion ||
-    !/^[0-9]+\.[0-9]+\.[0-9]+(?:-[A-Za-z0-9.-]+)?$/.test(contentVersion) ||
-    contentVersion.length > 64
+    !appVersion ||
+    !/^[0-9]+\.[0-9]+\.[0-9]+(?:-[A-Za-z0-9.-]+)?$/.test(appVersion) ||
+    appVersion.length > 64
   )
-    throw new Error("剧情版本缺失或不能用于 Docker 标签，停止打包。");
+    throw new Error("应用版本缺失或不能用于 Docker 标签，停止打包。");
+  const contentSource = await readFile(path.join(root, "src/rpg/content.ts"), "utf8");
+  const contentVersion = contentSource.match(/CONTENT_VERSION\s*=\s*["']([^"']+)["']/)?.[1];
+  if (!contentVersion) throw new Error("剧情版本缺失，停止打包。");
   const createdAt = new Date().toISOString();
   const releaseId = createdAt.replace(/[-:.]/g, "");
   await mkdir(releaseRoot, { recursive: true });
   for (const architecture of architectures)
-    await packageArchitecture(architecture, contentVersion, createdAt, releaseId, archiveOnly);
+    await packageArchitecture(architecture, appVersion, contentVersion, createdAt, releaseId, archiveOnly);
   console.log(
     "\n上传与服务器架构相符的 .tar.gz 到 1Panel 镜像导入；创建容器时映射 6657:6657。",
   );

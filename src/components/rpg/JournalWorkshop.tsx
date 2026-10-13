@@ -14,6 +14,7 @@ export default function JournalWorkshop({ state }: { state: RpgState }) {
   const battles = state.receipts.filter(item => ENCOUNTER_BY_ID[item.encounterId]?.chapter === chapter);
 
   return <div className="chapter-journal compact-journal">
+    <div className="journal-overview"><article><small>已完成战斗</small><strong>{battles.length}</strong></article><article><small>记录回合</small><strong>{battles.reduce((total, battle) => total + battle.turns, 0)}</strong></article><article><small>人生选择</small><strong>{choices.length}</strong></article></div>
     <label className="journal-chapter-select">
       <span className="sr-only">查看章节</span>
       <select value={chapter} onChange={event => { setChapter(Number(event.target.value)); setExpanded(null); }}>

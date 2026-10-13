@@ -65,6 +65,7 @@ export function cardSources(card: CardDefinition, expanded = false, state?: RpgS
   sources.push("地区商店：学会后可购买，每种基础卡最多收藏3张，普通与强化合计。");
   const encounters = ENCOUNTERS.filter(encounter => encounter.cardRewards.includes(card.id));
   if (encounters.length) sources.push(`首胜奖励优先候选：${listSources(encounters)}。候选须已学会且未满3张，${rulesetVersion(state)===CURRENT_RULESET?'按攻击、守护、功能分组，并优先补充收藏与构筑缺口':'最终仅提供前3个合法候选'}，并非保证获得。`);
+  else if (rulesetVersion(state) === CURRENT_RULESET) sources.push("首胜奖励：已学会且未满3张时进入完整候选池，按攻击、守护、功能补充构筑缺口，以领奖界面为准。");
   else if (card.school !== "neutral") sources.push("首胜奖励：学会后可补入候选池，实际提供前3个合法候选，以领奖界面为准。");
   return sources;
 }

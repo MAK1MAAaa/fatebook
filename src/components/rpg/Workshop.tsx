@@ -1,6 +1,8 @@
+import { useRef } from "react";
 import { ChevronDown, Check } from "lucide-react";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "../ui/dialog";
-import { CARDS, COMPANIONS } from "../../rpg/cards";
+import { COMPANIONS } from "../../rpg/cards";
+import { cardsFor } from "../../rpg/rulesets";
 import { availableCompanions, schoolLabel } from "../../rpg/engine";
 import { useRpg } from "../../rpg/context";
 import { SKILL_KEYS } from "../../game/engine";
@@ -11,9 +13,11 @@ import { characterPortraitKey, companionPortraitKey } from "../../rpg/portraits"
 import { effectText } from "../../rpg/combat";
 import { Portrait } from "./Artwork";
 import DeckWorkshop from "./DeckWorkshop";
+import type { DeckWorkshopHandle } from "./DeckWorkshop";
 import ShopWorkshop from "./ShopWorkshop";
 import JournalWorkshop from "./JournalWorkshop";
 import SavePauseNotice from "./SavePauseNotice";
+import "./workshop.css";
 
 export type WorkshopTab = "deck" | "training" | "shop" | "companions" | "status" | "journal";
 const tabNames: Record<WorkshopTab, string> = { deck: "牌组工坊", training: "导师训练", shop: "地区商店", companions: "同行援助", status: "角色档案", journal: "人生与战绩" };
@@ -21,6 +25,12 @@ const tabNames: Record<WorkshopTab, string> = { deck: "牌组工坊", training: 
 export default function Workshop({ state, tab, onClose }: { state: RpgState; tab: WorkshopTab; onClose: () => void }) {
   const { dispatch, saving, pending } = useRpg();
   const busy = saving || !!pending;
+  const deckRef = useRef<DeckWorkshopHandle>(null);
+  function requestClose() {
+    if (busy) return;
+    if (tab === "deck") deckRef.current?.requestClose();
+    else onClose();
+  }
   const available = availableCompanions(state);
   const eligible = COMPANIONS.filter(companion => companion.actor !== state.character.actor);
   const locked = eligible.filter(companion => !available.some(item => item.id === companion.id));
@@ -39,12 +49,12 @@ export default function Workshop({ state, tab, onClose }: { state: RpgState; tab
       <button disabled={busy || !unlocked || selected} onClick={() => void dispatch(state, { type: "setCompanion", companionId: companion.id })}>{selected ? <><Check size={14} />正在同行</> : unlocked ? "邀请同行" : "尚未结识"}</button>
     </article>;
   }
-  return <Dialog open onOpenChange={open => { if (!open && !busy) onClose(); }}><DialogContent className="rpg-workshop"><DialogTitle>{tabNames[tab]}</DialogTitle><DialogDescription>旅费 {state.money}</DialogDescription><SavePauseNotice />
-    {tab === "deck" && <DeckWorkshop state={state} onClose={onClose} />}
+  return <Dialog open onOpenChange={open => { if (!open) requestClose(); }}><DialogContent className="rpg-workshop workshop-shell"><DialogTitle>{tabNames[tab]}</DialogTitle><DialogDescription>第 {state.chapter} 章 · 旅费 {state.money}</DialogDescription><SavePauseNotice />
+    {tab === "deck" && <DeckWorkshop ref={deckRef} state={state} onClose={onClose} />}
     {tab === "shop" && <ShopWorkshop state={state} />}
     {tab === "training" && <>
       <details className="workshop-fold"><summary><strong>课程说明与阶位限制</strong><ChevronDown size={16} /></summary><p>学习技艺会获得对应阶位的技能牌。当前导师教授至{SKILL_RANKS[Math.min(4, state.chapter)]}。无咏唱、斗气等身份能力不会由属性自动获得。</p></details>
-      <div className="training-list">{SKILL_KEYS.map(skill => { const rank = state.skills[skill], price = rank === 0 ? 12 : 25 + rank * 12; return <article key={skill}><div><strong>{schoolLabel(skill)}</strong><span>{SKILL_RANKS[rank]}</span><p>{CARDS.filter(card => card.school === skill && card.rank === rank + 1).map(card => card.name).join("、") || "已完成本版课程"}</p></div><button className="button subtle" disabled={busy || rank >= Math.min(4, state.chapter) || state.money < price} onClick={() => void dispatch(state, { type: "train", skill })}>学习 · {price}</button></article>; })}</div>
+      <div className="training-list">{SKILL_KEYS.map(skill => { const rank = state.skills[skill], price = rank === 0 ? 12 : 25 + rank * 12; return <article key={skill}><div><strong>{schoolLabel(skill)}</strong><span>{SKILL_RANKS[rank]}</span><p>{cardsFor(state).filter(card => card.school === skill && card.rank === rank + 1).map(card => card.name).join("、") || "已完成本版课程"}</p></div><button className="button subtle" disabled={busy || rank >= Math.min(4, state.chapter) || state.money < price} onClick={() => void dispatch(state, { type: "train", skill })}>学习 · {price}</button></article>; })}</div>
     </>}
     {tab === "companions" && <>
       <details className="workshop-fold"><summary><strong>援助规则</strong><ChevronDown size={16} /></summary><p>一名同伴提供被动与主动支援，主动技能冷却3回合。玩家扮演的人物不会同时成为自己的同伴。</p></details>

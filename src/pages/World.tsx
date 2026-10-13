@@ -2,6 +2,7 @@ import { useState } from "react";
 import { ExternalLink, Search, BookOpen, Map, ChevronDown } from "lucide-react";
 import { WORLD_ENTRIES } from "../content/world";
 import WorldMap from "../components/game/WorldMap";
+import "./journey-pages.css";
 
 export default function World() {
   const [category, setCategory] = useState("全部");
@@ -16,7 +17,7 @@ export default function World() {
     <details className="atlas-banner surface-panel"><summary><Map size={19} />五大陆旅行示意<ChevronDown size={18} /></summary><div className="atlas-map"><WorldMap large /><p>非精确地理比例；六面世界的远古历史另列于资料中。</p></div></details>
     <p className="world-result-count" aria-live="polite">{entries.length} 条资料 · 部分含小说后期剧透</p>
     <div className="world-entry-grid">{entries.map(entry => <article className="world-entry surface-panel" key={entry.id}>
-      <div className="entry-badges"><span>{entry.category}</span><span>{entry.kind}</span><span className={entry.spoiler === "小说后期" ? "spoiler" : ""}>{entry.spoiler}</span></div>
+      <div className="entry-badges"><span>{entry.category}</span><span>{entry.kind}</span>{entry.body.includes("原创 IF") && <span className="if-marker">含原创 IF</span>}<span className={entry.spoiler === "小说后期" ? "spoiler" : ""}>{entry.spoiler}</span></div>
       <h2>{entry.title}</h2><p className="entry-subtitle">{entry.subtitle}</p>
       <details className="world-entry-details"><summary>阅读正文<ChevronDown size={17} /></summary><p>{entry.body}</p></details>
       <a className="text-button" href={entry.source} target="_blank" rel="noopener noreferrer">{entry.kind === "游戏规则" ? "资料来源" : "原著来源"}<ExternalLink size={15} /></a>

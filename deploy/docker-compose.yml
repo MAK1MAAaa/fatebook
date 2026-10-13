@@ -1,6 +1,6 @@
 services:
   web:
-    image: ${FATEBOOK_IMAGE:-fatebook:2.0.0-amd64}
+    image: ${FATEBOOK_IMAGE:-fatebook:2.1.0-amd64}
     pull_policy: never
     restart: unless-stopped
     ports:

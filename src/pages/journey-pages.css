@@ -1,0 +1,22 @@
+/* Keep the changing talent results beside their controls at every screen width. */
+.create-page .allocation-template-description {
+  color: var(--text-secondary);
+  font-size: 16px;
+  margin: -6px 0 14px;
+}
+.create-page .creation-inline-stats {
+  border-color: var(--border-subtle);
+  text-align: center;
+}
+.create-page .creation-inline-stats > span { color: var(--text-secondary); }
+.create-page .creation-inline-stats strong { color: var(--accent-gold); }
+.world-page .entry-badges .if-marker {
+  color: var(--accent-gold);
+  border-color: var(--accent-gold);
+}
+
+@media (max-width: 767px) {
+  .create-page .page-heading { flex-wrap: wrap; }
+  .endings-page .ending-grid { grid-template-columns: minmax(0, 1fr); }
+  .endings-page .ending-card { min-height: 190px; }
+}

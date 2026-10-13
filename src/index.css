@@ -1,71 +1,82 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
 @layer base {
   :root {
-    --background: 145 20% 11%;
-    --foreground: 42 24% 83%;
-    --card: 145 16% 14%;
-    --card-foreground: 42 24% 83%;
-    --popover: 145 16% 14%;
-    --popover-foreground: 42 24% 83%;
-    --primary: 39 35% 64%;
-    --primary-foreground: 145 20% 11%;
-    --secondary: 145 14% 20%;
-    --secondary-foreground: 42 24% 83%;
-    --muted: 145 14% 19%;
-    --muted-foreground: 45 10% 61%;
-    --accent: 145 14% 20%;
-    --accent-foreground: 42 24% 83%;
-    --destructive: 0 49% 45%;
-    --destructive-foreground: 0 0% 98%;
-    --border: 45 14% 25%;
-    --input: 45 14% 25%;
-    --ring: 39 35% 64%;
-    --radius: 0.5rem;
+    color-scheme: dark;
+    --surface-app: #101a16;
+    --surface-panel: #1b2a22;
+    --surface-raised: #24362b;
+    --text-main: #f1e9d6;
+    --text-secondary: #bdc7b6;
+    --paper-bg: #efe2c6;
+    --paper-ink: #352d22;
+    --paper-secondary: #645439;
+    --paper-accent: #684b24;
+    --paper-success: #365839;
+    --paper-danger: #843d2d;
+    --forest-secondary: var(--text-secondary);
+    --accent-gold: #d2b277;
+    --accent-gold-hover: #e2c693;
+    --border-subtle: #536044;
+    --border-paper: #b5a27b;
+    --danger-bg: #572a26;
+    --danger-text: #ffd3be;
+    --danger-solid: #a4493b;
+    --focus-ring: #e5c68e;
+    --radius-panel: 14px;
+    --space-page: 32px;
+    --font-body: "PingFang SC", "Microsoft YaHei", sans-serif;
+    --font-display: "Songti SC", "STSong", "Noto Serif SC", SimSun, serif;
+    --layer-header: 20;
+    --layer-alert: 30;
+    --layer-dialog: 50;
+    --forest: var(--surface-app);
+    --forest-light: var(--surface-panel);
+    --forest-muted: var(--surface-raised);
+    --gold: var(--accent-gold);
+    --gold-dark: #735b33;
+    --cream: var(--text-main);
+    --paper: var(--paper-bg);
+    --ink: var(--paper-ink);
+    --line: var(--border-subtle);
+    --serif: var(--font-display);
+    --background: 156 24% 8%;
+    --foreground: 43 49% 89%;
+    --card: 148 22% 14%;
+    --card-foreground: 43 49% 89%;
+    --popover: 148 22% 14%;
+    --popover-foreground: 43 49% 89%;
+    --primary: 39 50% 65%;
+    --primary-foreground: 156 24% 8%;
+    --secondary: 146 20% 18%;
+    --secondary-foreground: 43 49% 89%;
+    --muted: 146 20% 18%;
+    --muted-foreground: 98 14% 75%;
+    --accent: 146 20% 18%;
+    --accent-foreground: 43 49% 89%;
+    --destructive: 8 47% 44%;
+    --destructive-foreground: 24 100% 87%;
+    --border: 77 17% 32%;
+    --input: 77 17% 32%;
+    --ring: 39 63% 73%;
+    --radius: 0.75rem;
   }
-  * {
-    @apply border-border;
-  }
+  * { @apply border-border; box-sizing: border-box; }
   body {
     @apply bg-background text-foreground;
     margin: 0;
     min-width: 320px;
-    font-family: "PingFang SC", "Microsoft YaHei", sans-serif;
+    font-family: var(--font-body);
+    font-size: 16px;
     -webkit-font-smoothing: antialiased;
   }
-  button,
-  input,
-  select,
-  textarea {
-    font: inherit;
-  }
-  button,
-  a,
-  input,
-  select {
-    touch-action: manipulation;
-  }
-  button {
-    cursor: pointer;
-  }
-  button:disabled {
-    cursor: not-allowed;
-  }
-  a {
-    text-decoration: none;
-    color: inherit;
-  }
-  button:focus-visible,
-  a:focus-visible,
-  input:focus-visible,
-  select:focus-visible,
-  summary:focus-visible {
-    outline: 2px solid #c6ad7c;
-    outline-offset: 4px;
-  }
-  ::selection {
-    background: #c3ac7a;
-    color: #17211b;
-  }
+  button, input, select, textarea { font: inherit; }
+  button, a, input, select { touch-action: manipulation; }
+  button { cursor: pointer; }
+  button:disabled { cursor: not-allowed; }
+  a { text-decoration: none; color: inherit; }
+  button:focus-visible, a:focus-visible, input:focus-visible, select:focus-visible, summary:focus-visible, [tabindex]:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 3px; }
+  ::selection { background: var(--accent-gold); color: var(--surface-app); }
 }

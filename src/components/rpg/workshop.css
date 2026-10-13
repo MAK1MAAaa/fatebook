@@ -1,0 +1,153 @@
+/* Workshop panels share the app's dark surfaces; only the cards use paper. */
+.rpg-workshop.workshop-shell,
+.card-detail-dialog[data-slot="dialog-content"],
+.workshop-confirm-dialog[data-slot="dialog-content"] {
+  --ink: var(--text-main);
+  --muted: var(--text-secondary);
+  --gold: var(--accent-gold);
+  --line: var(--border-subtle);
+  background: var(--surface-panel);
+  color: var(--text-main);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-panel);
+  padding: 28px;
+  gap: 16px;
+  font-size: 16px;
+  line-height: 1.6;
+  max-height: calc(100dvh - 40px - env(safe-area-inset-top));
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+.rpg-workshop.workshop-shell { width: min(1180px, calc(100vw - 40px)); max-width: 1180px; }
+.workshop-confirm-dialog[data-slot="dialog-content"] { width: min(600px, calc(100vw - 32px)); max-width: 600px; }
+.preset-preview-dialog[data-slot="dialog-content"] { max-width: 720px; width: min(720px, calc(100vw - 32px)); }
+:is(.workshop-shell, .card-detail-dialog, .workshop-confirm-dialog) [data-slot="dialog-title"] { color: var(--text-main); font-family: var(--font-display); line-height: 1.4; padding-right: 32px; font-size: 26px; }
+:is(.workshop-shell, .card-detail-dialog, .workshop-confirm-dialog) [data-slot="dialog-description"] { color: var(--text-secondary); font-size: 16px; line-height: 1.6; }
+.rpg-workshop.workshop-shell [data-slot="dialog-description"],
+.card-detail-dialog[data-slot="dialog-content"] [data-slot="dialog-description"] { color: var(--text-secondary); }
+:is(.workshop-shell, .card-detail-dialog, .workshop-confirm-dialog) > [data-slot="dialog-close"] { top: 12px; right: 12px; display: grid; place-items: center; min-height: 44px; min-width: 44px; color: var(--text-main); }
+:is(.workshop-shell, .card-detail-dialog, .workshop-confirm-dialog) p { color: inherit; }
+:is(.workshop-shell, .card-detail-dialog, .workshop-confirm-dialog) :is(.button.subtle, .button.ghost) { border: 1px solid var(--border-subtle); background: var(--surface-raised); color: var(--text-main); }
+:is(.workshop-shell, .card-detail-dialog, .workshop-confirm-dialog) .button.primary { background: var(--accent-gold); color: var(--surface-app); border: 1px solid var(--accent-gold); }
+.workshop-confirm-dialog .button.danger { background: var(--danger-solid); color: var(--danger-text); border: 1px solid var(--danger-solid); }
+:is(.workshop-shell, .card-detail-dialog, .workshop-confirm-dialog) .button { min-height: 44px; padding: 10px 16px; }
+:is(.workshop-shell, .card-detail-dialog, .workshop-confirm-dialog) :is(.form-error, .hub-empty) { color: var(--danger-text); }
+:is(.workshop-shell, .card-detail-dialog, .workshop-confirm-dialog) button:disabled:not(.rpg-card) { opacity: .65; color: var(--text-secondary); background: var(--surface-raised); border-color: var(--border-subtle); }
+:is(.workshop-shell, .card-detail-dialog, .workshop-confirm-dialog) button:focus-visible { outline: 3px solid var(--focus-ring); outline-offset: 2px; }
+.rpg-workshop.workshop-shell :is(.workshop-fold, .training-list article, .companion-grid article, .deck-builder-list, .gear-grid article, .rpg-stat-grid article, .journal-entry-list > li) { background: var(--surface-raised); border-color: var(--border-subtle); color: var(--text-main); }
+.rpg-workshop.workshop-shell :is(.workshop-fold, .deck-builder-list) { padding: 14px; border-radius: 10px; }
+.rpg-workshop.workshop-shell .workshop-fold { margin-top: 8px; }
+.rpg-workshop.workshop-shell .workshop-fold summary { color: var(--text-main); }
+.rpg-workshop.workshop-shell :is(.companion-passive, .companion-skill, .training-list span, .deck-builder-heading > span, .deck-row-upgrades, .catalog-card-ownership, .shop-purchase-note, .journal-date, .journal-entry-toggle > span > span) { color: var(--text-secondary); font-size: 16px; }
+.rpg-workshop.workshop-shell .companion-grid article > button,
+.rpg-workshop.workshop-shell .gear-grid article > button { background: var(--accent-gold); color: var(--surface-app); min-height: 44px; border-radius: 8px; padding: 10px 14px; }
+.rpg-workshop.workshop-shell :is(.card-catalog-tabs, .workshop-view-nav, .deck-mobile-tabs, .journal-view-tabs, .card-detail-variant-tabs) { background: var(--surface-raised); padding: 4px; border-radius: 10px; gap: 6px; }
+.rpg-workshop.workshop-shell :is(.card-catalog-tabs, .workshop-view-nav, .deck-mobile-tabs, .journal-view-tabs) button,
+.card-detail-dialog .card-detail-variant-tabs button { color: var(--text-secondary); font-size: 16px; min-height: 44px; }
+.rpg-workshop.workshop-shell :is(.card-catalog-tabs, .workshop-view-nav, .deck-mobile-tabs, .journal-view-tabs) button[aria-pressed="true"],
+.card-detail-dialog .card-detail-variant-tabs button[aria-pressed="true"] { background: var(--accent-gold); color: var(--surface-app); border-radius: 8px; box-shadow: none; }
+.rpg-workshop.workshop-shell .card-search { background: var(--surface-raised); border-color: var(--border-subtle); color: var(--text-secondary); }
+.rpg-workshop.workshop-shell .card-search input { color: var(--text-main); font-size: 16px; }
+.rpg-workshop.workshop-shell .card-filter-fold summary { color: var(--text-main); font-size: 16px; }
+.rpg-workshop.workshop-shell :is(.card-filter-fold select, .card-filter-fold > div > button, .journal-chapter-select select, .shop-gear-variant select) { color: var(--text-main); background: var(--surface-raised); border: 1px solid var(--border-subtle); border-radius: 8px; min-height: 44px; font-size: 16px; padding: 8px 12px; }
+.rpg-workshop.workshop-shell :is(.card-filter-fold, .shop-gear-variant, .journal-chapter-select) select option { background: var(--surface-panel); color: var(--text-main); }
+.rpg-workshop.workshop-shell .card-filter-fold > div > button { min-height: 44px; }
+.rpg-workshop.workshop-shell .card-catalog-grid .catalog-card-status,
+.rpg-workshop.workshop-shell .shop-card-catalog > article > button { color: var(--text-main); background: var(--surface-raised); border: 1px solid var(--border-subtle); min-height: 44px; border-radius: 8px; font-size: 16px; }
+.rpg-workshop.workshop-shell .card-quantity { background: var(--surface-panel); border-color: var(--border-subtle); }
+.rpg-workshop.workshop-shell .card-quantity :is(button, span) { color: var(--text-main); }
+.rpg-workshop.workshop-shell .deck-row-preview { color: var(--text-main); }
+.rpg-workshop.workshop-shell .deck-row-preview strong { font-size: 16px; }
+.rpg-workshop.workshop-shell .deck-rows > article { border-color: var(--border-subtle); }
+.deck-live-summary { display: grid; grid-template-columns: minmax(200px, 1fr) 1fr; gap: 20px; padding: 14px 20px; background: var(--surface-raised); border: 1px solid var(--border-subtle); border-radius: 10px; color: var(--text-main); }
+.deck-cost-summary { display: flex; align-items: center; gap: 24px; }
+.deck-cost-summary > strong { font-size: 16px; font-weight: 500; white-space: nowrap; }
+.deck-live-summary .deck-cost-curve { height: 88px; padding: 0; flex: 1; }
+.deck-live-summary .deck-cost-curve i { background: var(--accent-gold); }
+.deck-live-summary .deck-stat-chips { align-content: center; margin: 0; font-size: 16px; }
+.deck-live-summary .deck-stat-chips > span { background: var(--surface-panel); color: var(--text-main); border: 1px solid var(--border-subtle); padding: 4px 8px; }
+.deck-live-summary .deck-stat-chips > small { width: 100%; color: var(--text-secondary); }
+.deck-presets { display: flex; flex-wrap: wrap; align-items: center; gap: 12px; padding: 16px 0; }
+.deck-presets > strong { font-weight: 500; }
+.deck-presets .rpg-preset-row { display: flex; flex-wrap: wrap; gap: 8px; margin: 0; }
+.deck-presets .rpg-preset-row button { min-height: 44px; padding: 8px 14px; border-radius: 8px; border: 1px solid var(--border-subtle); background: var(--surface-raised); color: var(--text-main); font-size: 16px; }
+.deck-presets > p { width: 100%; margin: 0; color: var(--text-secondary); }
+.rpg-workshop.workshop-shell .deck-save-bar { bottom: -28px; background: var(--surface-panel); border-color: var(--border-subtle); color: var(--text-main); }
+.deck-save-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.workshop-confirm-actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 4px; }
+.workshop-confirm-actions .button { flex: 1 1 auto; }
+.preset-preview-list { list-style: none; padding: 0; margin: 0; display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; }
+.preset-preview-list > li { display: flex; align-items: center; gap: 8px; justify-content: space-between; padding: 8px 12px; background: var(--surface-raised); border-radius: 8px; }
+.preset-preview-list strong { white-space: nowrap; }
+.preset-preview-list small { color: var(--text-secondary); white-space: nowrap; }
+.rpg-workshop.workshop-shell .gear-grid { grid-template-columns: repeat(auto-fit, minmax(min(100%, 260px), 1fr)); align-items: stretch; }
+.rpg-workshop.workshop-shell .shop-equipment-item { display: flex; flex-direction: column; gap: 10px; border-radius: 10px; }
+.rpg-workshop.workshop-shell .shop-equipment-item > :is(p, strong, small) { margin: 0; }
+.rpg-workshop.workshop-shell .shop-equipment-item > strong { font-family: var(--font-display); font-size: 22px; color: var(--text-main); }
+.rpg-workshop.workshop-shell .shop-equipment-item > small { color: var(--text-secondary); font-size: 16px; }
+.rpg-workshop.workshop-shell .shop-equipment-item > button { margin-top: auto; }
+.rpg-workshop.workshop-shell .shop-equipment-item .shop-gear-effect { color: var(--accent-gold); }
+.rpg-workshop.workshop-shell .shop-gear-current { color: var(--text-secondary); }
+.rpg-workshop.workshop-shell .shop-gear-delta { padding: 10px 12px; background: var(--surface-panel); border-radius: 8px; color: var(--text-main); }
+.rpg-workshop.workshop-shell .shop-equivalent-note { color: var(--accent-gold); }
+.shop-gear-variant { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; }
+.shop-gear-variant select { min-width: 0; width: 100%; }
+.card-detail-dialog .card-detail-information :is(.card-detail-effect-note, .card-maintenance-note) { color: var(--text-secondary); font-size: 16px; }
+.card-detail-dialog :is(.card-detail-fold, .card-detail-copies, .card-detail-copies article) { border-color: var(--border-subtle); }
+.card-detail-dialog :is(.card-detail-fold summary, .card-detail-copies strong, .card-detail-copies article p) { font-size: 16px; color: var(--text-main); }
+.card-detail-dialog .card-copy-actions button { background: var(--surface-raised); color: var(--text-main); border-color: var(--border-subtle); font-size: 16px; }
+.card-detail-dialog[data-slot="dialog-content"] .card-maintenance-note { color: var(--text-secondary); }
+.card-detail-dialog .card-detail-copies strong > span { background: var(--surface-raised); color: var(--accent-gold); }
+.card-detail-dialog .card-source-expand { background: var(--surface-raised); color: var(--text-main); border-color: var(--border-subtle); }
+:is(.workshop-shell, .card-detail-dialog, .workshop-confirm-dialog) .save-pause-notice { background: var(--danger-bg); color: var(--danger-text); border-color: var(--danger-solid); }
+:is(.workshop-shell, .card-detail-dialog, .workshop-confirm-dialog) .save-pause-notice button { background: var(--accent-gold); color: var(--surface-app); border-color: var(--accent-gold); }
+.rpg-workshop.workshop-shell .journal-overview { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; margin-bottom: 16px; }
+.journal-overview article { display: flex; flex-direction: column; gap: 4px; background: var(--surface-raised); border: 1px solid var(--border-subtle); border-radius: 10px; padding: 14px; }
+.journal-overview small { color: var(--text-secondary); font-size: 16px; }
+.journal-overview strong { color: var(--accent-gold); font-size: 26px; }
+.rpg-workshop.workshop-shell :is(.journal-entry-toggle, .journal-entry-detail, .journal-battle-stats) { color: var(--text-main); }
+.rpg-workshop.workshop-shell .journal-entry-list > li { border-radius: 10px; }
+/* Allocate effect lines by their content so three-line cards do not clip. */
+.rpg-card.card-face { grid-template-rows: 24px minmax(24px, 1fr) minmax(34px, auto) auto 26px; color: var(--paper-ink); }
+.rpg-card.card-face .card-effect-lines { font-size: 16px; line-height: 1.35; gap: 4px; color: var(--paper-ink); }
+.rpg-card.card-face .card-effect-lines > span { white-space: nowrap; }
+.rpg-card.card-face :is(.card-school, .card-keywords > span) { color: var(--paper-secondary); }
+@media (max-width: 768px) {
+  .rpg-workshop.workshop-shell,
+  .card-detail-dialog[data-slot="dialog-content"],
+  .workshop-confirm-dialog[data-slot="dialog-content"] { top: auto; bottom: 0; left: 0; transform: none; width: 100%; max-width: 100%; max-height: calc(100dvh - 16px - env(safe-area-inset-top)); border-radius: 16px 16px 0 0; padding: 24px 16px calc(16px + env(safe-area-inset-bottom)); }
+  .deck-live-summary { grid-template-columns: 1fr; gap: 12px; padding: 12px; }
+  .deck-cost-summary { gap: 10px; }
+  .deck-live-summary .deck-cost-curve { height: 74px; }
+  .deck-live-summary .deck-cost-curve i { max-height: 44px; }
+  .deck-presets { gap: 8px; }
+  .deck-presets .rpg-preset-row { display: grid; grid-template-columns: 1fr 1fr; width: 100%; }
+  .deck-presets .rpg-preset-row button { padding: 8px; }
+  .rpg-workshop.workshop-shell .deck-builder-layout { display: block; }
+  .rpg-workshop.workshop-shell .deck-mobile-tabs { display: flex; }
+  .rpg-workshop.workshop-shell .deck-builder-list, .rpg-workshop.workshop-shell .deck-builder-catalog { display: none; }
+  .rpg-workshop.workshop-shell .deck-builder-list.mobile-active, .rpg-workshop.workshop-shell .deck-builder-catalog.mobile-active { display: block; }
+  .rpg-workshop.workshop-shell .deck-save-bar { bottom: calc(-16px - env(safe-area-inset-bottom)); flex-wrap: wrap; padding-top: 12px; padding-bottom: calc(12px + env(safe-area-inset-bottom)); }
+  .deck-save-actions { width: 100%; }
+  .deck-save-actions .button { flex: 1; }
+  .preset-preview-list { grid-template-columns: 1fr; }
+  .rpg-workshop.workshop-shell .gear-grid { grid-template-columns: 1fr; }
+  .rpg-workshop.workshop-shell .journal-overview { gap: 8px; }
+  .journal-overview article { padding: 10px; }
+  .workshop-confirm-actions { flex-direction: column; }
+  .card-detail-dialog .card-detail-content { display: block; }
+  .card-detail-dialog .card-detail-variants { display: block; }
+  .card-detail-dialog .card-detail-variant-tabs { display: flex; margin-bottom: 12px; }
+  .card-detail-dialog .card-detail-variant { display: none; }
+  .card-detail-dialog .card-detail-variant.variant-active { display: block; width: min(260px, 100%); margin: auto; }
+  .card-detail-dialog .card-detail-copies article { display: block; }
+  .card-detail-dialog .card-copy-actions { flex-wrap: wrap; }
+  .card-detail-dialog .card-copy-actions button { flex: 1 1 auto; }
+  .rpg-card.card-face, .card-catalog-grid { --card-height: 270px; }
+  .rpg-card.card-face .card-effect-lines { font-size: 14px; }
+}
+
+.rpg-workshop.workshop-shell :is(.training-list article p, .rpg-stat-grid small, .copy-maintenance, .copy-maintenance p, .journal-empty) { color: var(--text-secondary); font-size: 16px; }
+.rpg-workshop.workshop-shell .button.primary:hover:not(:disabled), .card-detail-dialog .button.primary:hover:not(:disabled), .workshop-confirm-dialog .button.primary:hover:not(:disabled) { background: var(--accent-gold-hover); }
+
+.rpg-workshop.workshop-shell .role-record-chips span { background: var(--surface-raised); color: var(--text-secondary); border-color: var(--border-subtle); font-size: 16px; }

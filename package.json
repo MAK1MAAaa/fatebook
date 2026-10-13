@@ -1,7 +1,7 @@
 {
   "name": "six-faced-world-fatebook",
   "private": true,
-  "version": "0.0.0",
+  "version": "2.1.0",
   "type": "module",
   "scripts": {
     "dev": "vite",
@@ -12,7 +12,8 @@
     "test:watch": "vitest",
     "package:1panel": "npm run lint && npm test && npm run build && node scripts/package-docker.mjs",
     "package:static": "npm run lint && npm test && npm run build && node scripts/package-release.mjs",
-    "package:amd64": "npm run lint && npm run build && node scripts/package-docker.mjs --arch=amd64 --archive-only"
+    "package:amd64": "npm run lint && npm test && npm run build && node scripts/package-docker.mjs --arch=amd64 --archive-only",
+    "balance": "node scripts/simulate-rpg.mjs"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

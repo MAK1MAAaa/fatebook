@@ -218,7 +218,7 @@
   .hub-content { padding: 20px; }
 }
 
-@media (max-width: 760px) {
+@media (max-width: 767px) {
   .rpg-hub-layout { grid-template-columns: 1fr; }
   .hub-sidebar { display: grid; grid-template-columns: 1fr 1fr; gap: 11px; }
   .hub-sidebar .compact-depart { grid-column: 1/-1; }
@@ -230,13 +230,6 @@
 }
 
 @media (max-width: 600px) {
-  .app-story .site-header { height: calc(60px + env(safe-area-inset-top)); padding-left: 12px; padding-right: 12px; }
-  .app-story .brand { min-width: 94px; gap: 6px; }
-  .app-story .brand strong { font-size: 15px; letter-spacing: 1px; }
-  .app-story .brand span { display: none; }
-  .app-story .brand-mark { width: 25px; height: 30px; }
-  .app-story .site-header nav { gap: 6px; }
-  .app-story .site-header nav a { min-width: 42px; }
   .rpg-overview { padding-bottom: 11px; font-size: 12px; }
   .rpg-title-row { padding: 14px 1px 12px; }
   .rpg-title-row .eyebrow { display: none; }

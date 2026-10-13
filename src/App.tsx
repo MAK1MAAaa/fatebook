@@ -14,6 +14,7 @@ import Create from "./pages/Create";
 import Story from "./pages/RpgStory";
 import LegacyStory from "./pages/LegacyStory";
 import RpgProvider from "./components/rpg/RpgProvider";
+import SavePauseNotice from "./components/rpg/SavePauseNotice";
 import Saves from "./pages/Saves";
 import Endings from "./pages/Endings";
 import World from "./pages/World";
@@ -21,10 +22,14 @@ import GameProvider from "./components/game/GameProvider";
 import { useRpg as useGame } from "./rpg/context";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "./components/ui/dialog";
 import "./components/game/story-tools.css";
-import "./App.css";
 import "./components/rpg/rpg.css";
+import "./components/rpg/compact-layout.css";
+import "./components/rpg/folding-ui.css";
+import "./components/rpg/readability.css";
+import "./App.css";
 import "./components/rpg/card-catalog.css";
 import "./components/rpg/portraits.css";
+import "./components/rpg/workshop.css";
 function Layout() {
   const { error, pending, saving, retry, dismiss } = useGame();
   const [menuOpen, setMenuOpen] = useState(false);
@@ -79,6 +84,7 @@ function Layout() {
         <DialogContent className="navigation-dialog">
           <DialogTitle>命运之书</DialogTitle>
           <DialogDescription>选择要翻开的篇章。</DialogDescription>
+          <SavePauseNotice />
           <nav aria-label="移动端主导航">
             {([["/", "首页", Feather], ["/saves", "人生档案", ScrollText], ["/endings", "命运图鉴", Sparkles], ["/world", "世界手册", BookOpen], ["/create", "新的人生", Feather]] as const).map(([to, label, Icon]) => <NavLink key={to} to={to} end={to === "/"} onClick={() => setMenuOpen(false)}><Icon size={19} />{label}</NavLink>)}
           </nav>

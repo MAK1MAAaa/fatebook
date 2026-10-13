@@ -16,6 +16,7 @@ import { ENDINGS } from "../content";
 import { useGame } from "../game/store-context";
 import { useRpg } from "../rpg/context";
 import { Dialog, DialogContent, DialogTitle, DialogDescription } from "../components/ui/dialog";
+import "./journey-pages.css";
 const hints: Record<string,string> = {
   'end-family':'共同住所与家庭关系修复。',
   'end-dragon':'知情盟约与联盟取胜。',
@@ -50,7 +51,7 @@ export default function Endings() {
     ENDINGS.some((ending) => ending.id === id),
   );
   return (
-    <main className="page-shell">
+    <main className="page-shell endings-page">
       <div className="page-heading">
         <div>
           <span className="eyebrow">命运图鉴</span>

@@ -1,8 +1,8 @@
 # 命运之书：1Panel 完整 Docker 镜像部署
 
-推荐使用 `fatebook-docker-剧情版本-时间戳-架构.tar.gz`。它是经 gzip 压缩的完整 Docker 镜像，包含 Nginx、构建好的网页和全部剧情；服务器导入后即可创建容器，无需拉取其他镜像、安装 Node.js 或数据库。宿主机和容器端口均为 **6657/TCP**，无需目录挂载。
+推荐使用 `fatebook-docker-应用版本-时间戳-架构.tar.gz`。它是经 gzip 压缩的完整 Docker 镜像，包含 Nginx、构建好的网页和全部剧情；服务器导入后即可创建容器，无需拉取其他镜像、安装 Node.js 或数据库。宿主机和容器端口均为 **6657/TCP**，无需目录挂载。
 
-2.0使用独立存档格式与存储键，旧文字版人生保留只读查看和删除，新人生从出生重新开始。游戏存档在玩家浏览器的 localStorage 中，镜像及服务器备份不包含个人存档。建议在正式游玩前确定长期使用的域名、协议和端口。
+2.1应用继续使用2.0剧情与原存储键，兼容读取容器格式2与3，首次有效写入升级为3。旧卡牌人生继续原规则，可在地区主动确认更新；旧文字版人生仍只读。游戏存档在玩家浏览器的 localStorage 中，镜像及服务器备份不包含个人存档。建议在正式游玩前确定长期使用的域名、协议和端口。
 
 ## 1. 选择架构并上传
 
@@ -20,13 +20,13 @@
 
    ```bash
    cd /opt/fatebook-images
-   sha256sum -c fatebook-docker-2.0.0-实际时间戳-amd64.tar.gz.sha256
+   sha256sum -c fatebook-docker-2.1.0-实际时间戳-amd64.tar.gz.sha256
    ```
 
    应显示 `OK`。本次单文件发布可跳过这一步；镜像标签可在导入完成后查看。
 
 3. 进入 **容器 → 镜像 → 导入**，选择服务器上已上传的 `.tar.gz` 文件，等待导入完成。无需先解压，也不要将压缩包当作网页目录部署。
-4. 导入后镜像列表应出现 `fatebook` 的时间戳版本标签，以及 `fatebook:2.0.0-amd64` 或 `fatebook:2.0.0-arm64` 别名。具体名称以随包 JSON 和导入日志为准。
+4. 导入后镜像列表应出现 `fatebook` 的时间戳版本标签，以及 `fatebook:2.1.0-amd64` 或 `fatebook:2.1.0-arm64` 别名。具体名称以随包 JSON 和导入日志为准。
 
 1Panel 镜像导入对应 `docker load`；Docker 可直接读取 gzip 压缩的镜像包并恢复镜像及标签。参见 [1Panel 镜像文档](https://1panel.pro/docs/v2/user_manual/containers/image/) 和 [Docker load 文档](https://docs.docker.com/reference/cli/docker/image/load/)。
 
@@ -61,16 +61,16 @@ docker logs --tail=100 fatebook
 
 镜像导入后，也可在 **容器 → 编排 → 创建 → 编辑** 中粘贴源码里的 `deploy/docker-compose.yml`，或上传该文件后用“路径选择”。这与上一节创建容器二选一，避免重复占用端口。
 
-编排默认使用本地 `fatebook:2.0.0-amd64`，设置 `pull_policy: never`，不会访问镜像仓库。ARM 服务器应将 `image` 改为导入的 `fatebook:2.0.0-arm64`；需要固定版本时，直接填写时间戳标签。也可通过编排环境变量 `FATEBOOK_IMAGE` 指定完整镜像名。
+编排默认使用本地 `fatebook:2.1.0-amd64`，设置 `pull_policy: never`，不会访问镜像仓库。ARM 服务器应将 `image` 改为导入的 `fatebook:2.1.0-arm64`；需要固定版本时，直接填写时间戳标签。也可通过编排环境变量 `FATEBOOK_IMAGE` 指定完整镜像名。
 
 纯命令行备用方式如下；不要同时在面板和终端重复创建同一服务。先替换为实际包名，再执行：
 
 ```bash
-docker load -i fatebook-docker-2.0.0-实际时间戳-amd64.tar.gz
+docker load -i fatebook-docker-2.1.0-实际时间戳-amd64.tar.gz
 docker run -d --name fatebook --pull=never \
   --restart unless-stopped -p 6657:6657 \
   --log-opt max-size=10m --log-opt max-file=3 \
-  fatebook:2.0.0-amd64
+  fatebook:2.1.0-amd64
 ```
 
 已通过面板创建的容器或编排继续由面板管理。
@@ -97,15 +97,29 @@ docker run -d --name fatebook --pull=never \
 3. 在 1Panel 将镜像改为新时间戳标签，并**重建容器**。若面板没有修改镜像入口，停止并删除旧容器，再按原配置创建新容器；服务会短暂停止。仅点击“重启”不会切换到新镜像。
 4. 检查健康状态、日志和正式访问地址；提示玩家刷新已打开的游戏标签页，使页面和新资源一致。
 
-如更新异常，将镜像标签改回保留的旧版本并重建容器。不要依赖 `2.0.0-amd64` 等稳定别名回滚，它会随同剧情版本的新打包被更新；历史时间戳标签才对应固定构建。
+如更新异常，将镜像标签改回保留的旧版本并重建容器。不要依赖 `2.1.0-amd64` 等稳定别名回滚，它会随同应用版本的新打包被更新；历史时间戳标签才对应固定构建。
 
-只要访问地址不变，正常替换容器不会清空浏览器存档。但剧情版本或存档格式变化需要兼容处理，服务器回滚也不会回滚浏览器已经写入的数据。镜像内只保留本次构建资源，更新后仍打开旧页面的客户端应刷新。
+只要访问地址不变，正常替换容器不会清空浏览器存档。但剧情版本或存档格式变化需要兼容处理，服务器回滚也不会回滚浏览器已经写入的数据。2.1写入格式3后，2.0客户端会拒绝继续写入，因此旧镜像回滚不能作为存档降级；需要保留兼容格式3的2.1构建。规则迁移也不能回退。镜像内只保留本次构建资源，更新后仍打开旧页面的客户端应刷新。
 
 ## 6. 从源码重新打包
 
-2026-10-10 最新单文件发布：`release/fatebook-docker-2.0.0-20261010T082644734Z-amd64.tar.gz`（约36.79MiB），包含文字对比度修复、统一卡面尺寸、已完成任务只读记录，以及此前的收藏图鉴和全部角色立绘。1Panel导入后选择 `fatebook:2.0.0-20261010T082644734Z-amd64` 重建容器，映射 `6657:6657`。本次保持2.0存档兼容；静态检查与生产构建通过，没有进行本地游戏运行或冷导入验收。
+2026-10-12 发布为应用2.1.0、剧情2.0.0、存档容器格式3；旧2.0规则可继续，主动迁移仅允许地区且没有战局或奖励。最新单文件为 [fatebook-docker-2.1.0-20261012T114150000Z-amd64.tar.gz](../release/fatebook-docker-2.1.0-20261012T114150000Z-amd64.tar.gz)，约36.79MiB。导入后选 `fatebook:2.1.0-20261012T114150000Z-amd64` 重建，映射6657:6657。实际检查结果见 [2.1验证记录](../docs/rpg-verification.md)。本轮没有启动游戏容器、冷导入、浏览器或实体手机验收。旧发布包保留。
 
-Linux/AMD64 单文件发布使用 `npm run package:amd64`：执行静态检查和生产构建，只生成完整镜像的 `.tar.gz`，不会启动验证容器，也不会生成额外的校验文件或清单。仅重新导出已经构建好的网页时可执行 `node scripts/package-docker.mjs --arch=amd64 --archive-only`。
+本机没有运行Docker服务时，可用已有完整AMD64归档复用相同Nginx/Alpine运行层，替换网页与配置后输出新的完整镜像包：
+
+```bash
+npm run lint
+npm test
+npm run build
+python3 scripts/package-docker-offline.py \
+  --base release/fatebook-docker-2.0.0-20261010T082644734Z-amd64.tar.gz \
+  --created-at 2026-10-12T11:41:50.000Z \
+  --output release/fatebook-docker-2.1.0-20261012T114150000Z-amd64.tar.gz
+```
+
+离线方式校验原镜像配置与全部运行层、生成新镜像配置和标签，并核对网页与配置逐字节一致；不启动或修改任何现有容器。此命令拒绝覆盖已存在的包，再次发布时更换时间和输出文件名。把 `--output` 换成 `--verify` 可只复核成品。成品仍需在服务器导入验收。
+
+Linux/AMD64 单文件发布使用 `npm run package:amd64`：执行静态检查、自动测试和生产构建，只生成完整镜像的 `.tar.gz`，不会启动验证容器，也不会生成额外的校验文件或清单。仅重新导出已经构建好的网页时可执行 `node scripts/package-docker.mjs --arch=amd64 --archive-only`。
 
 本地需要 Node.js 22.12+、npm、已运行的 Docker，以及支持目标架构的 Docker Buildx。默认分别构建 `linux/amd64`、`linux/arm64`；Docker Desktop 通常提供跨架构构建所需环境，其他环境需要相应的构建器支持。首次构建需要联网获取基础镜像；服务器导入成品包无需拉取镜像。
 

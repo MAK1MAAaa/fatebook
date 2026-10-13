@@ -33,6 +33,7 @@ import {
 } from "../game/allocation";
 import { Portrait } from "../components/rpg/Artwork";
 import { characterPortraitKey } from "../rpg/portraits";
+import "./journey-pages.css";
 export default function Create() {
   const { start, pending, saving } = useGame();
   const [actor, setActor] = useState<ActorId>("custom");
@@ -52,6 +53,7 @@ export default function Create() {
   const parsedBudget = parseAllocationBudget(budgetInput);
   const budgetError = parsedBudget === null;
   const budgetEdited = parsedBudget !== null && parsedBudget !== budget;
+  const busy = saving || !!pending;
   const templates = ALLOCATION_TEMPLATES.map((template) => ({
     ...template,
     allocation: createTemplateAllocation(actor, budget, template.id),
@@ -187,6 +189,7 @@ export default function Create() {
                 你的名字
                 <input
                   maxLength={24}
+                  disabled={busy}
                   value={name}
                   onChange={(e) => {
                     setName(e.target.value);
@@ -199,6 +202,7 @@ export default function Create() {
                 出生种族
                 <select
                   value={race}
+                  disabled={busy}
                   onChange={(e) => {
                     setRace(e.target.value as Race);
                     setRandomized(false);
@@ -215,6 +219,7 @@ export default function Create() {
                 家庭出身
                 <select
                   value={origin}
+                  disabled={busy}
                   onChange={(e) => {
                     setOrigin(e.target.value as Origin);
                     setRandomized(false);
@@ -234,6 +239,7 @@ export default function Create() {
               <span>
                 {actor === "sylphie" ? "混血血统" : RACE_LABELS[preset.race]}
               </span>
+              <p className="identity-limit">出生年代、种族与家庭身份固定；加点不会改变身份。</p>
               {actor === "roxy" && <p className="identity-limit">先天限制：无法使用米格路德族念话。</p>}
               <details className="creation-fold identity-fold">
                 <summary>身份与先天特征<ChevronDown size={15} /></summary>
@@ -275,6 +281,7 @@ export default function Create() {
                 min="0"
                 max="60"
                 value={budget}
+                disabled={busy}
                 onChange={(e) => updateBudget(Number(e.target.value))}
               />
               <label className="exact-budget" htmlFor="budget-exact">
@@ -287,6 +294,7 @@ export default function Create() {
                   max="60"
                   step="1"
                   value={budgetInput}
+                  disabled={busy}
                   aria-invalid={budgetError}
                   aria-describedby="allocation-budget-message"
                   onChange={(e) => {
@@ -339,6 +347,8 @@ export default function Create() {
               );
             })}
           </div>
+          <p className="allocation-template-description">{templates.find(template => template.id === activeTemplate)?.description ?? "已手动调整，可展开下方属性逐项分配。"}</p>
+          <div className="creation-stat-preview creation-inline-stats" aria-label="当前初始六项属性" aria-live="polite">{STAT_KEYS.map(key => <span key={key}>{STAT_LABELS[key]}<strong>{preset.stats[key] + allocation[key]}</strong></span>)}</div>
           <details className="creation-fold manual-allocation">
           <summary>手动调整六项属性<ChevronDown size={15} /></summary>
           <div className="allocation-list">
@@ -422,11 +432,11 @@ export default function Create() {
             · {ORIGIN_LABELS[actor === "custom" ? origin : preset.origin]}
           </p>
           <p className="creation-birth-year">甲龙历 {preset.birthYear} 年出生</p>
-          <div className="creation-stat-preview" aria-label="初始六项属性">{STAT_KEYS.map(key => <span key={key}>{STAT_LABELS[key]}<strong>{preset.stats[key] + allocation[key]}</strong></span>)}</div>
           <label className="consent">
             <input
               type="checkbox"
               checked={consent}
+              disabled={busy}
               onChange={(e) => setConsent(e.target.checked)}
             />
             <span>包含原作剧透。战败可重试，确认剧情死亡后无法回退。</span>

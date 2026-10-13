@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router";
 import { ArrowRight, BookOpen, Check, ChevronDown, CircleHelp, Flag, MapPin, ScrollText, Skull, Swords } from "lucide-react";
 import { ENDINGS } from "../../content";
-import { DEATH_CHAPTER, QUESTS } from "../../rpg/content";
+import { DEATH_CHAPTER, ENCOUNTER_BY_ID, QUESTS } from "../../rpg/content";
 import { availableEncounters, chapterEvents, chapterProgress, endingOptions, regionInfo } from "../../rpg/engine";
 import type { EncounterDefinition, GameAction, QuestDefinition, RpgEvent, RpgState } from "../../rpg/types";
 import { RegionArtwork } from "./Artwork";
@@ -27,23 +27,26 @@ const FIELD_EFFECTS: Record<EncounterDefinition["modifier"], string> = {
   reinforce: "掩护：敌方初始格挡 6",
 };
 
-function QuestCard({ quest, state, next, busy, send, onLearning }: {
+function QuestCard({ quest, state, next, busy, send, onLearning, onPrerequisite }: {
   quest: QuestDefinition;
   state: RpgState;
   next?: EncounterDefinition;
   busy: boolean;
   send: Send;
   onLearning: () => void;
+  onPrerequisite: (encounterId: string) => void;
 }) {
   const accepted = state.acceptedQuests.includes(quest.id);
   const done = quest.encounters.filter(id => state.victories.includes(id)).length;
   const completed = done === quest.encounters.length;
   const learned = state.resolvedEvents.includes("rpg-learning");
+  const pending = quest.encounters.map(id => ENCOUNTER_BY_ID[id]).find(encounter => !state.victories.includes(encounter.id));
+  const missing = pending?.requires.filter(id => !state.victories.includes(id)) ?? [];
   if (completed) return <article className="quest-card compact-quest done">
     <div className="quest-top"><span><MapPin size={12} />{quest.location}</span><span><Check size={14} />已完成</span></div>
     <h3>{quest.title}</h3>
   </article>;
-  return <article className="quest-card compact-quest">
+  return <article className="quest-card compact-quest" id={`quest-${quest.id}`} tabIndex={-1}>
     <div className="quest-top"><span><MapPin size={12} />{quest.location}</span><strong>{done}/{quest.encounters.length}</strong></div>
     <h3>{quest.title}</h3>
     {!accepted && <p className="quest-context">{briefContext(quest.description)}</p>}
@@ -53,12 +56,13 @@ function QuestCard({ quest, state, next, busy, send, onLearning }: {
       {next.boss && <span className="quest-boss-tag">关键对决</span>}
     </div>}
     {accepted && next && next.modifier !== "none" && <p className="quest-field-effect">{FIELD_EFFECTS[next.modifier]}</p>}
+    {accepted && next?.goal === "rescue" && <p className="quest-field-effect">救援限时：须在 {next.rounds} 回合内完成。出发前检查攻击与抽牌比例，防守构筑可能来不及完成。</p>}
     <div className="quest-card-actions">
       <details className="quest-notes"><summary>任务说明<ChevronDown size={14} /></summary><p>{quest.description}</p>{next && <p>{next.summary}</p>}</details>
       {!accepted ? <button className="button subtle" disabled={busy} onClick={() => send({ type: "acceptQuest", questId: quest.id })}>接受委托<ArrowRight size={15} /></button>
           : !learned ? <button className="button subtle" onClick={onLearning}>先学习基础技艺<ArrowRight size={15} /></button>
             : next ? <button className="button primary" disabled={busy} onClick={() => send({ type: "startBattle", encounterId: next.id })}>{next.boss ? "进入关键对决" : "进入遭遇"}<ArrowRight size={15} /></button>
-              : <span className="muted">完成前置遭遇后开放</span>}
+              : missing.length ? <div className="quest-prerequisites"><span>先完成</span>{missing.map(id => <button key={id} onClick={() => onPrerequisite(id)}>{ENCOUNTER_BY_ID[id].title}<ArrowRight size={14} /></button>)}</div> : <span className="muted">完成前置遭遇后开放</span>}
     </div>
   </article>;
 }
@@ -86,6 +90,7 @@ export default function RegionHub({ state, busy, send, onAdvance, onFatal }: {
   const [questView, setQuestView] = useState<QuestView>("main");
   const [place, setPlace] = useState("all");
   const [focusedEventId, setFocusedEventId] = useState<string | null>(learned ? null : "rpg-learning");
+  const [focusedQuestId, setFocusedQuestId] = useState<string | null>(null);
   const region = regionInfo(state);
   const progress = chapterProgress(state);
   const events = chapterEvents(state);
@@ -103,7 +108,14 @@ export default function RegionHub({ state, busy, send, onAdvance, onFatal }: {
   const endings = endingOptions(state);
   const deaths = ENDINGS.filter(ending => ending.kind === "dead" && DEATH_CHAPTER[ending.id] === state.chapter && (ending.id !== "dead-illness" || state.character.actor === "roxy"));
   const openLearning = () => { setFocusedEventId("rpg-learning"); setView("events"); };
-  const renderQuest = (quest: QuestDefinition) => <QuestCard key={quest.id} quest={quest} state={state} next={encounters.find(encounter => encounter.questId === quest.id)} busy={busy} send={send} onLearning={openLearning} />;
+  const openPrerequisite = (id: string) => {
+    const encounter = ENCOUNTER_BY_ID[id];
+    setPlace("all"); setQuestView(encounter.optional ? "challenge" : "main"); setView("quests"); setFocusedQuestId(encounter.questId);
+    requestAnimationFrame(() => document.getElementById(`quest-${encounter.questId}`)?.focus());
+  };
+  const renderQuest = (quest: QuestDefinition) => <QuestCard key={quest.id} quest={quest} state={state} next={encounters.find(encounter => encounter.questId === quest.id)} busy={busy} send={send} onLearning={openLearning} onPrerequisite={openPrerequisite} />;
+  const featured = visibleQuests.find(quest => quest.id === focusedQuestId) ?? visibleQuests.find(quest => encounters.some(encounter => encounter.questId === quest.id)) ?? visibleQuests[0];
+  const later = visibleQuests.filter(quest => quest !== featured);
   const selectPlace = (next: string) => { setPlace(next); setQuestView("main"); setView("quests"); };
 
   return <div className="rpg-hub">
@@ -123,7 +135,8 @@ export default function RegionHub({ state, busy, send, onAdvance, onFatal }: {
           </nav>
           {!learned && questView !== "completed" && <button className="hub-learning-link" onClick={openLearning}><BookOpen size={17} />先向第一位导师学习，再进入战斗<ArrowRight size={16} /></button>}
           {place !== "all" && <div className="hub-place-filter"><span><MapPin size={14} />{place}</span><button onClick={() => setPlace("all")}>显示全部地点</button></div>}
-          <div className="quest-board compact-board">{visibleQuests.map(renderQuest)}{visibleQuests.length === 0 && <p className="hub-empty">{questView === "challenge" ? "这里没有待完成的挑战。" : questView === "completed" ? "这里还没有完成的委托。" : place === "all" ? "主线已完成，处理人生选择后可前往下一章。" : "这里的主线已完成，可切换地点继续探索。"}</p>}</div>
+          <div className="quest-board compact-board featured-quest">{questView === "completed" ? visibleQuests.map(renderQuest) : featured && renderQuest(featured)}{visibleQuests.length === 0 && <p className="hub-empty">{questView === "challenge" ? "这里没有待完成的挑战。" : questView === "completed" ? "这里还没有完成的委托。" : place === "all" ? "主线已完成，处理人生选择后可前往下一章。" : "这里的主线已完成，可切换地点继续探索。"}</p>}</div>
+          {questView !== "completed" && later.length > 0 && <details className="hub-fold later-quests"><summary><strong>其他委托</strong><span>{later.length}</span><ChevronDown size={16} /></summary><div className="quest-board compact-board">{later.map(renderQuest)}</div></details>}
         </>}
         {view === "events" && <>
           <div className="hub-section-heading"><h2>人生选择</h2></div>
@@ -151,7 +164,7 @@ export default function RegionHub({ state, busy, send, onAdvance, onFatal }: {
           {state.chapter < 7 && !ready && <span className="depart-hint">还需完成 {progress.total - progress.done} 场主线、{progress.events} 个选择</span>}
         </section>
         <details className="rpg-help parchment compact-help"><summary><CircleHelp size={17} /><strong>战术手册</strong><ChevronDown size={16} /></summary><p>每回合恢复3点行动力、抽5张。回合结束弃掉普通手牌，保留牌留在手里，消耗牌本场不再抽到。</p><p>格挡先吸收伤害，下回合清零。燃烧持续伤害；虚弱使伤害降至75%，易伤使承受伤害升至150%。</p><p>战败免费重试；相同牌组保持相同洗牌。强化、组牌、同伴和出牌顺序都能改变战术。</p><Link to="/world">世界资料与来源<ArrowRight size={14} /></Link></details>
-        {deaths.length > 0 && <details className="rpg-danger compact-danger"><summary><Skull size={16} /><strong>不可逆剧情分支</strong><ChevronDown size={16} /></summary><p>确认后会结束人生。普通战斗可以重试。</p>{deaths.map(ending => <button key={ending.id} disabled={busy} onClick={() => onFatal(ending.id)}>{ending.condition}<Skull size={14} /></button>)}</details>}
+        {deaths.length > 0 && <section className="rpg-danger compact-danger"><h3><Skull size={16} />不可逆剧情分支</h3><p>确认后会永久结束人生。普通战斗可以免费重试。</p>{deaths.map(ending => <button key={ending.id} disabled={busy} onClick={() => onFatal(ending.id)}>{ending.condition}<Skull size={14} /></button>)}</section>}
       </aside>
     </div>
   </div>;

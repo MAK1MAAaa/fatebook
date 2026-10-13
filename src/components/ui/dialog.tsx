@@ -3,6 +3,12 @@ import * as DialogPrimitive from "@radix-ui/react-dialog"
 import { XIcon } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+import { dialogCount, dialogPosition, isTopDialog, pushDialog, restoreDialogFocus, subscribeDialogs } from "./dialog-stack"
+
+function assignRef(ref: React.Ref<HTMLDivElement> | undefined, node: HTMLDivElement | null) {
+  if (typeof ref === "function") return ref(node)
+  if (ref) ref.current = node
+}
 
 function Dialog({
   ...props
@@ -44,7 +50,7 @@ function DialogOverlay({
   )
 }
 
-function DialogContent({
+function DialogLayer({
   className,
   children,
   showCloseButton = true,
@@ -52,9 +58,21 @@ function DialogContent({
 }: React.ComponentProps<typeof DialogPrimitive.Content> & {
   showCloseButton?: boolean
 }) {
+  const [layer] = React.useState(() => Symbol("dialog"))
+  const [opener] = React.useState(() => typeof document === "undefined" ? null : document.activeElement)
+  const contentRef = React.useRef<HTMLDivElement>(null)
+  const forwardedRef = props.ref
+  const attachRef = React.useCallback((node: HTMLDivElement | null) => {
+    contentRef.current = node
+    return assignRef(forwardedRef, node)
+  }, [forwardedRef])
+  React.useLayoutEffect(() => pushDialog(layer, contentRef.current), [layer])
+  React.useSyncExternalStore(subscribeDialogs, dialogCount, () => 0)
+  const position = Math.max(0, dialogPosition(layer))
+  const top = dialogPosition(layer) < 0 || isTopDialog(layer)
   return (
-    <DialogPortal data-slot="dialog-portal">
-      <DialogOverlay />
+    <>
+      <DialogOverlay style={{ zIndex: 50 + position * 2, pointerEvents: top ? undefined : "none" }} />
       <DialogPrimitive.Content
         data-slot="dialog-content"
         className={cn(
@@ -62,6 +80,27 @@ function DialogContent({
           className
         )}
         {...props}
+        ref={attachRef}
+        style={{ ...props.style, zIndex: 51 + position * 2 }}
+        inert={!top || undefined}
+        onEscapeKeyDown={event => {
+          if (!isTopDialog(layer)) event.preventDefault()
+          else props.onEscapeKeyDown?.(event)
+        }}
+        onInteractOutside={event => {
+          if (!isTopDialog(layer)) event.preventDefault()
+          else props.onInteractOutside?.(event)
+        }}
+        onCloseAutoFocus={event => {
+          props.onCloseAutoFocus?.(event)
+          if (!event.defaultPrevented) {
+            if (restoreDialogFocus(layer, opener instanceof HTMLElement ? opener : null)) event.preventDefault()
+            else {
+              const main = document.getElementById("main-content")
+              if (main) { event.preventDefault(); main.focus() }
+            }
+          }
+        }}
       >
         {children}
         {showCloseButton && (
@@ -74,8 +113,12 @@ function DialogContent({
           </DialogPrimitive.Close>
         )}
       </DialogPrimitive.Content>
-    </DialogPortal>
+    </>
   )
+}
+
+function DialogContent(props: React.ComponentProps<typeof DialogPrimitive.Content> & { showCloseButton?: boolean }) {
+  return <DialogPortal><DialogLayer {...props} /></DialogPortal>
 }
 
 function DialogHeader({ className, ...props }: React.ComponentProps<"div">) {
