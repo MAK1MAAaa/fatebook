@@ -1,7 +1,8 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 import { CARDS } from '../src/rpg/cards';
 import { CARD_PLAY_IMPACT_MS, type CardPlayCue } from '../src/rpg/card-play-effects';
-import { AUDIO_PREFERENCES_KEY, BattleAudioPlayer, buildBattleAudioPlan, MAX_BATTLE_AUDIO_VOICES, readBattleAudioPreferences, writeBattleAudioPreferences } from '../src/rpg/battle-audio';
+import { AUDIO_PREFERENCES_KEY, BattleAudioPlayer, buildBattleAudioPlan, buildBattleFeedbackAudioPlan, MAX_BATTLE_AUDIO_VOICES, MAX_BATTLE_FEEDBACK_AUDIO_NOTES, readBattleAudioPreferences, writeBattleAudioPreferences } from '../src/rpg/battle-audio';
+import { reduceBattleFeedbackCue, type BattleFeedbackCue, type BattleFeedbackEvent } from '../src/rpg/battle-feedback';
 
 function cue(overrides: Partial<CardPlayCue> = {}): CardPlayCue {
   return {
@@ -10,6 +11,17 @@ function cue(overrides: Partial<CardPlayCue> = {}): CardPlayCue {
     effect: { damage: 20 }, targets: [{ uid: 'enemy:1', index: 0, damage: 20, absorbed: 0, burn: 0, weak: 0, vulnerable: 0, defeated: false }],
     hero: { block: 0, heal: 0, cleanse: 0, draw: 0, energy: 0 }, ...overrides,
   };
+}
+
+function feedbackEvent(overrides: Partial<BattleFeedbackEvent> = {}): BattleFeedbackEvent {
+  return { kind: 'enemy-attack', enemyUid: 'enemy:1', enemyName: '迷宫守卫', label: '进攻',
+    color: '#c37c72', damage: 18, absorbed: 8, amount: 26, escortDamage: 0, hitIndex: 0, hitCount: 1,
+    offsetMs: 0, impactMs: 150, durationMs: 520, ...overrides };
+}
+
+function feedbackCue(overrides: Partial<BattleFeedbackCue> = {}): BattleFeedbackCue {
+  return { id: 'feedback:life:seed:2', lifeId: 'life', encounterId: 'encounter', battleSeed: 123,
+    revision: 2, sourceTurn: 1, turn: 2, durationMs: 520, events: [feedbackEvent()], outcome: null, ...overrides };
 }
 
 class FakeParam {
@@ -193,6 +205,131 @@ describe('独立声音偏好', () => {
   });
 });
 
+describe('敌人回合与胜负音效计划', () => {
+  it('逐 hit 同步视觉命中，连击只在第一击预备且使用实际伤害和吸收', () => {
+    const receipt = feedbackCue({ durationMs: 1560, events: [0, 1, 2].map(index => feedbackEvent({
+      hitIndex: index, hitCount: 3, offsetMs: index * 520, damage: index === 0 ? 0 : 18,
+    })) });
+    const plan = buildBattleFeedbackAudioPlan(receipt);
+    expect(plan.filter(note => note.kind === 'enemy-prepare').map(note => note.offsetMs)).toEqual([0]);
+    expect(plan.filter(note => note.kind === 'hero-hurt').map(note => note.offsetMs)).toEqual([670, 670, 1190, 1190]);
+    expect(plan.filter(note => note.kind === 'absorbed').map(note => note.offsetMs)).toEqual([150, 670, 1190]);
+  });
+  it('完全格挡只有预备和吸收音，不制造主角受伤', () => {
+    const plan = buildBattleFeedbackAudioPlan(feedbackCue({ events: [feedbackEvent({ damage: 0, absorbed: 30 })] }));
+    expect(plan.map(note => note.kind)).toEqual(['enemy-prepare', 'absorbed']);
+  });
+  it('确实发生但零伤害的攻击保留预备，不冒充格挡或伤害', () => {
+    const plan = buildBattleFeedbackAudioPlan(feedbackCue({ events: [feedbackEvent({ damage: 0, absorbed: 0, amount: 0 })] }));
+    expect(plan.map(note => note.kind)).toEqual(['enemy-prepare']);
+  });
+  it('没有实际行动事件时静默，不根据敌方意图预测出手', () => {
+    expect(buildBattleFeedbackAudioPlan(feedbackCue({ events: [] }))).toEqual([]);
+  });
+  it('主角燃烧单独发声，无敌人预备或格挡音', () => {
+    const plan = buildBattleFeedbackAudioPlan(feedbackCue({ events: [feedbackEvent({ kind: 'hero-burn', enemyUid: undefined, damage: 4, absorbed: 0 })] }));
+    expect(plan.map(note => note.kind)).toEqual(['hero-burn', 'hero-burn']);
+    expect(plan.every(note => note.offsetMs === 150)).toBe(true);
+  });
+  it('敌人燃烧受击与主角受伤音独立，燃烧击倒有短确认', () => {
+    const plan = buildBattleFeedbackAudioPlan(feedbackCue({ events: [feedbackEvent({ kind: 'enemy-burn', damage: 4, absorbed: 0, defeated: true })] }));
+    expect(plan.map(note => note.kind)).toEqual(['hit', 'defeat']);
+  });
+  it.each(['hero-burn', 'enemy-burn'] as const)('%s 没有实际生命损失时不发声', kind => {
+    expect(buildBattleFeedbackAudioPlan(feedbackCue({ events: [feedbackEvent({ kind, damage: 0, absorbed: 0, defeated: true })] }))).toEqual([]);
+  });
+  it.each(['burn', 'weak', 'vulnerable'] as const)('敌人实际施加 %s 产生短状态声', status => {
+    const plan = buildBattleFeedbackAudioPlan(feedbackCue({ events: [feedbackEvent({ kind: 'enemy-status', status, damage: 0, absorbed: 0, amount: 2 })] }));
+    expect(plan.map(note => note.kind)).toEqual(['status']);
+    expect(plan[0].type).toBe(status === 'burn' ? 'noise' : 'sine');
+  });
+  it.each([
+    ['enemy-guard', 'block'], ['enemy-heal', 'heal'], ['enemy-status', 'status'],
+    ['enemy-drain', 'drain'], ['enemy-ritual', 'ritual'],
+  ] as const)('%s 仅对已发生的正增量发出 %s 声', (kind, audioKind) => {
+    const active = feedbackEvent({ kind, damage: 0, absorbed: 0, amount: 5 });
+    expect(buildBattleFeedbackAudioPlan(feedbackCue({ events: [active] })).map(note => note.kind)).toEqual([audioKind]);
+    expect(buildBattleFeedbackAudioPlan(feedbackCue({ events: [{ ...active, amount: 0 }] }))).toEqual([]);
+  });
+  it('护送目标受伤有独立提示，主角完全格挡不混成主角受伤', () => {
+    const plan = buildBattleFeedbackAudioPlan(feedbackCue({ events: [feedbackEvent({ damage: 0, absorbed: 26, escortDamage: 3 })] }));
+    expect(plan.map(note => note.kind)).toEqual(['enemy-prepare', 'absorbed', 'escort-hit']);
+  });
+  it('胜利使用上行尾音，安排在最后一次真实行动之后', () => {
+    const receipt = feedbackCue({ durationMs: 1320, outcome: { result: 'won', reason: '全部敌人已击退', offsetMs: 520, durationMs: 800 } });
+    const plan = buildBattleFeedbackAudioPlan(receipt), ending = plan.filter(note => note.kind === 'victory');
+    expect(ending).toHaveLength(4);
+    expect(ending.map(note => note.frequency)).toEqual([523.25, 659.25, 783.99, 1046.5]);
+    expect(ending.map(note => note.offsetMs)).toEqual([520, 630, 740, 850]);
+    expect(plan.some(note => note.kind === 'loss')).toBe(false);
+    expect(plan.every(note => note.offsetMs + note.durationMs <= receipt.durationMs)).toBe(true);
+  });
+  it('败北以低落尾音区分胜利，目标失败也无需伪造主角受伤', () => {
+    const plan = buildBattleFeedbackAudioPlan(feedbackCue({ durationMs: 800, events: [], outcome: { result: 'lost', reason: '仪式失控', offsetMs: 0, durationMs: 800 } }));
+    expect(plan.map(note => note.kind)).toEqual(['loss', 'loss']);
+    expect(plan.every(note => note.frequencyEnd < note.frequency)).toBe(true);
+  });
+  it('声音计划使用回执数据，确定性生成且不改动回执或调用全局随机', () => {
+    const receipt = feedbackCue(), snapshot = structuredClone(receipt), random = vi.spyOn(Math, 'random');
+    const plan = buildBattleFeedbackAudioPlan(receipt);
+    expect(plan).toEqual(buildBattleFeedbackAudioPlan(receipt));
+    expect(receipt).toEqual(snapshot); expect(random).not.toHaveBeenCalled();
+    for (const note of plan) {
+      expect(note.durationMs).toBeGreaterThan(0); expect(note.durationMs).toBeLessThanOrEqual(520);
+      expect(note.volume).toBeGreaterThan(0); expect(note.volume).toBeLessThan(0.4);
+      expect(note.frequency).toBeGreaterThan(0); expect(note.frequencyEnd).toBeGreaterThan(0);
+    }
+  });
+  it.each(['won', 'lost'] as const)('极端事件计划保持 28 音符上限并保留所有 %s 尾音', result => {
+    const events = Array.from({ length: 100 }, (_, index) => feedbackEvent({
+      offsetMs: index * 20, impactMs: 10, durationMs: 20, hitIndex: 0, escortDamage: 4,
+    }));
+    const receipt = feedbackCue({ durationMs: 2800, events, outcome: { result, reason: '测试结果', offsetMs: 2000, durationMs: 800 } });
+    const plan = buildBattleFeedbackAudioPlan(receipt), kind = result === 'won' ? 'victory' : 'loss';
+    expect(plan).toHaveLength(MAX_BATTLE_FEEDBACK_AUDIO_NOTES);
+    expect(plan.filter(note => note.kind === kind)).toHaveLength(result === 'won' ? 4 : 2);
+    expect(plan.at(-1)!.kind).toBe(kind);
+    expect(Math.max(...plan.map(note => note.offsetMs + note.durationMs))).toBeLessThanOrEqual(2800);
+  });
+  it('常见三敌各三连击在上限内保留每次实际受伤与吸收，优先削减纹理', () => {
+    const events = Array.from({ length: 9 }, (_, index) => feedbackEvent({
+      offsetMs: index * 260, impactMs: 130, durationMs: 260, hitIndex: index % 3,
+      hitCount: 3, enemyUid: `enemy:${Math.floor(index / 3)}`, escortDamage: 4,
+    }));
+    const plan = buildBattleFeedbackAudioPlan(feedbackCue({ durationMs: 3140, events,
+      outcome: { result: 'lost', reason: '护送目标被击倒', offsetMs: 2340, durationMs: 800 } }));
+    expect(plan).toHaveLength(MAX_BATTLE_FEEDBACK_AUDIO_NOTES);
+    expect(new Set(plan.filter(note => note.kind === 'hero-hurt').map(note => note.offsetMs)).size).toBe(9);
+    expect(plan.filter(note => note.kind === 'absorbed')).toHaveLength(9);
+    expect(plan.filter(note => note.kind === 'enemy-prepare')).toHaveLength(3);
+    expect(plan.filter(note => note.kind === 'loss')).toHaveLength(2);
+  });
+  it('减少动画把多敌连击聚合一次，同步静态反馈且保留短胜利音', () => {
+    const receipt = feedbackCue({ durationMs: 3140, events: Array.from({ length: 9 }, (_, index) => feedbackEvent({
+      offsetMs: index * 260, impactMs: 130, durationMs: 260, hitIndex: index % 3, escortDamage: 4,
+    })), outcome: { result: 'won', reason: '目标完成', offsetMs: 2340, durationMs: 800 } });
+    const short = reduceBattleFeedbackCue(receipt), plan = buildBattleFeedbackAudioPlan(short);
+    expect(plan.filter(note => note.kind === 'enemy-prepare')).toHaveLength(1);
+    expect(plan.filter(note => note.kind === 'hero-hurt')).toHaveLength(2);
+    expect(plan.filter(note => note.kind === 'absorbed')).toHaveLength(1);
+    expect(plan.filter(note => note.kind === 'escort-hit')).toHaveLength(1);
+    expect(plan.filter(note => note.kind === 'victory')).toHaveLength(4);
+    expect(plan.filter(note => note.kind !== 'victory').every(note => note.offsetMs === 0)).toBe(true);
+    expect(plan.every(note => note.offsetMs + note.durationMs <= 220)).toBe(true);
+  });
+  it('减少动画把各机制聚合一次，燃烧零伤害与状态零增量仍静默', () => {
+    const events = ['hero-burn', 'enemy-burn', 'enemy-guard', 'enemy-heal', 'enemy-status', 'enemy-drain', 'enemy-ritual']
+      .flatMap(kind => [0, 1, 2].map(index => feedbackEvent({ kind: kind as BattleFeedbackEvent['kind'], damage: kind.includes('burn') ? 3 : 0,
+        absorbed: 0, amount: 2, offsetMs: index * 520, defeated: kind === 'enemy-burn', status: 'burn' })));
+    const plan = buildBattleFeedbackAudioPlan(reduceBattleFeedbackCue(feedbackCue({ durationMs: 3000, events })));
+    expect(plan.filter(note => note.kind === 'hero-burn')).toHaveLength(2);
+    for (const kind of ['hit', 'block', 'heal', 'status', 'drain', 'ritual', 'defeat']) expect(plan.filter(note => note.kind === kind)).toHaveLength(1);
+    expect(plan.some(note => note.kind === 'hero-hurt' || note.kind === 'enemy-prepare')).toBe(false);
+    const zero = events.map(event => ({ ...event, damage: 0, amount: 0, defeated: false }));
+    expect(buildBattleFeedbackAudioPlan(reduceBattleFeedbackCue(feedbackCue({ events: zero })))).toEqual([]);
+  });
+});
+
 describe('Web Audio 生命周期和浏览器失败降级', () => {
   it('prepare 前 play 不自行创建上下文，之后也不补播该回执', () => {
     const sound = player(); sound.play(cue()); expect(FakeContext.instances).toHaveLength(0);
@@ -339,5 +476,83 @@ describe('Web Audio 生命周期和浏览器失败降级', () => {
     vi.stubGlobal('document', undefined); vi.stubGlobal('window', undefined);
     const sound = player(); expect(() => sound.prepare()).not.toThrow(); expect(() => sound.play(cue())).not.toThrow();
     expect(() => sound.dispose()).not.toThrow(); expect(FakeContext.instances).toHaveLength(0);
+  });
+});
+
+describe('敌人反馈共用音频设备和生命周期', () => {
+  it('playFeedback 在手势 prepare 前不创建设备，也不会事后补播', () => {
+    const sound = player(); sound.playFeedback(feedbackCue());
+    expect(FakeContext.instances).toHaveLength(0);
+    sound.prepare(); sound.playFeedback(feedbackCue()); expect(context().sources).toHaveLength(0);
+    sound.playFeedback(feedbackCue({ id: 'fresh-enemy-turn' })); expect(context().sources).toHaveLength(4);
+  });
+  it('敌方反馈与卡牌共用一个上下文，按同一时钟同步命中', () => {
+    const sound = player(), timeout = vi.spyOn(globalThis, 'setTimeout');
+    sound.prepare(); sound.play(cue()); sound.playFeedback(feedbackCue());
+    expect(FakeContext.instances).toHaveLength(1);
+    expect(context().sources.slice(4).map(source => source.start.mock.calls[0][0])).toEqual([12, 12.15, 12.15, 12.15]);
+    expect(timeout).not.toHaveBeenCalled(); expect(context().createBuffer).toHaveBeenCalledOnce();
+    expect(context().compressors).toHaveLength(1);
+  });
+  it('最后卡牌与相同标识的胜利回执分别去重，不互相吞掉命中与尾音', () => {
+    const sound = player(); sound.prepare();
+    const card = cue({ id: 'same-action' }), victory = feedbackCue({ id: 'same-action', durationMs: 1400, events: [],
+      outcome: { result: 'won', reason: '全部敌人已击退', offsetMs: 600, durationMs: 800 } });
+    sound.play(card); sound.playFeedback(victory); sound.play(card); sound.playFeedback(victory);
+    expect(context().sources).toHaveLength(8);
+    expect(context().sources[2].start).toHaveBeenCalledWith(12.15);
+    expect(context().sources[4].start).toHaveBeenCalledWith(12.6);
+  });
+  it.each([{ enabled: false, volume: 0.55 }, { enabled: true, volume: 0 }])('敌人 / 结算回执遵守 $enabled / $volume，恢复声音不补播', preferences => {
+    const sound = player(preferences); sound.prepare(); sound.playFeedback(feedbackCue());
+    expect(FakeContext.instances).toHaveLength(0);
+    sound.setPreferences({ enabled: true, volume: 0.55 }); sound.prepare(); sound.playFeedback(feedbackCue());
+    expect(context().sources).toHaveLength(0);
+    sound.playFeedback(feedbackCue({ id: 'audible-enemy-turn' })); expect(context().sources).toHaveLength(4);
+  });
+  it('切入后台停止敌人音序和已排程尾音，切回不补播旧回合', () => {
+    const sound = player(); sound.prepare();
+    sound.playFeedback(feedbackCue({ durationMs: 1320, outcome: { result: 'lost', reason: '失去作战能力', offsetMs: 520, durationMs: 800 } }));
+    const audio = context(); expect(audio.sources).toHaveLength(6);
+    hide(); expect(sound.inspect().activeVoices).toBe(0);
+    expect(audio.sources.every(source => source.disconnect.mock.calls.length === 1)).toBe(true);
+    sound.playFeedback(feedbackCue({ id: 'hidden-feedback' }));
+    visibility.hidden = false; sound.playFeedback(feedbackCue({ id: 'hidden-feedback' })); expect(audio.sources).toHaveLength(6);
+    sound.playFeedback(feedbackCue({ id: 'visible-feedback' })); expect(audio.sources).toHaveLength(10);
+  });
+  it('敌人反馈和卡牌音色共享 cancel，取消后相同回执不再次排程', () => {
+    const sound = player(); sound.prepare(); sound.play(cue()); sound.playFeedback(feedbackCue());
+    expect(sound.inspect().activeVoices).toBe(8); sound.cancel();
+    expect(sound.inspect().activeVoices).toBe(0);
+    expect(context().sources.every(source => source.onended === null && source.stop.mock.calls.length === 2)).toBe(true);
+    sound.playFeedback(feedbackCue()); sound.play(cue()); expect(context().sources).toHaveLength(8);
+  });
+  it('敌人回合在 resume 尚未成功时不积压音序或尾音', () => {
+    const sound = player(); sound.prepare(); context().state = 'suspended';
+    sound.playFeedback(feedbackCue()); context().state = 'running'; sound.playFeedback(feedbackCue());
+    expect(context().sources).toHaveLength(0);
+    sound.playFeedback(feedbackCue({ id: 'new-after-resume' })); expect(context().sources).toHaveLength(4);
+  });
+  it('大量卡牌 / 敌人回合交错仍遵守 32 声部上限，终局有声且卸载释放全部', () => {
+    const sound = player(); sound.prepare();
+    for (let index = 0; index < 30; index++) {
+      sound.play(cue({ id: `card:${index}` })); sound.playFeedback(feedbackCue({ id: `enemy:${index}` }));
+    }
+    sound.playFeedback(feedbackCue({ id: 'final-loss', durationMs: 800, events: [],
+      outcome: { result: 'lost', reason: '仪式失控', offsetMs: 0, durationMs: 800 } }));
+    expect(sound.inspect().activeVoices).toBe(MAX_BATTLE_AUDIO_VOICES);
+    expect(context().sources.slice(-2).every(source => source.onended !== null)).toBe(true);
+    const audio = context(); sound.dispose();
+    expect(audio.sources.every(source => source.onended === null)).toBe(true);
+    expect(sound.inspect()).toEqual({ state: 'idle', activeVoices: 0 });
+    sound.playFeedback(feedbackCue({ id: 'after-dispose' })); expect(FakeContext.instances).toHaveLength(1);
+  });
+  it('反馈渲染失败关闭部分声部和之前的卡牌音，错误不外溢到战斗', () => {
+    const sound = player(); sound.prepare(); sound.play(cue()); const audio = context();
+    audio.createBiquadFilter.mockImplementationOnce(() => { throw new Error('device error'); });
+    expect(() => sound.playFeedback(feedbackCue())).not.toThrow();
+    expect(audio.sources).toHaveLength(5);
+    expect(audio.sources.every(source => source.onended === null && source.disconnect.mock.calls.length === 1)).toBe(true);
+    expect(sound.inspect().activeVoices).toBe(0);
   });
 });

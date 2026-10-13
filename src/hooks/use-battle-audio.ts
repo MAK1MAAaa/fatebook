@@ -1,7 +1,8 @@
-import { useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { BattleAudioPlayer, readBattleAudioPreferences, writeBattleAudioPreferences } from '../rpg/battle-audio';
 import type { BattleAudioPreferences } from '../rpg/battle-audio';
 import type { CardPlayCue } from '../rpg/card-play-effects';
+import type { BattleFeedbackCue } from '../rpg/battle-feedback';
 
 export function useBattleAudio() {
   const [preferences, setPreferences] = useState(readBattleAudioPreferences);
@@ -22,6 +23,12 @@ export function useBattleAudio() {
   function play(cue: CardPlayCue) {
     try { player.current?.play(cue); } catch { /* Keep visual feedback if audio is unavailable. */ }
   }
+  function playFeedback(cue: BattleFeedbackCue) {
+    try { player.current?.playFeedback(cue); } catch { /* Keep visual feedback if audio is unavailable. */ }
+  }
+  const cancel = useCallback(() => {
+    try { player.current?.cancel(); } catch { /* State changes remain independent from device cleanup. */ }
+  }, []);
   function update(next: Partial<BattleAudioPreferences>) {
     const value = { ...current.current, ...next };
     current.current = value;
@@ -38,5 +45,5 @@ export function useBattleAudio() {
     prepare();
   }
   const inspect = () => player.current?.inspect() ?? { state: 'idle' as const, activeVoices: 0 };
-  return { preferences, prepare, play, setEnabled, setVolume, inspect };
+  return { preferences, prepare, play, playFeedback, cancel, setEnabled, setVolume, inspect };
 }

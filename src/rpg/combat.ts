@@ -2,6 +2,7 @@ import { COMPANIONS } from './cards';
 import { cardFor, equipmentFor, rulesetVersion, CURRENT_RULESET } from './rulesets';
 import { ENEMY_BY_ID } from './enemies';
 import { ENCOUNTER_BY_ID } from './content';
+import { emitCombatEvent, type CombatEventObserver } from './combat-events';
 import type { BattleState, CardEffect, EnemyUnit, Intent, OwnedCard, RpgState, Statuses } from './types';
 export const emptyStatuses=():Statuses=>({burn:0,weak:0,vulnerable:0});
 export function hashSeed(text:string):number {let h=2166136261;for(const ch of text){h^=ch.charCodeAt(0);h=Math.imul(h,16777619);}return h>>>0||1;}
@@ -63,20 +64,20 @@ export function playCard(state:RpgState,uid:string,target?:string){const b=state
 }
 export function activateSupport(state:RpgState,target?:string){const b=state.battle!;const comp=COMPANIONS.find(c=>c.id===state.companionId);if(b.result!=='playing'||!comp)throw new Error('当前没有可用援助。');if(b.supportCooldown>0)throw new Error('援助还在冷却。');applyCombatEffect(state,{...comp.skill},target);b.supportCooldown=3;log(b,`${comp.name}：${comp.skillName}。`);}
 export function drinkPotion(state:RpgState){const b=state.battle!;if(b.result!=='playing'||b.potions<1)throw new Error('本场没有剩余应急治疗。');b.potions--;b.hp=Math.min(b.maxHp,b.hp+35+state.chapter*5);log(b,'使用战斗应急包；重试会恢复本场用量。');}
-export function endTurn(state:RpgState){const b=state.battle!;if(b.result!=='playing')throw new Error('本场战斗已经结束。');
+export function endTurn(state:RpgState,onCombatEvent?:CombatEventObserver){const b=state.battle!;if(b.result!=='playing')throw new Error('本场战斗已经结束。');
  const retained:string[]=[];for(const uid of b.hand){const own=state.collection.find(c=>c.uid===uid)!;(cardFor(state,own.cardId).retain?retained:b.discard).push(uid);}b.hand=retained;
- if(b.statuses.burn>0){const damage=Math.min(b.hp,b.statuses.burn);b.hp-=damage;b.damageTaken+=damage;log(b,`燃烧造成 ${damage} 点伤害。`);b.statuses.burn=Math.max(0,b.statuses.burn-1);}
+ if(b.statuses.burn>0){const damage=Math.min(b.hp,b.statuses.burn);b.hp-=damage;b.damageTaken+=damage;log(b,`燃烧造成 ${damage} 点伤害。`);b.statuses.burn=Math.max(0,b.statuses.burn-1);emitCombatEvent(onCombatEvent,{kind:'hero-burn',label:'燃烧',damage,absorbed:0,amount:damage,escortDamage:0,defeated:b.hp<=0});}
  evaluate(b);if(b.result!=='playing')return;
  // Expire the hero's previous debuffs before enemies apply new ones.
  b.statuses.weak=Math.max(0,b.statuses.weak-1);b.statuses.vulnerable=Math.max(0,b.statuses.vulnerable-1);
- for(const enemy of b.enemies){if(enemy.hp<=0)continue;enemy.block=0;const burning=enemy.statuses.burn>0;if(burning){enemy.hp=Math.max(0,enemy.hp-enemy.statuses.burn);enemy.statuses.burn=Math.max(0,enemy.statuses.burn-1);}evaluate(b);if(b.result!=='playing')return;if(enemy.hp<=0)continue;
+ for(const enemy of b.enemies){if(enemy.hp<=0)continue;enemy.block=0;const burning=enemy.statuses.burn>0;if(burning){const damage=Math.min(enemy.hp,enemy.statuses.burn);enemy.hp=Math.max(0,enemy.hp-enemy.statuses.burn);enemy.statuses.burn=Math.max(0,enemy.statuses.burn-1);emitCombatEvent(onCombatEvent,{kind:'enemy-burn',enemyUid:enemy.uid,label:'燃烧',damage,absorbed:0,amount:damage,escortDamage:0,defeated:enemy.hp<=0});}evaluate(b);if(b.result!=='playing')return;if(enemy.hp<=0)continue;
   const intent=enemy.intent,scale=state.chapter-1;
-  if(intent.kind==='attack'){for(let hit=0;hit<(intent.hits??1);hit++){const amount=scaledDamage(intent.amount+Math.floor(scale*1.2),enemy.statuses,b.statuses),actual=hurt(b,amount);b.damageTaken+=actual;if(ENCOUNTER_BY_ID[b.encounterId].goal==='escort')b.escortHp=Math.max(0,b.escortHp-Math.max(2,Math.floor((amount-actual)/8)+Math.floor(actual/4)));log(b,`${enemy.name} · ${intent.label}：${actual} 伤害。`);}}
-  else if(intent.kind==='guard')enemy.block=intent.amount+scale;
-  else if(intent.kind==='heal'){const anti=burning||state.flags.includes('hydraCounterKnown');enemy.hp=Math.min(enemy.maxHp,enemy.hp+Math.floor(intent.amount*(anti?.5:1)));log(b,`${enemy.name}恢复生命${anti?'，反再生准备降低了恢复量':''}。`);}
-  else if(intent.kind==='drain'){b.hand.splice(0,Math.min(intent.amount,b.hand.length)).forEach(id=>b.discard.push(id));log(b,`${enemy.name}扰乱保留的手牌。`);}
-  else if(intent.kind==='ritual'){b.ritual+=intent.amount;log(b,`仪式值 +${intent.amount}。`);}
-  else b.statuses[intent.kind]+=intent.amount;
+  if(intent.kind==='attack'){for(let hit=0;hit<(intent.hits??1);hit++){const amount=scaledDamage(intent.amount+Math.floor(scale*1.2),enemy.statuses,b.statuses),oldBlock=b.block,oldHp=b.hp,oldEscortHp=b.escortHp,actual=hurt(b,amount);b.damageTaken+=actual;if(ENCOUNTER_BY_ID[b.encounterId].goal==='escort')b.escortHp=Math.max(0,b.escortHp-Math.max(2,Math.floor((amount-actual)/8)+Math.floor(actual/4)));log(b,`${enemy.name} · ${intent.label}：${actual} 伤害。`);emitCombatEvent(onCombatEvent,{kind:'enemy-attack',enemyUid:enemy.uid,label:intent.label,damage:actual,absorbed:oldBlock-b.block,amount,escortDamage:oldEscortHp-b.escortHp,hitIndex:hit,hitCount:intent.hits??1,defeated:oldHp>0&&b.hp<=0});}}
+  else if(intent.kind==='guard'){enemy.block=intent.amount+scale;emitCombatEvent(onCombatEvent,{kind:'enemy-guard',enemyUid:enemy.uid,label:intent.label,damage:0,absorbed:0,amount:enemy.block,escortDamage:0});}
+  else if(intent.kind==='heal'){const oldHp=enemy.hp,anti=burning||state.flags.includes('hydraCounterKnown');enemy.hp=Math.min(enemy.maxHp,enemy.hp+Math.floor(intent.amount*(anti?.5:1)));log(b,`${enemy.name}恢复生命${anti?'，反再生准备降低了恢复量':''}。`);emitCombatEvent(onCombatEvent,{kind:'enemy-heal',enemyUid:enemy.uid,label:intent.label,damage:0,absorbed:0,amount:enemy.hp-oldHp,escortDamage:0});}
+  else if(intent.kind==='drain'){const removed=b.hand.splice(0,Math.min(intent.amount,b.hand.length));removed.forEach(id=>b.discard.push(id));log(b,`${enemy.name}扰乱保留的手牌。`);emitCombatEvent(onCombatEvent,{kind:'enemy-drain',enemyUid:enemy.uid,label:intent.label,damage:0,absorbed:0,amount:removed.length,escortDamage:0});}
+  else if(intent.kind==='ritual'){b.ritual+=intent.amount;log(b,`仪式值 +${intent.amount}。`);emitCombatEvent(onCombatEvent,{kind:'enemy-ritual',enemyUid:enemy.uid,label:intent.label,damage:0,absorbed:0,amount:intent.amount,escortDamage:0});}
+  else {b.statuses[intent.kind]+=intent.amount;emitCombatEvent(onCombatEvent,{kind:'enemy-status',enemyUid:enemy.uid,label:intent.label,damage:0,absorbed:0,amount:intent.amount,escortDamage:0,status:intent.kind});}
   enemy.statuses.weak=Math.max(0,enemy.statuses.weak-1);enemy.statuses.vulnerable=Math.max(0,enemy.statuses.vulnerable-1);
   evaluate(b);if(b.result!=='playing')return;
  }

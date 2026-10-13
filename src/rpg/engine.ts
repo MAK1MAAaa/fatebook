@@ -5,6 +5,7 @@ import { COMPANIONS } from './cards';
 import { cardFor, cardsFor, equipmentFor, rulesetVersion, CURRENT_RULESET, LEGACY_RULESET } from './rulesets';
 import { CHAPTER_INFO, DEATH_CHAPTER, ENCOUNTERS, ENCOUNTER_BY_ID, EVENTS, EVENT_BY_ID, QUEST_BY_ID } from './content';
 import { createBattle, endTurn, hashSeed, playCard, drinkPotion, activateSupport, cardEffect } from './combat';
+import type { CombatEventObserver } from './combat-events';
 import type { CardDefinition, GameAction, RpgState, OwnedCard, RulesetVersion } from './types';
 const clamp=(n:number,max:number)=>Math.max(0,Math.min(max,n));
 export function canLearnCard(state:RpgState,card:CardDefinition):boolean{if(card.id==='identity-alliance'&&!state.flags.includes('superdTrust')&&!state.flags.includes('dragonPact'))return false;return card.school==='neutral'||(card.school==='identity'?(!card.actor||card.actor===state.character.actor)&&state.chapter>=card.rank:(state.skills[card.school]??0)>=card.rank);}
@@ -54,14 +55,14 @@ export function firstVictoryRewards(state:RpgState,encounterId:string):string[]{
  return chosen.map(c=>c.id);
 }
 function settleBattle(state:RpgState,previous:RpgState){const b=state.battle;if(!b||b.result!=='won'||previous.battle?.result==='won')return;const encounter=ENCOUNTER_BY_ID[b.encounterId];if(state.claimedRewards.includes(encounter.id))return;state.scene='reward';state.reward={encounterId:encounter.id,choices:firstVictoryRewards(state,encounter.id)};}
-export function resolveAction(previous:RpgState,action:GameAction,expectedRevision:number):RpgState{
+export function resolveAction(previous:RpgState,action:GameAction,expectedRevision:number,onCombatEvent?:CombatEventObserver):RpgState{
  rulesetVersion(previous);if(previous.status!=='active')throw new Error('这段人生已封存，不能继续操作。');if(expectedRevision!==previous.revision)throw new Error('动作已结算或其他页面更新了存档，请重新读取。');const state=structuredClone(previous);
  switch(action.type){
  case 'migrateRuleset': {if(action.confirmed!==true)throw new Error('规则更新需要明确确认。');if(state.scene!=='hub'||state.battle!==null||state.reward!==null)throw new Error('请回到地区并结算战斗和奖励后再更新规则。');if(rulesetVersion(state)!==LEGACY_RULESET)throw new Error('当前已经使用优化规则。');state.rulesetVersion=CURRENT_RULESET;break;}
  case 'acceptQuest': {camp(state);const q=QUEST_BY_ID[action.questId];if(!q||q.chapter!==state.chapter)throw new Error('任务不在当前章节。');if(state.acceptedQuests.includes(q.id))throw new Error('已经接受该任务。');state.acceptedQuests.push(q.id);break;}
  case 'startBattle': {camp(state);const e=ENCOUNTER_BY_ID[action.encounterId];if(!e||e.chapter!==state.chapter)throw new Error('当前不能进入这场遭遇。');if(!state.resolvedEvents.includes('rpg-learning'))throw new Error('先完成第一位导师的基础教学。');if(!state.acceptedQuests.includes(e.questId)||!e.requires.every(id=>state.victories.includes(id)))throw new Error('先接受任务并完成前置遭遇。');if(state.victories.includes(e.id)&&!action.practice)throw new Error('任务已经完成，可改为无奖励练习。');validateDeck(state,state.deck);state.battle=createBattle(state,e.id);state.scene='battle';state.battleAttempts[e.id]=(state.battleAttempts[e.id]??0)+1;break;}
  case 'playCard': if(state.scene!=='battle'||!state.battle)throw new Error('当前不在战斗中。');playCard(state,action.uid,action.target);break;
- case 'endTurn': if(state.scene!=='battle'||!state.battle)throw new Error('当前不在战斗中。');endTurn(state);break;
+ case 'endTurn': if(state.scene!=='battle'||!state.battle)throw new Error('当前不在战斗中。');endTurn(state,onCombatEvent);break;
  case 'support': if(state.scene!=='battle'||!state.battle)throw new Error('当前不在战斗中。');activateSupport(state,action.target);break;
  case 'potion': if(state.scene!=='battle'||!state.battle)throw new Error('当前不在战斗中。');drinkPotion(state);break;
  case 'retryBattle': {if(state.battle?.result!=='lost')throw new Error('只有战败后才能重试。');validateDeck(state,state.deck);const id=state.battle.encounterId;state.battle=createBattle(state,id);state.battleAttempts[id]=(state.battleAttempts[id]??0)+1;state.scene='battle';break;}

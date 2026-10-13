@@ -6,9 +6,9 @@ import { createRpg, resolveAction } from '../src/rpg/engine';
 import { CARD_BY_ID } from '../src/rpg/cards';
 import { cardFor } from '../src/rpg/rulesets';
 import { CARD_PLAY_DURATION_MS, MAX_CARD_PLAY_CUES } from '../src/rpg/card-play-effects';
-import { loadRpgEnvelope, listRpgSaves, persistRpg, STORAGE_KEY } from '../src/rpg/storage';
+import { loadRpgEnvelope, listRpgSaves, persistRpg, STORAGE_KEY, validateRpg } from '../src/rpg/storage';
 import type { RpgStore } from '../src/rpg/context';
-import type { GameAction } from '../src/rpg/types';
+import type { GameAction, RpgState } from '../src/rpg/types';
 const runtime = vi.hoisted(() => ({
   slots: [] as unknown[],
   cursor: 0,
@@ -17,6 +17,7 @@ const runtime = vi.hoisted(() => ({
     { deps?: readonly unknown[]; cleanup?: () => void }
   >(),
   scheduled: [] as (() => void)[],
+  pathname: '/story/async-battle',
   navigate: vi.fn(),
   lock: vi.fn(),
 }));
@@ -24,6 +25,8 @@ const audio = vi.hoisted(() => ({
   preferences: { enabled: true, volume: 0.65 },
   prepare: vi.fn(),
   play: vi.fn(),
+  playFeedback: vi.fn(),
+  cancel: vi.fn(),
   setEnabled: vi.fn(),
   setVolume: vi.fn(),
 }));
@@ -77,7 +80,7 @@ vi.mock("react", async (importOriginal) => {
     },
   };
 });
-vi.mock("react-router", () => ({ useNavigate: () => runtime.navigate }));
+vi.mock("react-router", () => ({ useNavigate: () => runtime.navigate, useLocation: () => ({ pathname: runtime.pathname }) }));
 vi.mock("../src/game/save-lock", () => ({
   withSaveLock: (operation: () => unknown) => runtime.lock(operation),
 }));
@@ -146,9 +149,12 @@ beforeEach(() => {
   runtime.cursor = 0;
   runtime.effects.clear();
   runtime.scheduled = [];
+  runtime.pathname = '/story/async-battle';
   runtime.navigate.mockReset();
   audio.prepare.mockReset();
   audio.play.mockReset();
+  audio.playFeedback.mockReset();
+  audio.cancel.mockReset();
   audio.setEnabled.mockReset();
   audio.setVolume.mockReset();
   runtime.lock
@@ -182,6 +188,37 @@ function ready() {
   return state;
 }
 const saved = () => listRpgSaves(loadRpgEnvelope())[0].state!;
+
+function winningCardFixture() {
+  const state = ready(), battle = state.battle!;
+  // Seed a valid near-victory snapshot at the test storage boundary. The play
+  // and subsequent save still run through the production resolver/validator.
+  battle.enemies.forEach((enemy, index) => { enemy.hp = index === 0 ? 1 : 0; enemy.block = 0; });
+  const uid = state.collection.find(card => card.cardId === 'neutral-1')!.uid;
+  if (!battle.hand.includes(uid)) {
+    const replaced = battle.hand.shift()!;
+    battle.drawPile = battle.drawPile.filter(card => card !== uid);
+    battle.drawPile.push(replaced);
+    battle.hand.push(uid);
+  }
+  validateRpg(state, state.id);
+  const envelope = loadRpgEnvelope(); envelope.saves[state.id] = state;
+  storage.setItem(STORAGE_KEY, JSON.stringify(envelope));
+  return { state: saved(), uid };
+}
+
+function remount() {
+  runtime.effects.forEach(effect => effect.cleanup?.());
+  runtime.slots = []; runtime.effects.clear(); runtime.scheduled = [];
+  return render();
+}
+
+function expectSameBattle(actual: RpgState, expected: RpgState) {
+  expect(actual.revision).toBe(expected.revision);
+  expect(actual.scene).toBe(expected.scene);
+  expect(actual.battle).toEqual(expected.battle);
+  expect(actual.reward).toEqual(expected.reward);
+}
 
 describe('出牌音效只跟随成功保存', () => {
   it('在等待保存锁之前同步解锁声音，落盘后才播放同一份真实结算反馈', async () => {
@@ -238,7 +275,7 @@ describe('出牌音效只跟随成功保存', () => {
     expect(saved().battle!.played).toBe(1);
   });
 
-  it('非法动作、结束回合与其他标签的出牌都不产生声音', async () => {
+  it('结束回合只产生回合声音，非法动作与其他标签的出牌不制造新声音', async () => {
     let state = ready();
     expect(await render().dispatch(state, { type: 'playCard', uid: 'not-in-hand', target: 'enemy-0' })).toBe(false);
     expect(await render().dispatch(state, { type: 'endTurn' })).toBe(true);
@@ -246,7 +283,8 @@ describe('出牌音效只跟随成功保存', () => {
     const action: GameAction = { type: 'playCard', uid: state.battle!.hand[0], target: 'enemy-0' };
     persistRpg(resolveAction(state, action, state.revision), action, state.revision);
     (listeners.get('storage') as EventListener)({ key: STORAGE_KEY } as StorageEvent);
-    expect(audio.prepare).not.toHaveBeenCalled();
+    expect(audio.prepare).toHaveBeenCalledTimes(1);
+    expect(audio.playFeedback).toHaveBeenCalledTimes(1);
     expect(audio.play).not.toHaveBeenCalled();
     expect(saved().battle!.played).toBe(1);
   });
@@ -333,9 +371,242 @@ describe('出牌特效只跟随成功保存', () => {
       }
       expect(await render().dispatch(state, { type: 'playCard', uid, target: 'enemy-0' })).toBe(true); state = saved();
     }
-    expect(render().cardPlays).toHaveLength(MAX_CARD_PLAY_CUES);
+    expect(render().cardPlays!.length).toBeGreaterThan(0);
+    expect(render().cardPlays!.length).toBeLessThanOrEqual(MAX_CARD_PLAY_CUES);
     expect(render().cardPlays!.every(cue => cue.durationMs === 240)).toBe(true);
     vi.advanceTimersByTime(240); expect(render().cardPlays).toEqual([]);
+  });
+});
+
+describe('敌人回合与胜负反馈只跟随成功保存', () => {
+  it('结束回合等待保存锁期间只解锁设备，落盘后才发布真实回合回执', async () => {
+    vi.useFakeTimers();
+    const state = ready(), release = delayNextLock();
+    const pending = render().dispatch(state, { type: 'endTurn' });
+    expect(audio.prepare).toHaveBeenCalledOnce();
+    expect(audio.prepare.mock.invocationCallOrder[0]).toBeLessThan(runtime.lock.mock.invocationCallOrder[0]);
+    expect(render().battleFeedback).toEqual([]);
+    expect(audio.playFeedback).not.toHaveBeenCalled(); expect(audio.cancel).not.toHaveBeenCalled();
+    expect(saved().battle!.turn).toBe(1);
+    release(); expect(await pending).toBe(true);
+    const feedback = render().battleFeedback![0];
+    expect(feedback.events.length).toBeGreaterThan(0);
+    expect(feedback.sourceTurn).toBe(1); expect(feedback.turn).toBe(2);
+    expect(feedback.revision).toBe(saved().revision);
+    expect(audio.playFeedback).toHaveBeenCalledOnce(); expect(audio.playFeedback).toHaveBeenCalledWith(feedback);
+    expect(audio.play).not.toHaveBeenCalled();
+    expect(audio.playFeedback.mock.invocationCallOrder[0]).toBeGreaterThan(runtime.lock.mock.invocationCallOrder[0]);
+    expect(saved().battle!.turn).toBe(2);
+    expect(JSON.parse(storage.getItem(STORAGE_KEY)!).saves[state.id].battleFeedback).toBeUndefined();
+    vi.advanceTimersByTime(feedback.durationMs); expect(render().battleFeedback).toEqual([]);
+  });
+
+  it('敌方回合保存失败不播放，重试只发布一次且保留原结算手牌与生命', async () => {
+    vi.useFakeTimers();
+    const state = ready(), action: GameAction = { type: 'endTurn' };
+    const expected = resolveAction(state, action, state.revision);
+    storage.failWrites = true;
+    expect(await render().dispatch(state, action)).toBe(false);
+    expect(render().battleFeedback).toEqual([]); expect(audio.playFeedback).not.toHaveBeenCalled();
+    expect(audio.cancel).not.toHaveBeenCalled(); expect(saved().battle!.turn).toBe(1);
+    expectSameBattle(render().pending!, expected);
+    storage.failWrites = false; await render().retry();
+    expectSameBattle(saved(), expected);
+    const feedback = render().battleFeedback![0];
+    expect(audio.prepare).toHaveBeenCalledTimes(2);
+    expect(audio.playFeedback).toHaveBeenCalledOnce(); expect(audio.cancel).toHaveBeenCalledOnce();
+    await render().retry();
+    expectSameBattle(saved(), expected);
+    expect(render().battleFeedback!.map(cue => cue.id)).toEqual([feedback.id]);
+    expect(audio.prepare).toHaveBeenCalledTimes(2); expect(audio.playFeedback).toHaveBeenCalledOnce();
+  });
+
+  it('双击等待中的结束回合不会重复解锁、结算或发布反馈', async () => {
+    const state = ready(), store = render(), release = delayNextLock();
+    const first = store.dispatch(state, { type: 'endTurn' });
+    expect(await store.dispatch(state, { type: 'endTurn' })).toBe(false);
+    expect(audio.prepare).toHaveBeenCalledOnce(); expect(audio.playFeedback).not.toHaveBeenCalled();
+    release(); expect(await first).toBe(true);
+    expect(saved().battle!.turn).toBe(2); expect(audio.playFeedback).toHaveBeenCalledOnce();
+    expect(render().battleFeedback).toHaveLength(1);
+  });
+
+  it('其他标签先保存回合时，拒绝旧提交而不播放敌人或终局音', async () => {
+    const state = ready(), action: GameAction = { type: 'endTurn' }, release = delayNextLock();
+    const pending = render().dispatch(state, action);
+    persistRpg(resolveAction(state, action, state.revision), action, state.revision);
+    release(); expect(await pending).toBe(false);
+    expect(saved().battle!.turn).toBe(2); expect(render().battleFeedback).toEqual([]);
+    expect(audio.playFeedback).not.toHaveBeenCalled(); expect(audio.play).not.toHaveBeenCalled();
+    await render().retry(); expect(audio.prepare).toHaveBeenCalledOnce();
+    expect(audio.playFeedback).not.toHaveBeenCalled();
+  });
+
+  it('正式出牌致胜后同时发布原卡牌命中与胜利反馈，保留最后一击音', async () => {
+    vi.useFakeTimers();
+    const { state, uid } = winningCardFixture();
+    expect(await render().dispatch(state, { type: 'playCard', uid, target: 'enemy-0' })).toBe(true);
+    const store = render(), card = store.cardPlays![0], feedback = store.battleFeedback![0];
+    expect(saved().scene).toBe('reward'); expect(saved().battle!.result).toBe('won');
+    expect(saved().battle!.played).toBe(1); expect(card.targets[0].damage).toBe(1);
+    expect(feedback.events).toEqual([]); expect(feedback.outcome!.result).toBe('won');
+    expect(audio.play).toHaveBeenCalledOnce(); expect(audio.play).toHaveBeenCalledWith(card);
+    expect(audio.playFeedback).toHaveBeenCalledOnce(); expect(audio.playFeedback).toHaveBeenCalledWith(feedback);
+    expect(audio.cancel).not.toHaveBeenCalled();
+    expect(audio.play.mock.invocationCallOrder[0]).toBeLessThan(audio.playFeedback.mock.invocationCallOrder[0]);
+    vi.advanceTimersByTime(CARD_PLAY_DURATION_MS);
+    expect(render().cardPlays).toEqual([]); expect(render().battleFeedback).toHaveLength(1);
+    vi.advanceTimersByTime(feedback.durationMs - CARD_PLAY_DURATION_MS);
+    expect(render().battleFeedback).toEqual([]);
+  });
+
+  it('致胜保存失败暂不显示结果，重试后命中与胜利各播放一次', async () => {
+    const { state, uid } = winningCardFixture(); storage.failWrites = true;
+    expect(await render().dispatch(state, { type: 'playCard', uid, target: 'enemy-0' })).toBe(false);
+    expect(saved().battle!.result).toBe('playing'); expect(render().pending!.battle!.result).toBe('won');
+    expect(render().cardPlays).toEqual([]); expect(render().battleFeedback).toEqual([]);
+    expect(audio.play).not.toHaveBeenCalled(); expect(audio.playFeedback).not.toHaveBeenCalled();
+    storage.failWrites = false; await render().retry(); await render().retry();
+    expect(saved().battle!.result).toBe('won'); expect(saved().battle!.played).toBe(1);
+    expect(audio.play).toHaveBeenCalledOnce(); expect(audio.playFeedback).toHaveBeenCalledOnce();
+    expect(render().cardPlays).toHaveLength(1); expect(render().battleFeedback).toHaveLength(1);
+    expect(audio.cancel).not.toHaveBeenCalled();
+  });
+
+  it('减少动画的敌人回执使用 240 ms，所有事件即时显示并按时清理', async () => {
+    vi.useFakeTimers(); Object.assign(window, { matchMedia: () => ({ matches: true }) });
+    const state = ready(); expect(await render().dispatch(state, { type: 'endTurn' })).toBe(true);
+    const feedback = render().battleFeedback![0];
+    expect(feedback.durationMs).toBe(240);
+    expect(feedback.events.every(event => event.offsetMs === 0 && event.impactMs === 0 && event.durationMs === 220)).toBe(true);
+    expect(audio.playFeedback).toHaveBeenCalledWith(feedback);
+    vi.advanceTimersByTime(239); expect(render().battleFeedback).toHaveLength(1);
+    vi.advanceTimersByTime(1); expect(render().battleFeedback).toEqual([]); expect(vi.getTimerCount()).toBe(0);
+  });
+
+  it('减少动画的致胜命中与结果都为短回执，保留真实最终生命', async () => {
+    vi.useFakeTimers(); Object.assign(window, { matchMedia: () => ({ matches: true }) });
+    const { state, uid } = winningCardFixture();
+    expect(await render().dispatch(state, { type: 'playCard', uid, target: 'enemy-0' })).toBe(true);
+    const feedback = render().battleFeedback![0];
+    expect(render().cardPlays![0].durationMs).toBe(240); expect(feedback.durationMs).toBe(240);
+    expect(feedback.outcome).toMatchObject({ result: 'won', offsetMs: 0, durationMs: 220 });
+    expect(saved().battle!.enemies.every(enemy => enemy.hp === 0)).toBe(true);
+    vi.advanceTimersByTime(240);
+    expect(render().cardPlays).toEqual([]); expect(render().battleFeedback).toEqual([]);
+    expect(vi.getTimerCount()).toBe(0);
+  });
+
+  it('卸载清理所有尚未结束的反馈定时器，重新挂载不回放日志与回合', async () => {
+    vi.useFakeTimers();
+    const state = ready(); await render().dispatch(state, { type: 'endTurn' });
+    expect(render().battleFeedback).toHaveLength(1); expect(vi.getTimerCount()).toBeGreaterThan(0);
+    const persisted = saved(), store = remount();
+    expect(vi.getTimerCount()).toBe(0); expect(store.battleFeedback).toEqual([]); expect(store.cardPlays).toEqual([]);
+    expectSameBattle(listRpgSaves(store.envelope)[0].state!, persisted);
+    expect(audio.prepare).toHaveBeenCalledOnce(); expect(audio.playFeedback).toHaveBeenCalledOnce();
+    vi.advanceTimersByTime(5000); expect(render().battleFeedback).toEqual([]);
+  });
+
+  it('storage 成功更新同时清空卡牌与终局回执并取消旧声音，重新挂载不重播', async () => {
+    vi.useFakeTimers();
+    const { state, uid } = winningCardFixture();
+    await render().dispatch(state, { type: 'playCard', uid, target: 'enemy-0' });
+    expect(render().cardPlays).toHaveLength(1); expect(render().battleFeedback).toHaveLength(1);
+    const current = saved(), action: GameAction = { type: 'claimReward', cardId: null };
+    persistRpg(resolveAction(current, action, current.revision), action, current.revision);
+    (listeners.get('storage') as EventListener)({ key: STORAGE_KEY } as StorageEvent);
+    expect(render().cardPlays).toEqual([]); expect(render().battleFeedback).toEqual([]);
+    expect(audio.cancel).toHaveBeenCalledOnce(); expect(saved().scene).toBe('hub');
+    const store = remount(); expect(store.cardPlays).toEqual([]); expect(store.battleFeedback).toEqual([]);
+    expect(vi.getTimerCount()).toBe(0);
+    expect(audio.prepare).toHaveBeenCalledOnce(); expect(audio.play).toHaveBeenCalledOnce(); expect(audio.playFeedback).toHaveBeenCalledOnce();
+  });
+
+  it('成功敌方回合清理上一张卡的视觉与尾音，取消发生在新回合播放前', async () => {
+    vi.useFakeTimers();
+    const state = ready();
+    await render().dispatch(state, { type: 'playCard', uid: state.battle!.hand[0], target: 'enemy-0' });
+    expect(render().cardPlays).toHaveLength(1); expect(audio.cancel).not.toHaveBeenCalled();
+    const current = saved(), release = delayNextLock(), pending = render().dispatch(current, { type: 'endTurn' });
+    expect(render().cardPlays).toHaveLength(1); expect(audio.cancel).not.toHaveBeenCalled();
+    release(); expect(await pending).toBe(true);
+    expect(render().cardPlays).toEqual([]); expect(render().battleFeedback).toHaveLength(1);
+    expect(audio.play).toHaveBeenCalledOnce(); expect(audio.cancel).toHaveBeenCalledOnce();
+    expect(audio.cancel.mock.invocationCallOrder[0]).toBeLessThan(audio.playFeedback.mock.invocationCallOrder[0]);
+  });
+
+  it('非战斗结束回合非法动作不解锁设备，也不发布任何战斗反馈', async () => {
+    const state = createRpg(character(), 'not-in-battle'); persistRpg(state, null, 0);
+    expect(await render().dispatch(state, { type: 'endTurn' })).toBe(false);
+    expect(audio.prepare).not.toHaveBeenCalled(); expect(audio.playFeedback).not.toHaveBeenCalled();
+    expect(render().battleFeedback).toEqual([]); expect(render().cardPlays).toEqual([]);
+  });
+});
+
+describe('战斗路由变化清理反馈', () => {
+  it('初次挂载与原路径重复渲染不额外取消声音或创建计时器', () => {
+    vi.useFakeTimers(); ready();
+    render(); render();
+    expect(audio.cancel).not.toHaveBeenCalled(); expect(audio.prepare).not.toHaveBeenCalled();
+    expect(render().cardPlays).toEqual([]); expect(render().battleFeedback).toEqual([]);
+    expect(vi.getTimerCount()).toBe(0);
+  });
+
+  it('离开致胜战场同时清理卡牌、结果、声音和计时器，返回不回放已存动作', async () => {
+    vi.useFakeTimers(); const { state, uid } = winningCardFixture();
+    await render().dispatch(state, { type: 'playCard', uid, target: 'enemy-0' });
+    expect(render().cardPlays).toHaveLength(1); expect(render().battleFeedback).toHaveLength(1);
+    expect(vi.getTimerCount()).toBe(2); expect(audio.cancel).not.toHaveBeenCalled();
+    const persisted = storage.getItem(STORAGE_KEY);
+    runtime.pathname = '/saves'; render();
+    expect(render().cardPlays).toEqual([]); expect(render().battleFeedback).toEqual([]);
+    expect(audio.cancel).toHaveBeenCalledOnce(); expect(vi.getTimerCount()).toBe(0);
+    expect(storage.getItem(STORAGE_KEY)).toBe(persisted);
+    runtime.pathname = `/story/${state.id}`; render();
+    expect(render().cardPlays).toEqual([]); expect(render().battleFeedback).toEqual([]);
+    expect(audio.cancel).toHaveBeenCalledTimes(2); expect(audio.play).toHaveBeenCalledOnce();
+    expect(audio.playFeedback).toHaveBeenCalledOnce(); expect(audio.prepare).toHaveBeenCalledOnce();
+    vi.advanceTimersByTime(5000); expect(vi.getTimerCount()).toBe(0);
+    expect(saved().battle!.result).toBe('won'); expect(saved().battle!.played).toBe(1);
+  });
+
+  it('切到另一人生路径也清理正在播放的敌人回合，不改变原战斗存档', async () => {
+    vi.useFakeTimers(); const state = ready(); await render().dispatch(state, { type: 'endTurn' });
+    expect(render().battleFeedback).toHaveLength(1); expect(vi.getTimerCount()).toBe(1);
+    expect(audio.cancel).toHaveBeenCalledOnce();
+    const persisted = saved(); runtime.pathname = '/story/another-life'; render();
+    expect(render().battleFeedback).toEqual([]); expect(render().cardPlays).toEqual([]);
+    expect(audio.cancel).toHaveBeenCalledTimes(2); expect(vi.getTimerCount()).toBe(0);
+    expectSameBattle(saved(), persisted); expect(audio.playFeedback).toHaveBeenCalledOnce();
+  });
+
+  it('同一战场提交后保持反馈，正常换回合只取消上一张卡且不会被路由重复取消', async () => {
+    vi.useFakeTimers(); const state = ready();
+    await render().dispatch(state, { type: 'playCard', uid: state.battle!.hand[0], target: 'enemy-0' });
+    const cardId = render().cardPlays![0].id;
+    expect(runtime.navigate).toHaveBeenLastCalledWith(runtime.pathname);
+    runtime.pathname = `/story/${state.id}`; render(); render();
+    expect(render().cardPlays!.map(card => card.id)).toEqual([cardId]);
+    expect(audio.cancel).not.toHaveBeenCalled(); expect(vi.getTimerCount()).toBe(1);
+    await render().dispatch(saved(), { type: 'endTurn' });
+    const feedbackId = render().battleFeedback![0].id;
+    expect(runtime.navigate).toHaveBeenLastCalledWith(runtime.pathname); render(); render();
+    expect(render().battleFeedback!.map(feedback => feedback.id)).toEqual([feedbackId]);
+    expect(audio.cancel).toHaveBeenCalledOnce(); expect(audio.playFeedback).toHaveBeenCalledOnce();
+    expect(saved().battle!.turn).toBe(2);
+  });
+
+  it('离场清理不丢弃写入失败的待保存战局和暂停提示', async () => {
+    vi.useFakeTimers(); const state = ready(); storage.failWrites = true;
+    expect(await render().dispatch(state, { type: 'endTurn' })).toBe(false);
+    const pending = render().pending!, error = render().error, persisted = storage.getItem(STORAGE_KEY);
+    runtime.pathname = '/saves'; render();
+    expectSameBattle(render().pending!, pending); expect(render().error).toBe(error);
+    expect(render().saving).toBe(false); expect(listeners.has('beforeunload')).toBe(true);
+    expect(storage.getItem(STORAGE_KEY)).toBe(persisted);
+    expect(audio.cancel).toHaveBeenCalledOnce(); expect(audio.playFeedback).not.toHaveBeenCalled();
+    expect(render().battleFeedback).toEqual([]); expect(vi.getTimerCount()).toBe(0);
   });
 });
 

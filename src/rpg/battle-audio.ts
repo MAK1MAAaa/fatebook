@@ -1,13 +1,16 @@
 import { CARD_PLAY_IMPACT_MS, type CardPlayCue } from './card-play-effects';
+import type { BattleFeedbackCue, BattleFeedbackEvent } from './battle-feedback';
 
 export const AUDIO_PREFERENCES_KEY = 'fatebook:battle-audio:v1';
 export const MAX_BATTLE_AUDIO_VOICES = 32;
+export const MAX_BATTLE_FEEDBACK_AUDIO_NOTES = 28;
 const MAX_REMEMBERED_CUES = 128;
 const MAX_CUE_NOTES = 14;
 
 export interface BattleAudioPreferences { enabled: boolean; volume: number }
 export interface BattleAudioNote {
-  kind: 'cast' | 'hit' | 'absorbed' | 'status' | 'block' | 'heal' | 'draw' | 'energy' | 'defeat';
+  kind: 'cast' | 'hit' | 'absorbed' | 'status' | 'block' | 'heal' | 'draw' | 'energy' | 'defeat'
+    | 'enemy-prepare' | 'hero-hurt' | 'hero-burn' | 'drain' | 'ritual' | 'escort-hit' | 'victory' | 'loss';
   offsetMs: number;
   durationMs: number;
   type: OscillatorType | 'noise';
@@ -106,6 +109,100 @@ export function buildBattleAudioPlan(cue: CardPlayCue): BattleAudioNote[] {
   return notes.slice(0, MAX_CUE_NOTES);
 }
 
+/** Real enemy events share the visual timeline; terminal music keeps its budget. */
+export function buildBattleFeedbackAudioPlan(cue: BattleFeedbackCue): BattleAudioNote[] {
+  const body: { note: BattleAudioNote; priority: number }[] = [], tail: BattleAudioNote[] = [];
+  const add = (kind: BattleAudioNote['kind'], offsetMs: number, durationMs: number,
+    type: BattleAudioNote['type'], frequency: number, frequencyEnd: number, volume: number,
+    endMs: number, priority = 1, terminal = false) => {
+    const duration = Math.min(durationMs, endMs - offsetMs, cue.durationMs - offsetMs);
+    if (duration <= 0) return;
+    const note = { kind, offsetMs, durationMs: duration, type, frequency, frequencyEnd, volume };
+    if (terminal) tail.push(note); else body.push({ note, priority });
+  };
+  const hurt = (damage: number, at: number, end: number) => {
+    if (damage <= 0) return;
+    const weight = Math.min(1.25, 0.85 + Math.sqrt(damage) / 35);
+    add('hero-hurt', at, 150, 'triangle', 125, 42, 0.22 * weight, end, 0);
+    add('hero-hurt', at, 95, 'noise', 1700, 240, 0.15 * weight, end, 3);
+  };
+  const burn = (damage: number, at: number, end: number) => {
+    if (damage <= 0) return;
+    add('hero-burn', at, 130, 'noise', 780, 180, 0.11, end, 0);
+    add('hero-burn', at, 145, 'sine', 220, 60, 0.09, end, 3);
+  };
+  const absorbed = (amount: number, at: number, end: number) => {
+    if (amount > 0) add('absorbed', at, 130, 'triangle', 1300, 570, 0.13, end);
+  };
+  const eventNote = (event: BattleFeedbackEvent, at: number, end: number) => {
+    if (event.kind === 'enemy-burn' && event.damage > 0) {
+      add('hit', at, 100, 'noise', 1000, 300, 0.065, end);
+      if (event.defeated) add('defeat', at + 20, 160, 'triangle', 330, 520, 0.07, end, 2);
+    }
+    if (event.amount > 0) {
+      if (event.kind === 'enemy-guard') add('block', at, 130, 'triangle', 470, 310, 0.1, end);
+      else if (event.kind === 'enemy-heal') add('heal', at, 200, 'sine', 520, 780, 0.11, end);
+      else if (event.kind === 'enemy-status') add('status', at, 160, event.status === 'burn' ? 'noise' : 'sine', 930, 330, 0.1, end);
+      else if (event.kind === 'enemy-drain') add('drain', at, 110, 'noise', 2100, 550, 0.08, end);
+      else if (event.kind === 'enemy-ritual') add('ritual', at, 200, 'sawtooth', 130, 200, 0.08, end, 0);
+    }
+    if (event.escortDamage > 0) add('escort-hit', at, 135, 'sine', 290, 105, 0.075, end, 2);
+  };
+
+  if (cue.durationMs <= 240) {
+    // Static receipts display every delta together. Aggregate each mechanism
+    // once rather than stacking all multi-hit sounds on the same audio frame.
+    const end = Math.min(220, cue.durationMs), attacks = cue.events.filter(event => event.kind === 'enemy-attack');
+    if (attacks.length) add('enemy-prepare', 0, 55, 'noise', 1200, 400, 0.07, end);
+    hurt(attacks.reduce((sum, event) => sum + event.damage, 0), 0, end);
+    absorbed(attacks.reduce((sum, event) => sum + event.absorbed, 0), 0, end);
+    burn(cue.events.filter(event => event.kind === 'hero-burn').reduce((sum, event) => sum + event.damage, 0), 0, end);
+    const mechanisms = ['enemy-burn', 'enemy-guard', 'enemy-heal', 'enemy-status', 'enemy-drain', 'enemy-ritual'] as const;
+    for (const kind of mechanisms) {
+      const events = cue.events.filter(event => event.kind === kind);
+      if (!events.length) continue;
+      eventNote({ ...events[0], damage: events.reduce((sum, event) => sum + event.damage, 0),
+        amount: events.reduce((sum, event) => sum + event.amount, 0), escortDamage: 0,
+        defeated: events.some(event => event.defeated) }, 0, end);
+    }
+    const escortDamage = cue.events.reduce((sum, event) => sum + event.escortDamage, 0);
+    if (escortDamage > 0) add('escort-hit', 0, 135, 'sine', 290, 105, 0.075, end, 2);
+  } else {
+    for (const event of cue.events) {
+      const at = event.offsetMs + event.impactMs, end = event.offsetMs + event.durationMs;
+      if (event.kind === 'enemy-attack') {
+        if ((event.hitIndex ?? 0) === 0) add('enemy-prepare', event.offsetMs, 95, 'noise', 1200, 400, 0.075, end);
+        hurt(event.damage, at, end);
+        absorbed(event.absorbed, at, end);
+      } else if (event.kind === 'hero-burn') burn(event.damage, at, end);
+      eventNote(event, at, end);
+    }
+  }
+
+  if (cue.outcome) {
+    const { result, offsetMs, durationMs } = cue.outcome, end = offsetMs + durationMs;
+    const scale = durationMs / 800;
+    if (result === 'won') {
+      for (const [index, frequency] of [523.25, 659.25, 783.99, 1046.5].entries()) {
+        add('victory', offsetMs + index * 110 * scale, (index === 3 ? 420 : 230) * scale,
+          index === 3 ? 'triangle' : 'sine', frequency, frequency * 1.015,
+          index === 3 ? 0.15 : 0.12, end, 0, true);
+      }
+    } else {
+      add('loss', offsetMs, 680 * scale, 'triangle', 220, 82.41, 0.15, end, 0, true);
+      add('loss', offsetMs + 100 * scale, 630 * scale, 'sine', 146.83, 55, 0.095, end, 0, true);
+    }
+  }
+
+  const capacity = MAX_BATTLE_FEEDBACK_AUDIO_NOTES - tail.length;
+  const retained = new Set(body.map((entry, index) => ({ priority: entry.priority, index }))
+    .sort((left, right) => left.priority - right.priority || left.index - right.index)
+    .slice(0, capacity).map(entry => entry.index));
+  // Actual hurt and block receipts take priority over extra texture. Selection
+  // remains deterministic, preserves timeline order and never trims the ending.
+  return [...body.filter((_entry, index) => retained.has(index)).map(entry => entry.note), ...tail];
+}
+
 interface Voice { source: AudioScheduledSourceNode; nodes: AudioNode[] }
 
 /** Web Audio is unlocked only by prepare(), called synchronously from a user action. */
@@ -162,14 +259,22 @@ export class BattleAudioPlayer {
   }
 
   play(cue: CardPlayCue): void {
-    if (this.disposed || this.played.has(cue.id)) return;
+    this.playScore(cue.id, () => buildBattleAudioPlan(cue));
+  }
+
+  playFeedback(cue: BattleFeedbackCue): void {
+    this.playScore(`feedback:${cue.id}`, () => buildBattleFeedbackAudioPlan(cue));
+  }
+
+  private playScore(id: string, buildPlan: () => BattleAudioNote[]): void {
+    if (this.disposed || this.played.has(id)) return;
     // Remember skipped receipts too: resuming audio never replays old combat.
-    this.played.add(cue.id);
+    this.played.add(id);
     if (this.played.size > MAX_REMEMBERED_CUES) this.played.delete(this.played.values().next().value!);
     if (!this.audible() || !this.context || this.context.state !== 'running' || !this.master) return;
     try {
       const start = this.context.currentTime;
-      for (const note of buildBattleAudioPlan(cue)) this.renderNote(note, start);
+      for (const note of buildPlan()) this.renderNote(note, start);
     } catch { this.cancel(); }
   }
 
