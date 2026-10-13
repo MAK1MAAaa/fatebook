@@ -3,7 +3,7 @@ import type { ReactNode } from 'react';
 import { beforeEach, describe, expect, it, vi } from 'vitest';
 import RpgStory from '../src/pages/RpgStory';
 import { createCharacter } from '../src/game/characters';
-import { buildCardPlayCue } from '../src/rpg/card-play-effects';
+import { buildCardPlayCue, CARD_PLAY_IMPACT_MS } from '../src/rpg/card-play-effects';
 import type { CardPlayCue } from '../src/rpg/card-play-effects';
 import { emptyStatuses } from '../src/rpg/combat';
 import { createRpg, resolveAction } from '../src/rpg/engine';
@@ -131,6 +131,52 @@ describe('致胜出牌反馈与领奖过渡', () => {
 });
 
 describe('机制特效展示正式有效数值与目标范围', () => {
+  it('被完全格挡的普通攻击显示蓝盾吸收，不误报生命命中或零伤害', () => {
+    const fixture = ready('neutral-1');
+    fixture.before.battle!.enemies[0].block = 999;
+    const { state, cue } = submit(fixture);
+    expect(cue.targets[0].damage).toBe(0);
+    expect(cue.targets[0].absorbed).toBeGreaterThan(0);
+    const target = enemyArea(render(state, [cue]));
+    expect(target).toContain(' cast-blocked');
+    expect(target).toContain('class="cast-absorb-shield"');
+    expect(target).toContain(`<strong>格挡吸收 ${cue.targets[0].absorbed}</strong>`);
+    expect(target).not.toContain(' cast-hit');
+    expect(target).not.toContain('cast-impact-ring');
+    expect(target).not.toContain('cast-impact-burst');
+    expect(target).not.toContain('<strong>伤害 0</strong>');
+  });
+
+  it('纯防护牌只对主角播放增益反馈，不制造敌方命中或格挡吸收', () => {
+    const { state, cue } = submit(ready('neutral-2'));
+    expect(cue.targets).toEqual([]);
+    expect(cue.hero.block).toBeGreaterThan(0);
+    const markup = render(state, [cue]);
+    expect(markup).toContain(' cast-self-buff');
+    expect(markup).toContain(`<strong>格挡 +${cue.hero.block}</strong>`);
+    const enemies = enemyArea(markup);
+    expect(enemies).not.toContain('unit-cast-event');
+    expect(enemies).not.toContain(' cast-hit');
+    expect(enemies).not.toContain('cast-impact-burst');
+    expect(enemies).not.toContain('cast-absorb-shield');
+  });
+
+  it.each([
+    { name: '正常动画', durationMs: 1100, impactMs: CARD_PLAY_IMPACT_MS },
+    { name: '减少动画', durationMs: 240, impactMs: 0 },
+  ])('$name的命中与数字使用共同的反馈时序', ({ durationMs, impactMs }) => {
+    const { state, cue } = submit(ready('neutral-1'));
+    expect(cue.targets[0].damage).toBeGreaterThan(0);
+    const markup = render(state, [{ ...cue, durationMs }]);
+    const targetEvent = enemyArea(markup).match(/<div class="unit-cast-event [^"]*" style="([^"]*)"/)?.[1];
+    expect(targetEvent).toBeDefined();
+    expect(targetEvent).toContain(`--cast-impact-delay:${impactMs}ms`);
+    expect(targetEvent).toContain(`--cast-feedback-duration:${durationMs - impactMs}ms`);
+    expect(enemyArea(markup)).toContain(' cast-hit');
+    expect(enemyArea(markup)).toContain('cast-impact-burst');
+    expect(enemyArea(markup)).toContain(`<strong>伤害 ${cue.targets[0].damage}</strong>`);
+  });
+
   it('连续三次正式施放保留三组动画，只显示最新公告和一次最新真实数字', () => {
     let state = ready('neutral-2').before;
     const guards = state.collection.filter(owned => owned.cardId === 'neutral-2');
@@ -192,5 +238,30 @@ describe('机制特效展示正式有效数值与目标范围', () => {
     expect(markup).toContain(cardId === 'neutral-3' ? `<strong>抽牌 +${cue.hero.draw}</strong>` : `<strong>回能 +${cue.hero.energy}</strong>`);
     expect(enemyArea(markup)).not.toContain('unit-cast-event');
     expect(enemyArea(markup)).not.toContain('receiving-card-effect');
+  });
+});
+
+describe('战斗音效设置的可访问状态', () => {
+  it.each([
+    { enabled: true, volume: 0.55, label: '音效开启', percent: 55, disabled: false },
+    { enabled: false, volume: 0.35, label: '音效关闭', percent: 35, disabled: true },
+    { enabled: true, volume: 0, label: '音效开启', percent: 0, disabled: false },
+  ])('启用$enabled且音量$percent%时正确标记开关、音量与禁用状态', ({ enabled, volume, label, percent, disabled }) => {
+    runtime.store!.audio = { preferences: { enabled, volume }, setEnabled: vi.fn(), setVolume: vi.fn() };
+    const markup = render(ready().before, []);
+    const toggle = markup.match(/<button[^>]*role="switch"[^>]*>/)?.[0];
+    expect(toggle).toContain('aria-label="战斗音效"');
+    expect(toggle).toContain(`aria-checked="${enabled}"`);
+    expect(markup).toContain(label);
+    const slider = markup.match(/<input[^>]*type="range"[^>]*>/)?.[0];
+    expect(slider).toBeDefined();
+    expect(slider).toContain('aria-label="战斗音效音量"');
+    expect(slider).toContain(`value="${percent}"`);
+    expect(slider).toContain('min="0"');
+    expect(slider).toContain('max="100"');
+    expect(slider!.includes('disabled=""')).toBe(disabled);
+    expect(markup).toContain(`<span>${percent}%</span>`);
+    expect(runtime.store!.audio!.setEnabled).not.toHaveBeenCalled();
+    expect(runtime.store!.audio!.setVolume).not.toHaveBeenCalled();
   });
 });

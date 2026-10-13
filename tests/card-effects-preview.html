@@ -31,10 +31,15 @@
       .card-effects-preview[data-reduced-motion="true"] *, .card-effects-preview[data-reduced-motion="true"] *::before, .card-effects-preview[data-reduced-motion="true"] *::after { animation: none !important; transition: none !important; }
       .card-effects-preview[data-reduced-motion="true"] :is(.card-cast-announcement, .cast-feedback) { opacity: 1; transform: none; }
       .card-effects-preview[data-reduced-motion="true"] .card-cast-circle { opacity: .22; }
-      .card-effects-preview[data-reduced-motion="true"] :is(.card-cast-wide-wave, .cast-ember, .cast-ambush-shadow) { display: none; }
+      .card-effects-preview[data-reduced-motion="true"] :is(.card-cast-wide-wave, .cast-ember, .cast-ambush-shadow, .card-cast-launch, .cast-impact-burst) { display: none; }
+      .card-effects-preview[data-reduced-motion="true"] .cast-impact-ring { opacity: .45; box-shadow: none; border-width: 2px; }
+      .card-effects-preview[data-reduced-motion="true"] .cast-absorb-shield { opacity: .65; filter: none; }
+      .card-effects-preview[data-reduced-motion="true"] .cast-defeat-mark { opacity: 1; }
+      .card-effects-preview[data-reduced-motion="true"] .cast-hero-aura { opacity: .45; }
       .card-effects-preview[data-reduced-motion="true"] .unit-cast-event > .cast-school-sigil { width: 100%; filter: none; opacity: .6; }
       .card-effects-preview[data-reduced-motion="true"] .cast-upgraded .cast-school-sigil { filter: none; }
       .card-effects-preview[data-preview-frozen="true"] :is(.card-cast-stage, .unit-card-effects, .card-cast-message-slot) *, .card-effects-preview[data-preview-frozen="true"] :is(.card-cast-stage, .unit-card-effects, .card-cast-message-slot) *::before, .card-effects-preview[data-preview-frozen="true"] :is(.card-cast-stage, .unit-card-effects, .card-cast-message-slot) *::after { animation-play-state: paused !important; animation-delay: -300ms !important; }
+      .card-effects-preview[data-preview-frozen="true"] :is(.cast-impact-ring, .cast-impact-burst, .cast-absorb-shield, .cast-defeat-mark, .cast-feedback) { animation-delay: calc(var(--cast-impact-delay, 150ms) - 300ms) !important; }
       @media (max-width: 767px) {
         .card-effects-preview .preview-controls { grid-template-columns: minmax(0, 1fr); }
         .card-effects-preview .preview-cast-panel { grid-template-columns: minmax(0, 1fr); padding: 16px; }

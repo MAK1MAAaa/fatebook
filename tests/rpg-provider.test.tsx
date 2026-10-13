@@ -20,6 +20,13 @@ const runtime = vi.hoisted(() => ({
   navigate: vi.fn(),
   lock: vi.fn(),
 }));
+const audio = vi.hoisted(() => ({
+  preferences: { enabled: true, volume: 0.65 },
+  prepare: vi.fn(),
+  play: vi.fn(),
+  setEnabled: vi.fn(),
+  setVolume: vi.fn(),
+}));
 
 // A minimal hook host lets these tests exercise the provider's real async actions
 // without adding a DOM renderer or a second testing dependency.
@@ -73,6 +80,9 @@ vi.mock("react", async (importOriginal) => {
 vi.mock("react-router", () => ({ useNavigate: () => runtime.navigate }));
 vi.mock("../src/game/save-lock", () => ({
   withSaveLock: (operation: () => unknown) => runtime.lock(operation),
+}));
+vi.mock('../src/hooks/use-battle-audio', () => ({
+  useBattleAudio: () => audio,
 }));
 
 class MemoryStorage implements Storage {
@@ -137,6 +147,10 @@ beforeEach(() => {
   runtime.effects.clear();
   runtime.scheduled = [];
   runtime.navigate.mockReset();
+  audio.prepare.mockReset();
+  audio.play.mockReset();
+  audio.setEnabled.mockReset();
+  audio.setVolume.mockReset();
   runtime.lock
     .mockReset()
     .mockImplementation(async (operation: () => unknown) => operation());
@@ -168,6 +182,96 @@ function ready() {
   return state;
 }
 const saved = () => listRpgSaves(loadRpgEnvelope())[0].state!;
+
+describe('出牌音效只跟随成功保存', () => {
+  it('在等待保存锁之前同步解锁声音，落盘后才播放同一份真实结算反馈', async () => {
+    const state = ready();
+    const release = delayNextLock();
+    const action = render().dispatch(state, {
+      type: 'playCard', uid: state.battle!.hand[0], target: 'enemy-0',
+    });
+    expect(audio.prepare).toHaveBeenCalledTimes(1);
+    expect(audio.prepare.mock.invocationCallOrder[0]).toBeLessThan(runtime.lock.mock.invocationCallOrder[0]);
+    expect(audio.play).not.toHaveBeenCalled();
+    expect(saved().battle!.played).toBe(0);
+    release();
+    expect(await action).toBe(true);
+    expect(audio.play).toHaveBeenCalledTimes(1);
+    expect(audio.play).toHaveBeenCalledWith(render().cardPlays![0]);
+    expect(saved().battle!.played).toBe(1);
+    expect(audio.play.mock.invocationCallOrder[0]).toBeGreaterThan(runtime.lock.mock.invocationCallOrder[0]);
+  });
+
+  it('保存失败保持静音，重试成功只播放一次且不重复结算', async () => {
+    const state = ready();
+    storage.failWrites = true;
+    expect(await render().dispatch(state, {
+      type: 'playCard', uid: state.battle!.hand[0], target: 'enemy-0',
+    })).toBe(false);
+    expect(audio.prepare).toHaveBeenCalledTimes(1);
+    expect(audio.play).not.toHaveBeenCalled();
+    expect(saved().battle!.played).toBe(0);
+    storage.failWrites = false;
+    await render().retry();
+    expect(audio.prepare).toHaveBeenCalledTimes(2);
+    expect(audio.play).toHaveBeenCalledTimes(1);
+    expect(audio.play).toHaveBeenCalledWith(render().cardPlays![0]);
+    expect(saved().battle!.played).toBe(1);
+    await render().retry();
+    expect(audio.prepare).toHaveBeenCalledTimes(2);
+    expect(audio.play).toHaveBeenCalledTimes(1);
+    expect(saved().battle!.played).toBe(1);
+  });
+
+  it('双击等待中的手牌不会再次解锁或重复播放音效', async () => {
+    const state = ready();
+    const store = render();
+    const release = delayNextLock();
+    const action: GameAction = { type: 'playCard', uid: state.battle!.hand[0], target: 'enemy-0' };
+    const first = store.dispatch(state, action);
+    expect(await store.dispatch(state, action)).toBe(false);
+    expect(audio.prepare).toHaveBeenCalledTimes(1);
+    expect(audio.play).not.toHaveBeenCalled();
+    release();
+    expect(await first).toBe(true);
+    expect(audio.play).toHaveBeenCalledTimes(1);
+    expect(saved().battle!.played).toBe(1);
+  });
+
+  it('非法动作、结束回合与其他标签的出牌都不产生声音', async () => {
+    let state = ready();
+    expect(await render().dispatch(state, { type: 'playCard', uid: 'not-in-hand', target: 'enemy-0' })).toBe(false);
+    expect(await render().dispatch(state, { type: 'endTurn' })).toBe(true);
+    state = saved();
+    const action: GameAction = { type: 'playCard', uid: state.battle!.hand[0], target: 'enemy-0' };
+    persistRpg(resolveAction(state, action, state.revision), action, state.revision);
+    (listeners.get('storage') as EventListener)({ key: STORAGE_KEY } as StorageEvent);
+    expect(audio.prepare).not.toHaveBeenCalled();
+    expect(audio.play).not.toHaveBeenCalled();
+    expect(saved().battle!.played).toBe(1);
+  });
+
+  it('保存冲突不播放被拒绝的出牌，重新挂载不回放已保存动作', async () => {
+    const state = ready();
+    const release = delayNextLock();
+    const action: GameAction = { type: 'playCard', uid: state.battle!.hand[0], target: 'enemy-0' };
+    const pending = render().dispatch(state, action);
+    persistRpg(resolveAction(state, action, state.revision), action, state.revision);
+    release();
+    expect(await pending).toBe(false);
+    expect(audio.play).not.toHaveBeenCalled();
+    await render().retry();
+    expect(audio.prepare).toHaveBeenCalledTimes(1);
+    expect(audio.play).not.toHaveBeenCalled();
+    runtime.effects.forEach(effect => effect.cleanup?.());
+    runtime.slots = [];
+    runtime.effects.clear();
+    expect(render().cardPlays).toEqual([]);
+    expect(saved().battle!.played).toBe(1);
+    expect(audio.prepare).toHaveBeenCalledTimes(1);
+    expect(audio.play).not.toHaveBeenCalled();
+  });
+});
 
 describe('出牌特效只跟随成功保存', () => {
   it('等待锁期间没有特效，成功后只出现一次且按时清理', async () => {

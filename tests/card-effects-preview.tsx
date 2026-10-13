@@ -1,4 +1,4 @@
-// Development-only visual fixture. No provider, storage API, player save, or production entry imports.
+// Development-only fixture: gameplay saves are untouched; audio preferences share the production controls.
 import '../src/index.css';
 import '../src/App.css';
 import '../src/components/rpg/rpg.css';
@@ -20,6 +20,9 @@ import { cardFor, cardsFor, CURRENT_RULESET, LEGACY_RULESET } from '../src/rpg/r
 import { characterPortraitKey, enemyPortraitKey } from '../src/rpg/portraits';
 import { Portrait } from '../src/components/rpg/Artwork';
 import { BattleCastEffects, CardCastAnnouncements, UnitCardEffects } from '../src/components/rpg/CardPlayEffects';
+import BattleAudioControls from '../src/components/rpg/BattleAudioControls';
+import { useBattleAudio } from '../src/hooks/use-battle-audio';
+import { buildBattleAudioPlan } from '../src/rpg/battle-audio';
 import CardTile, { OwnedCardTile } from '../src/components/rpg/CardTile';
 import type { GameAction, RpgState, RulesetVersion, Statuses } from '../src/rpg/types';
 
@@ -99,6 +102,8 @@ export function auditCardEffectsFixtures() {
       const cue = buildCardPlayCue(before, after, action);
       if (!cue || cue.cardId !== card.id || cue.upgraded !== upgraded) throw new Error('没有对应的真实结算特效回执');
       if (cue.all && cue.targets.length !== enemies) throw new Error('全体目标数量不符');
+      const notes = buildBattleAudioPlan(cue);
+      if (!notes.some(note => note.kind === 'cast') || notes.some(note => !Number.isFinite(note.frequency) || note.frequency <= 0)) throw new Error('音效计划缺失或频率无效');
       checked += 1;
     } catch (error) {
       failures.push(`${card.id} / ${ruleset} / ${upgraded ? '强化' : '普通'} / ${enemies}敌：${error instanceof Error ? error.message : String(error)}`);
@@ -115,6 +120,8 @@ function StatusChips({ statuses }: { statuses: Statuses }) {
 }
 
 export default function CardEffectsPreview() {
+  const audio = useBattleAudio();
+  const [audioCheck, setAudioCheck] = useState<{ state: string; activeVoices: number } | null>(null);
   const [options, setOptions] = useState(INITIAL);
   const [state, setState] = useState(() => createCardEffectsFixture(INITIAL));
   const [target, setTarget] = useState('enemy-0');
@@ -170,26 +177,31 @@ export default function CardEffectsPreview() {
     setTarget('enemy-0');
     clearCues();
     setReceipt(null);
+    setAudioCheck(null);
     setError(null);
   }
   function play() {
+    audio.prepare();
     try {
       // Replay the same isolated setup each time so the selected card remains testable after exhaust/draw.
       const before = createCardEffectsFixture(options, ++sequence.current);
       const action: GameAction = { type: 'playCard', uid: SELECTED_UID, target };
       const after = resolveAction(before, action, before.revision);
-      const cue = buildCardPlayCue(before, after, action);
-      if (!cue) throw new Error('正式引擎没有生成可显示的出牌回执。');
+      const result = buildCardPlayCue(before, after, action);
+      if (!result) throw new Error('正式引擎没有生成可显示的出牌回执。');
+      const cue = reducedMotion ? { ...result, durationMs: 240 } : result;
       setState(after);
       setReceipt(cue);
       setCues(previous => [...previous, cue].slice(-MAX_CARD_PLAY_CUES));
+      audio.play(cue);
+      setAudioCheck(audio.inspect());
       if (!frozen || reducedMotion) scheduleRemoval(cue);
       setError(null);
     } catch (cause) { setError(cause instanceof Error ? cause.message : String(cause)); }
   }
   return <main className="rpg-shell card-effects-preview" data-reduced-motion={reducedMotion} data-preview-frozen={frozen}>
-    <div className="preview-notice"><strong>出牌特效验收沙盒 · 仅开发页面</strong>角色、技能、牌组与战场起点为显式测试配置。出牌调用正式引擎；不读取或写入玩家存档，不是通关见证。每次点击从相同条件复位后施放，可快速连点检查重叠特效。</div>
-    <div className="rpg-title-row"><div><span className="eyebrow">96 张卡牌 · 正式结算与视觉组件</span><h1>逐张检查施放与命中</h1><p>当前第 {selectedIndex + 1} / {CARDS.length} 张：{selectedCard.name}{options.upgraded ? '＋' : ''} · {options.ruleset} 规则</p></div></div>
+    <div className="preview-notice"><strong>出牌特效验收沙盒 · 仅开发页面</strong>角色、技能、牌组与战场起点为显式测试配置。出牌调用正式引擎；不读取或写入玩家人生存档，不是通关见证。每次点击从相同条件复位后施放，可快速连点检查重叠特效。音效设置与正式界面共用，点击出牌试听本地合成音效。</div>
+    <div className="rpg-title-row"><div><span className="eyebrow">96 张卡牌 · 正式结算、视觉与音效</span><h1>逐张检查施放、命中和音效</h1><p>当前第 {selectedIndex + 1} / {CARDS.length} 张：{selectedCard.name}{options.upgraded ? '＋' : ''} · {options.ruleset} 规则</p></div></div>
     <section className="preview-controls" aria-label="特效验收配置">
       <label>选择验收卡牌<select aria-label="选择验收卡牌" value={options.cardId} onChange={event => configure({ cardId: event.target.value })}>{SCHOOLS.map(school => <optgroup key={school} label={cardSchoolLabel(CARDS.find(card => card.school === school)!)}>{CARDS.filter(card => card.school === school).map(card => <option key={card.id} value={card.id}>{card.name} · {card.id}</option>)}</optgroup>)}</select></label>
       <label>卡牌版本<select aria-label="卡牌版本" value={options.upgraded ? 'upgraded' : 'normal'} onChange={event => configure({ upgraded: event.target.value === 'upgraded' })}><option value="normal">普通卡牌</option><option value="upgraded">强化卡牌</option></select></label>
@@ -202,6 +214,7 @@ export default function CardEffectsPreview() {
     <section className="rpg-battlefield" aria-label="正式组件特效战场">
       <BattleCastEffects cues={cues} showAnnouncement={false} />
       <div className="battle-mission"><span><Swords size={17} />{ENCOUNTER_BY_ID[battle.encounterId].title} · {options.enemies} 名敌人</span><strong>第 {battle.turn} 回合</strong></div>
+      <BattleAudioControls audio={audio} />
       <div className="enemy-line">{battle.enemies.map(enemy => {
         const definition = ENEMY_BY_ID[enemy.definitionId];
         return <button key={enemy.uid} className={`enemy-unit ${target === enemy.uid ? 'targeted' : ''} ${enemy.hp <= 0 ? 'defeated' : ''}`} aria-pressed={target === enemy.uid} aria-label={`选择目标${enemy.name}`} onClick={() => setTarget(enemy.uid)}>
@@ -216,6 +229,7 @@ export default function CardEffectsPreview() {
     </section>
     <section className="preview-cast-panel surface-panel"><CardTile card={selectedCard} state={state} owned={selectedOwned} selected /><div className="preview-cast-info"><h2>{selectedCard.name}{options.upgraded ? '＋' : ''}</h2><p>{effectText(cardEffect(state, selectedOwned))} · {selectedCard.cost} 行动力</p><p>普通格挡起点为 12。角色起点缺失 90 生命，带燃烧 4、虚弱 2、易伤 2；显示实际扣血、吸收、治疗及资源变化。</p>
       <div className="preview-receipt" aria-live="polite">{receipt ? <>{receipt.targets.map(item => <span key={item.uid}>{state.battle!.enemies.find(enemy => enemy.uid === item.uid)?.name}：伤害 {item.damage} / 格挡吸收 {item.absorbed}{item.burn ? ` / 燃烧 +${item.burn}` : ''}{item.weak ? ` / 虚弱 +${item.weak}` : ''}{item.vulnerable ? ` / 易伤 +${item.vulnerable}` : ''}</span>)}{receipt.hero.block > 0 && <span><Shield size={14} />格挡 +{receipt.hero.block}</span>}{receipt.effect.heal && <span><Heart size={14} />实际治疗 +{receipt.hero.heal}</span>}{receipt.effect.cleanse && <span><Flame size={14} />净化 {receipt.hero.cleanse} 层</span>}{receipt.hero.draw > 0 && <span><Layers size={14} />抽牌 +{receipt.hero.draw}</span>}{receipt.hero.energy > 0 && <span><Zap size={14} />回能 +{receipt.hero.energy}</span>}</> : <span>尚未出牌</span>}</div>
+      {audioCheck && <div><p className="preview-audio-status" role="status" data-audio-state={audioCheck.state} data-audio-voices={audioCheck.activeVoices}>音频状态：{audioCheck.state} · 未结束声部 {audioCheck.activeVoices} 个。仅开发验收显示，正式界面保留开关与音量。</p><button className="button subtle" onClick={() => setAudioCheck(audio.inspect())}>检查当前音频状态</button></div>}
       <details><summary>出牌回执与战斗日志<ChevronDown size={17} /></summary><pre>{JSON.stringify({ cue: receipt, battleLog: battle.log }, null, 2)}</pre></details>
     </div></section>
     <details className="preview-hand"><summary>结算后的真实手牌 · {battle.hand.length} 张</summary><div className="rpg-hand">{battle.hand.map(uid => <OwnedCardTile key={uid} state={state} uid={uid} />)}</div></details>

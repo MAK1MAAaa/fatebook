@@ -103,7 +103,7 @@ docker run -d --name fatebook --pull=never \
 
 ## 6. 从源码重新打包
 
-2026-10-13 更新包含全部96张卡的出牌特效，应用2.1.0、剧情2.0.0、存档容器格式3保持；旧2.0规则可继续，主动迁移仅允许地区且没有战局或奖励。最新单文件为 [fatebook-docker-2.1.0-20261013T022420000Z-amd64.tar.gz](../release/fatebook-docker-2.1.0-20261013T022420000Z-amd64.tar.gz)，约36.80MiB。导入后选 `fatebook:2.1.0-20261013T022420000Z-amd64` 重建，映射6657:6657。实际检查结果见 [2.1验证记录](../docs/rpg-verification.md)。已完成出牌特效本地浏览器视口验收与归档结构／构建字节核对，本轮没有启动游戏容器、冷导入或实体手机验收。旧发布包保留。
+2026-10-13 更新包含全部96张卡的增强施放／命中反馈与本地音效，应用2.1.0、剧情2.0.0、存档容器格式3保持；旧2.0规则可继续，主动迁移仅允许地区且没有战局或奖励。最新单文件为 [fatebook-docker-2.1.0-20261013T024309000Z-amd64.tar.gz](../release/fatebook-docker-2.1.0-20261013T024309000Z-amd64.tar.gz)，约36.80MiB。导入后选 `fatebook:2.1.0-20261013T024309000Z-amd64` 重建，映射6657:6657。实际检查结果见 [2.1验证记录](../docs/rpg-verification.md)。已完成本地浏览器视口、音频排程／静音验收与归档结构／构建字节核对，本轮没有启动游戏容器、冷导入或实体手机验收。旧发布包保留。
 
 本机没有运行Docker服务时，可用已有完整AMD64归档复用相同Nginx/Alpine运行层，替换网页与配置后输出新的完整镜像包：
 
@@ -113,8 +113,8 @@ npm test
 npm run build
 python3 scripts/package-docker-offline.py \
   --base release/fatebook-docker-2.0.0-20261010T082644734Z-amd64.tar.gz \
-  --created-at 2026-10-13T02:24:20.000Z \
-  --output release/fatebook-docker-2.1.0-20261013T022420000Z-amd64.tar.gz
+  --created-at 2026-10-13T02:43:09.000Z \
+  --output release/fatebook-docker-2.1.0-20261013T024309000Z-amd64.tar.gz
 ```
 
 离线方式校验原镜像配置与全部运行层、生成新镜像配置和标签，并核对网页与配置逐字节一致；不启动或修改任何现有容器。此命令拒绝覆盖已存在的包，再次发布时更换时间和输出文件名。把 `--output` 换成 `--verify` 可只复核成品。成品仍需在服务器导入验收。

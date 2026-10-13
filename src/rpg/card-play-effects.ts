@@ -3,6 +3,8 @@ import { cardFor, rulesetVersion } from './rulesets';
 import type { CardDefinition, CardEffect, GameAction, RpgState } from './types';
 
 export const CARD_PLAY_DURATION_MS = 1100;
+// Audio and visual impact share the same short cast lead-in.
+export const CARD_PLAY_IMPACT_MS = 150;
 export const MAX_CARD_PLAY_CUES = 4;
 
 export interface CardPlayTarget {

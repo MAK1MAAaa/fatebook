@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import type { CardPlayCue } from "../../rpg/card-play-effects";
+import { CARD_PLAY_IMPACT_MS, type CardPlayCue } from "../../rpg/card-play-effects";
 import "./card-play-effects.css";
 
 const schoolNames: Record<CardPlayCue["school"], string> = {
@@ -11,7 +11,8 @@ type Mechanism = "damage" | "absorbed" | "burn" | "weak" | "vulnerable" | "block
 interface Feedback { mechanism: Mechanism; text: string; unchanged?: boolean; }
 
 function cueStyle(cue: CardPlayCue, order = 0): CSSProperties {
-  return { "--cast-color": cue.color, "--cast-duration": `${cue.durationMs}ms`, "--cast-order": order } as CSSProperties;
+  const impactDelay = cue.durationMs <= 240 ? 0 : CARD_PLAY_IMPACT_MS;
+  return { "--cast-color": cue.color, "--cast-duration": `${cue.durationMs}ms`, "--cast-impact-delay": `${impactDelay}ms`, "--cast-feedback-duration": `${cue.durationMs - impactDelay}ms`, "--cast-order": order } as CSSProperties;
 }
 function cueClass(cue: CardPlayCue): string {
   return `cast-school-${cue.school} cast-actor-${cue.actor ?? "alliance"}${cue.upgraded ? " cast-upgraded" : ""}`;
@@ -74,7 +75,8 @@ function targetFeedback(cue: CardPlayCue, uid: string): Feedback[] {
   const target = cue.targets.find(item => item.uid === uid);
   if (!target) return [];
   const effects: Feedback[] = [];
-  if (cue.effect.damage) effects.push({ mechanism: "damage", text: `伤害 ${target.damage}`, unchanged: !target.damage });
+  // A fully absorbed attack is a shield impact, not a health-damage hit.
+  if (cue.effect.damage && (target.damage || !target.absorbed)) effects.push({ mechanism: "damage", text: `伤害 ${target.damage}`, unchanged: !target.damage });
   if (target.absorbed) effects.push({ mechanism: "absorbed", text: `格挡吸收 ${target.absorbed}` });
   if (cue.effect.burn) effects.push({ mechanism: "burn", text: target.burn ? `燃烧 +${target.burn}` : "燃烧 · 无有效变化", unchanged: !target.burn });
   if (cue.effect.weak) effects.push({ mechanism: "weak", text: target.weak ? `虚弱 +${target.weak}` : "虚弱 · 无有效变化", unchanged: !target.weak });
@@ -92,6 +94,7 @@ export function CardCastAnnouncements({ cues }: { cues: readonly CardPlayCue[] }
 
 export function BattleCastEffects({ cues, showAnnouncement = true }: { cues: readonly CardPlayCue[]; showAnnouncement?: boolean }) {
   return <div className="card-cast-stage" aria-hidden="true">{cues.slice(-MAX_VISIBLE_CUES).map(cue => <div key={cue.id} className={`card-cast-event ${cueClass(cue)}`} style={cueStyle(cue)}>
+    <div className="card-cast-launch"><span className="cast-launch-rune" /><SchoolSigil cue={cue} /><span className="cast-launch-trail" /></div>
     <svg className="card-cast-circle" viewBox="0 0 240 140" fill="none" stroke="currentColor" aria-hidden="true"><ellipse cx="120" cy="70" rx="96" ry="49" /><ellipse cx="120" cy="70" rx="78" ry="37" strokeDasharray="9 5" /><path d="m120 21 70 74H50Zm0 98L50 45h140ZM24 70h18m156 0h18M120 9v12m0 98v12" />{[[45, 37], [195, 37], [24, 70], [216, 70], [45, 103], [195, 103]].map(([cx, cy]) => <circle key={`${cx}-${cy}`} cx={cx} cy={cy} r="3" />)}</svg>
     {cue.all && <><span className="card-cast-wide-wave" /><span className="card-cast-wide-wave cast-wave-second" /></>}
     {showAnnouncement && cue === cues.at(-1) && <CastAnnouncement cue={cue} />}
@@ -99,12 +102,15 @@ export function BattleCastEffects({ cues, showAnnouncement = true }: { cues: rea
 }
 
 export function UnitCardEffects({ cues, targetId }: { cues: readonly CardPlayCue[]; targetId: "hero" | string }) {
-  const relevant = cues.map(cue => ({ cue, feedback: targetId === "hero" ? heroFeedback(cue) : targetFeedback(cue, targetId) })).filter(item => item.feedback.length > 0);
+  const relevant = cues.map(cue => ({ cue, target: cue.targets.find(target => target.uid === targetId), feedback: targetId === "hero" ? heroFeedback(cue) : targetFeedback(cue, targetId) })).filter(item => item.feedback.length > 0);
   const latest = relevant.at(-1)?.cue;
-  return <div className={`unit-card-effects ${targetId === "hero" ? "unit-effects-hero" : "unit-effects-enemy"}`} aria-hidden="true">{relevant.slice(-MAX_VISIBLE_CUES).map(({ cue, feedback }, order) => <div key={cue.id} className={`unit-cast-event ${cueClass(cue)}${cue.targets.some(target => target.uid === targetId && target.defeated) ? " cast-defeating" : ""}`} style={cueStyle(cue, order)}>
+  return <div className={`unit-card-effects ${targetId === "hero" ? "unit-effects-hero" : "unit-effects-enemy"}`} aria-hidden="true">{relevant.slice(-MAX_VISIBLE_CUES).map(({ cue, target, feedback }, order) => <div key={cue.id} className={`unit-cast-event ${cueClass(cue)}${target?.damage ? " cast-hit" : target?.absorbed ? " cast-blocked" : target ? " cast-status-only" : " cast-self-buff"}${target?.defeated ? " cast-defeating" : ""}`} style={cueStyle(cue, order)}>
+    {!!target?.damage && <><span className="cast-impact-ring" /><svg className="cast-impact-burst" viewBox="0 0 120 120" fill="none" stroke="currentColor" strokeWidth="3" aria-hidden="true"><path d="m60 8 4 36 25-25-20 32 43 9-43 8 20 29-25-22-4 37-5-37-26 22 21-29L8 60l42-9-20-32 25 25Z" /><circle cx="60" cy="60" r="18" /></svg></>}
+    {!!target?.absorbed && <svg className={`cast-absorb-shield${target.damage ? " cast-absorb-partial" : ""}`} viewBox="0 0 120 120" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true"><path d="M60 15 97 34v32c-4 23-24 36-37 43-13-7-33-20-37-43V34Z" /><path d="m43 60 12 13 25-27M11 47l12 4m-9 24 12-3m70-21 13-4m-15 25 12 3" /></svg>}
+    {target?.defeated && <span className="cast-defeat-mark">击破</span>}
     <SchoolSigil cue={cue} />
     {cue === latest && <div className="cast-mechanism-orbit">{feedback.map(item => <span key={item.mechanism} className={`cast-mechanism-seal mechanism-${item.mechanism}${item.unchanged ? " cast-unchanged" : ""}`}><MechanismGlyph mechanism={item.mechanism} /></span>)}</div>}
-    {targetId === "hero" && <div className="cast-hero-auras">{feedback.filter(item => ["block", "heal", "cleanse"].includes(item.mechanism)).map(item => <span key={item.mechanism} className={`cast-hero-aura mechanism-${item.mechanism}`} />)}</div>}
+    {targetId === "hero" && <div className="cast-hero-auras">{feedback.map(item => <span key={item.mechanism} className={`cast-hero-aura mechanism-${item.mechanism}${item.unchanged ? " cast-unchanged" : ""}`} />)}</div>}
     {cue === latest && <div className="cast-feedback-list">{feedback.map((item, index) => <span key={item.mechanism} className={`cast-feedback mechanism-${item.mechanism}${item.unchanged ? " cast-unchanged" : ""}`} style={{ "--feedback-index": index } as CSSProperties}><MechanismGlyph mechanism={item.mechanism} /><strong>{item.text}</strong></span>)}</div>}
   </div>)}</div>;
 }

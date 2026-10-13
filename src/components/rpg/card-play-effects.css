@@ -14,6 +14,10 @@
 .unit-card-effects { z-index: 8; overflow: visible; }
 .card-cast-stage *, .card-cast-announcements *, .unit-card-effects * { pointer-events: none; }
 .card-cast-event, .card-cast-announcement-event, .unit-cast-event { position: absolute; inset: 0; pointer-events: none; color: var(--cast-color); animation: cast-event-envelope var(--cast-duration, 1100ms) ease-out both; }
+.card-cast-launch { position: absolute; left: 50%; top: 64%; width: 42px; height: 58px; padding: 5px; border: 1px solid var(--cast-color); border-radius: 5px; background: linear-gradient(145deg, #e7d8b0, #283b30 32%, #101a16); box-shadow: 0 0 16px color-mix(in srgb, var(--cast-color) 35%, transparent); animation: cast-card-launch calc(var(--cast-impact-delay, 150ms) + 100ms) cubic-bezier(.16,.7,.3,1) both; }
+.card-cast-launch > .cast-school-sigil { width: 100%; height: 100%; stroke-width: 3; }
+.cast-launch-rune { position: absolute; inset: 3px; border: 1px solid color-mix(in srgb, var(--cast-color) 45%, transparent); border-radius: 3px; }
+.cast-launch-trail { position: absolute; left: 20%; right: 20%; top: 95%; height: 65px; background: linear-gradient(var(--cast-color), transparent); filter: blur(3px); opacity: .45; }
 .card-cast-circle { position: absolute; width: min(54%, 280px); height: auto; left: 50%; top: 45%; translate: -50% -50%; opacity: .35; stroke-width: 1.1; animation: cast-circle-open var(--cast-duration, 1100ms) ease-out both; }
 .card-cast-announcement { position: absolute; top: 48%; left: 50%; translate: -50% -50%; display: grid; align-content: center; gap: 2px; min-height: 51px; max-width: calc(100% - 32px); padding: 8px 52px 8px 18px; border: 1px solid color-mix(in srgb, var(--cast-color) 65%, transparent); border-radius: 10px; background: #101a16ef; color: #f1e9d6; box-shadow: 0 4px 18px #0005; animation: cast-announcement-reveal var(--cast-duration, 1100ms) ease-out both; }
 .card-cast-announcement > span { font-size: 11px; line-height: 1.4; letter-spacing: 1px; color: var(--cast-color); white-space: nowrap; }
@@ -55,6 +59,23 @@
 .cast-upgraded .cast-school-sigil { stroke-width: 2.7; filter: drop-shadow(0 0 8px color-mix(in srgb, var(--cast-color) 65%, transparent)); }
 .cast-upgraded .card-cast-circle { stroke-width: 1.7; opacity: .55; }
 .cast-defeating > .cast-school-sigil { animation-name: cast-defeating-sigil; }
+.unit-cast-event > .cast-school-sigil,
+.unit-cast-event > .cast-school-sigil *,
+.unit-cast-event .cast-mechanism-seal,
+.unit-cast-event .cast-hero-aura { animation-duration: var(--cast-feedback-duration, 950ms); animation-delay: var(--cast-impact-delay, 150ms); }
+.unit-cast-event .cast-cut-second,
+.unit-cast-event .cast-water-ring-inner { animation-delay: calc(var(--cast-impact-delay, 150ms) + 40ms); }
+.unit-cast-event .cast-cut-third { animation-delay: calc(var(--cast-impact-delay, 150ms) + 80ms); }
+.unit-cast-event .cast-ember:nth-last-child(even) { animation-delay: calc(var(--cast-impact-delay, 150ms) + 60ms); }
+.cast-impact-ring { position: absolute; inset: 5%; border: 3px solid var(--cast-color); border-radius: 50%; box-shadow: inset 0 0 13px color-mix(in srgb, var(--cast-color) 35%, transparent), 0 0 9px color-mix(in srgb, var(--cast-color) 40%, transparent); animation: cast-impact-ring 380ms cubic-bezier(.15,.75,.3,1) var(--cast-impact-delay, 150ms) both; }
+.cast-impact-burst { position: absolute; inset: 0; width: 100%; height: 100%; color: #ffe8c6; filter: drop-shadow(0 0 5px var(--cast-color)); animation: cast-impact-burst 230ms ease-out var(--cast-impact-delay, 150ms) both; }
+.battle-target-art:has(.cast-hit) > .rpg-portrait { animation: cast-portrait-recoil 240ms ease-out var(--cast-impact-delay, 150ms); }
+.cast-absorb-shield { position: absolute; inset: 0; width: 100%; height: 100%; color: #b4e1ff; fill: #63a9d02e; filter: drop-shadow(0 0 7px #72b8dc); animation: cast-shield-impact 420ms ease-out var(--cast-impact-delay, 150ms) both; }
+.cast-absorb-partial { width: 62%; height: 62%; inset: 32% 19% 6%; opacity: .75; }
+.cast-blocked > .cast-school-sigil { opacity: .35; filter: none; }
+.cast-defeating .cast-impact-ring { border-width: 4px; border-color: #ffe4a8; animation-name: cast-finishing-ring; }
+.cast-defeating .cast-impact-burst { stroke-width: 4; color: #fff2cd; }
+.cast-defeat-mark { position: absolute; left: 50%; bottom: 7%; translate: -50% 0; padding: 1px 8px; border: 1px solid #e5c68e; border-radius: 4px; background: #282319eb; color: #ffe4a8; font-size: 13px; font-weight: 700; letter-spacing: 2px; animation: cast-defeat-mark var(--cast-feedback-duration, 950ms) ease-out var(--cast-impact-delay, 150ms) both; }
 .cast-mechanism-orbit { position: absolute; right: -5px; top: 6px; display: grid; grid-template-columns: repeat(2, 23px); gap: 5px; }
 .cast-mechanism-seal { display: grid; place-items: center; width: 23px; height: 23px; border: 1px solid currentColor; border-radius: 50%; background: #101a16d9; color: var(--mechanism-color, var(--cast-color)); animation: cast-seal-appear var(--cast-duration, 1100ms) ease-out both; }
 .cast-mechanism-seal > svg { width: 16px; height: 16px; }
@@ -76,11 +97,23 @@
 .cast-feedback { display: flex; align-items: center; gap: 4px; max-width: 100%; border: 1px solid color-mix(in srgb, var(--mechanism-color) 45%, transparent); padding: 3px 7px; border-radius: 5px; background: #101a16eb; color: var(--mechanism-color); box-shadow: 0 2px 6px #0005; text-align: center; font-size: 13px; line-height: 1.4; animation: cast-feedback-settle var(--cast-duration, 1100ms) ease-out both; animation-delay: calc(var(--feedback-index, 0) * 20ms); }
 .cast-feedback > svg { width: 15px; height: 15px; flex: none; }
 .cast-feedback > strong { font-weight: 600; overflow-wrap: anywhere; }
+.unit-cast-event .cast-feedback { animation-duration: var(--cast-feedback-duration, 950ms); animation-delay: calc(var(--cast-impact-delay, 150ms) + var(--feedback-index, 0) * 20ms); }
+.cast-feedback.mechanism-damage:not(.cast-unchanged) { border-color: #f7ba8c; background: #382018f2; color: #ffe2be; font-size: 19px; line-height: 1.2; box-shadow: 0 0 8px #d5885540, 0 2px 7px #0008; animation-name: cast-damage-punch; }
+.cast-feedback.mechanism-damage:not(.cast-unchanged) > strong { font-weight: 800; font-variant-numeric: tabular-nums; text-shadow: 0 1px 2px #000; }
+.cast-blocked .cast-feedback.mechanism-absorbed { border-color: #a4d2f0; background: #182e3df2; box-shadow: 0 0 8px #71b8e440; }
 .cast-feedback.cast-unchanged { color: #ddd8cb; border-style: dashed; font-size: 12px; }
 .cast-mechanism-seal.cast-unchanged { border-style: dashed; opacity: .75; }
 .unit-effects-hero .cast-feedback-list { top: 6px; left: 50%; translate: calc(-50% + var(--cast-order, 0) * 2px) calc(var(--cast-order, 0) * 4px); max-width: 110px; align-items: center; }
 .unit-effects-hero .cast-mechanism-orbit { left: -9px; right: auto; top: 4px; grid-template-columns: 23px; }
-@keyframes cast-event-envelope { 0% { opacity: 0; } 10%, 80% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes cast-event-envelope { 0%, 80% { opacity: 1; } 100% { opacity: 0; } }
+@keyframes cast-card-launch { 0% { opacity: 0; transform: translate(-50%, 18px) rotate(-14deg) scale(.6); } 20% { opacity: 1; } 65% { opacity: .95; transform: translate(-50%, -70px) rotate(6deg) scale(.88); } 100% { opacity: 0; transform: translate(-50%, -95px) rotate(9deg) scale(.4); } }
+@keyframes cast-impact-ring { 0% { opacity: 0; transform: scale(.35); } 12% { opacity: .95; } 65% { opacity: .45; } 100% { opacity: 0; transform: scale(1.04); } }
+@keyframes cast-impact-burst { 0% { opacity: 0; transform: scale(.5) rotate(-8deg); } 16%, 30% { opacity: .9; transform: scale(1) rotate(0); } 100% { opacity: 0; transform: scale(1.04) rotate(5deg); } }
+@keyframes cast-portrait-recoil { 0%, 100% { transform: none; } 18% { transform: translateX(3px) rotate(1deg); } 43% { transform: translateX(-2px) rotate(-.6deg); } 68% { transform: translateX(1px); } }
+@keyframes cast-shield-impact { 0% { opacity: 0; transform: scale(.75); } 15% { opacity: 1; transform: scale(1.04); } 40% { opacity: .9; transform: scale(.98); } 100% { opacity: 0; transform: scale(1.02); } }
+@keyframes cast-finishing-ring { 0% { opacity: 0; transform: scale(.25); } 16% { opacity: 1; transform: scale(1.04); } 48% { opacity: .8; transform: scale(.86); } 100% { opacity: 0; transform: scale(.2); } }
+@keyframes cast-defeat-mark { 0%, 20% { opacity: 0; transform: translateY(4px); } 30%, 80% { opacity: 1; transform: none; } 100% { opacity: 0; } }
+@keyframes cast-damage-punch { 0% { opacity: 0; transform: scale(.75) translateY(3px); } 5% { opacity: 1; transform: scale(1.1); } 13%, 72% { opacity: 1; transform: none; } 100% { opacity: 0; transform: translateY(-3px); } }
 @keyframes cast-circle-open { 0% { transform: scale(.65); opacity: 0; } 20% { transform: scale(1); opacity: .45; } 80% { transform: scale(1.08); opacity: .3; } 100% { transform: scale(1.16); opacity: 0; } }
 @keyframes cast-announcement-reveal { 0% { opacity: 0; transform: translateY(8px) scale(.96); } 13%, 62% { opacity: 1; transform: none; } 90%, 100% { opacity: 0; transform: translateY(-6px); } }
 @keyframes cast-sigil-reveal { 0% { opacity: 0; transform: scale(.55); } 15% { opacity: .95; transform: scale(1.05); } 35%, 65% { opacity: .85; transform: scale(1); } 100% { opacity: 0; transform: scale(1.15); } }
@@ -113,6 +146,7 @@
   .cast-announcement-sigil { width: 26px; height: 26px; right: 6px; }
   .unit-cast-event > .cast-school-sigil { width: 100%; max-height: 150px; }
   .cast-feedback { font-size: 12px; padding: 2px 5px; gap: 3px; }
+  .cast-feedback.mechanism-damage:not(.cast-unchanged) { font-size: 16px; }
   .cast-feedback > svg { width: 13px; height: 13px; }
   .cast-feedback-list { max-width: 155px; gap: 3px; }
   .cast-mechanism-orbit { right: -3px; grid-template-columns: repeat(2, 19px); gap: 3px; }
@@ -121,6 +155,8 @@
   .unit-effects-hero .cast-mechanism-orbit { left: -5px; grid-template-columns: 19px; }
   .unit-effects-hero .cast-feedback-list { top: 0; max-width: min(90px, calc(100% + 12px)); }
   .unit-effects-hero .cast-feedback { font-size: 11px; }
+  .card-cast-launch { width: 34px; height: 47px; }
+  .cast-defeat-mark { font-size: 11px; padding-inline: 5px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .card-cast-stage *, .card-cast-announcements *, .unit-card-effects * { animation: none; }
@@ -132,4 +168,17 @@
   .cast-upgraded .cast-school-sigil { filter: none; }
   .cast-feedback { opacity: 1; }
   .cast-ember, .cast-ambush-shadow { display: none; }
+  .card-cast-launch, .cast-impact-burst { display: none; }
+  .cast-impact-ring { animation: none; opacity: .45; box-shadow: none; border-width: 2px; }
+  .cast-absorb-shield { animation: none; opacity: .65; filter: none; }
+  .cast-defeat-mark { animation: none; opacity: 1; }
+  .cast-hero-aura { opacity: .45; }
+  .battle-target-art:has(.cast-hit) > .rpg-portrait { animation: none; }
+  .unit-cast-event > .cast-school-sigil,
+  .unit-cast-event > .cast-school-sigil *,
+  .unit-cast-event .cast-mechanism-seal,
+  .unit-cast-event .cast-hero-aura,
+  .unit-cast-event .cast-feedback,
+  .cast-feedback.mechanism-damage:not(.cast-unchanged),
+  .cast-defeating .cast-impact-ring { animation: none; }
 }
